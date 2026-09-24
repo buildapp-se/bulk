@@ -17,7 +17,7 @@ export const sv = {
   },
   activity: [[1.2, 'Stillasittande'], [1.375, 'Lätt aktiv'], [1.55, 'Tränar 3–5 ggr/v'], [1.725, 'Mycket aktiv']] as const,
   method: { ugn: 'Ugn', sousvide: 'Sous vide', form: 'Långkok', gryta: 'Gryta' },
-  veg: { rostade: ['Rostade', 'Egen plåt, 20 min'], frysta: ['Frysta', 'Direkt i lådan'] },
+  veg: { rostade: ['Rostade', 'Egen plåt, 20 min'], frysta: ['Frysta', 'Direkt i lådan. Aubergine, svamp och kål rostas ändå'] },
   kitHint: (n: number) => (n === 0 ? 'Välj minst 1' : n > 3 ? `${n} valda, fler kastruller` : `${n} valda, 2–3 är lagom`),
   batch: 'Din batch',
   trays: (n: number, min: string) => `${n} plåtar · ca ${min}`,

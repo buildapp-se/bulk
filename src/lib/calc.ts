@@ -73,11 +73,15 @@ export function resolveBoxes(p: Plan): Box[] {
   // Kits with a chosen protein take it first (and use up its share); the rest share what is left.
   const fixed = (k?: Kit) => { const id = k && p.kitProtein[k.id]; return id && PROTEINS.some((x) => x.id === id) ? id : undefined; };
   for (const k of kitOf) { const f = fixed(k); if (f && left.has(f)) left.set(f, left.get(f)! - 1); }
+  const pinned = new Set(kitOf.map(fixed).filter(Boolean));
   const protOf: (string | undefined)[] = kitOf.map((k) => {
     const f = fixed(k);
     if (f) return f;
     const pref = (k?.protein ?? []).find((id) => (left.get(id) ?? 0) > 0);
-    const pick = pref ?? [...left.entries()].sort((a, b) => b[1] - a[1]).find(([, c]) => c > 0)?.[0];
+    // Fallback: the unpinned protein with most share left, even past its share: a protein pinned to a kit
+    // stays there instead of spilling into other kits. Only if every protein is pinned does a pinned one fill in.
+    const byLeft = (xs: [string, number][]) => xs.sort((a, b) => b[1] - a[1])[0]?.[0];
+    const pick = pref ?? byLeft([...left.entries()].filter(([id]) => !pinned.has(id))) ?? byLeft([...left.entries()].filter(([, c]) => c > 0));
     if (pick) left.set(pick, (left.get(pick) ?? 0) - 1);
     return pick;
   });
@@ -144,8 +148,10 @@ const ZERO: Macro = [0, 0, 0, 0];
 const sumParts = (parts: Part[]): Macro =>
   parts.reduce<Macro>((acc, x) => (x.ingr && (x.u === 'g' || x.u === 'ml') ? addM(acc, macroOf(x.ingr, x.q)) : acc), ZERO);
 
+/** The one rule for veg: roasted if it can be and the mode says so, or if it is never bought frozen. */
+export const vegRoasted = (v: Veg, mode: Plan['vegMode']) => !!v.oven && !v.frozenOnly && (mode === 'rostade' || !!v.freshOnly);
 const roasted = (b: Box, role: 'protein' | 'carb' | 'veg', vegMode: Plan['vegMode']) =>
-  role === 'protein' ? b.method === 'ugn' : role === 'carb' ? !!b.carb?.oven : !!b.veg?.oven && !b.veg.frozenOnly && vegMode === 'rostade';
+  role === 'protein' ? b.method === 'ugn' : role === 'carb' ? !!b.carb?.oven : !!b.veg && vegRoasted(b.veg, vegMode);
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const r5 = (v: number) => Math.round(v / 5) * 5;
@@ -162,7 +168,7 @@ export function calcBox(b: Box, p: Plan, t: Targets | null): BoxCalc {
        ...b.kit.mix.map((x): Part => ({ role: 'kit', ingr: x.ingr, name: x.name, q: x.q, u: x.u })),
        ...b.kit.top.map((x): Part => ({ role: 'topp', ingr: x.ingr, name: x.name, q: x.q, u: x.u }))]
     : [];
-  const veg = b.veg ? mk('veg', b.veg.ingr, b.veg.name + (b.veg.frozenOnly || p.vegMode === 'frysta' ? ' (fryst)' : ''), b.veg.raw) : [];
+  const veg = b.veg ? mk('veg', b.veg.ingr, b.veg.name + (vegRoasted(b.veg, p.vegMode) ? '' : ' (fryst)'), b.veg.raw) : [];
 
   // Goal solver: protein grams hit the protein target, carb grams hit the kcal target.
   // They affect each other (rice has protein, meat has kcal), so iterate to a fixed point; 4 rounds is plenty.
@@ -266,8 +272,8 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   const ovenProt = protMethods.filter((x) => x.m === 'ugn');
   const ovenCarbs = used((b) => (b.carb?.oven ? b.carb : undefined));
   const stoveCarbs = used((b) => (b.carb?.stove ? b.carb : undefined));
-  const ovenVegs = used((b) => (b.veg?.oven && !b.veg.frozenOnly && p.vegMode === 'rostade' ? b.veg : undefined));
-  const frozen = used((b) => (b.veg && (b.veg.frozenOnly || p.vegMode === 'frysta') ? b.veg : undefined));
+  const ovenVegs = used((b) => (b.veg && vegRoasted(b.veg, p.vegMode) ? b.veg : undefined));
+  const frozen = used((b) => (b.veg && !vegRoasted(b.veg, p.vegMode) ? b.veg : undefined));
 
   const E = Math.max(0, ...ovenProt.map((x) => x.pr.methods.ugn!.min), ...ovenCarbs.map((c) => c.oven!), ...ovenVegs.map((v) => v.oven!));
   const steps: Step[] = [];

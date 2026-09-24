@@ -171,7 +171,7 @@ export function VegMode() {
   const { plan } = useBatch();
   return (
     <Segmented id="veg" value={plan.vegMode} onChange={setVegMode}
-      options={(['rostade', 'frysta'] as const).map((id) => [id, <span key={id} className="flex flex-col items-start"><span className="font-semibold">{t.veg[id][0]}</span><span className="text-[11px] font-normal text-muted">{t.veg[id][1]}</span></span>] as const)} />
+      options={(['rostade', 'frysta'] as const).map((id) => [id, <span key={id} className="flex flex-col items-start text-left"><span className="font-semibold">{t.veg[id][0]}</span><span className="text-[11px] font-normal text-muted">{t.veg[id][1]}</span></span>] as const)} />
   );
 }
 

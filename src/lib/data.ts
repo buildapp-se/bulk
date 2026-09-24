@@ -174,14 +174,15 @@ export const CARBS: readonly Carb[] = [
   { id: 'sotpotatis', name: 'Sötpotatis', ingr: 'sotpotatis', raw: 220, oven: 30, prep: 'Skala och skär i 2 cm tärningar' },
 ];
 
-export interface Veg { id: string; name: string; ingr: IngrId; raw: number; oven?: number; frozenOnly?: boolean; prep?: string }
+// freshOnly: hardly sold frozen and mushy if frozen, so always roasted, whatever the veg mode.
+export interface Veg { id: string; name: string; ingr: IngrId; raw: number; oven?: number; frozenOnly?: boolean; freshOnly?: boolean; prep?: string }
 export const VEGS: readonly Veg[] = [
   { id: 'broccoli', name: 'Broccoli', ingr: 'broccoli', raw: 140, oven: 20, prep: 'Dela i buketter' },
   { id: 'paprika', name: 'Paprikamix', ingr: 'paprika', raw: 140, oven: 20, prep: 'Kärna ur och skär i bitar' },
   { id: 'haricots', name: 'Haricots verts', ingr: 'haricots', raw: 110, oven: 15, prep: 'Toppa' },
-  { id: 'vitkal', name: 'Vitkål', ingr: 'vitkal', raw: 125, oven: 25, prep: 'Skär i klyftor' },
-  { id: 'aubergine', name: 'Aubergine', ingr: 'aubergine', raw: 150, oven: 25, prep: 'Tärna 2 cm' },
-  { id: 'champinjoner', name: 'Champinjoner', ingr: 'champinjoner', raw: 120, oven: 20, prep: 'Halvera' },
+  { id: 'vitkal', name: 'Vitkål', ingr: 'vitkal', raw: 125, oven: 25, freshOnly: true, prep: 'Skär i klyftor' },
+  { id: 'aubergine', name: 'Aubergine', ingr: 'aubergine', raw: 150, oven: 25, freshOnly: true, prep: 'Tärna 2 cm' },
+  { id: 'champinjoner', name: 'Champinjoner', ingr: 'champinjoner', raw: 120, oven: 20, freshOnly: true, prep: 'Halvera' },
   { id: 'wokmix', name: 'Wokgrönsaker', ingr: 'wokmix', raw: 90, frozenOnly: true },
   { id: 'artmorot', name: 'Ärtor och morötter', ingr: 'artmorot', raw: 75, frozenOnly: true },
   { id: 'spenat', name: 'Spenat', ingr: 'spenat', raw: 50, frozenOnly: true },

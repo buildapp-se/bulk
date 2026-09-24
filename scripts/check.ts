@@ -22,6 +22,15 @@ const pid = (p: Plan) => resolveBoxes(p).map((b) => b.protein?.id[0]);
 eq('kit protein fixed', pid({ ...DEFAULT_PLAN, kitProtein: { teriyaki: 'notfars' } }), ['n', 'n', 'n', 'k', 'k', 'k', 'n', 'k']);
 // A protein not selected in step 2 (lax) works too; the others share 4/4 over the remaining 6 boxes.
 eq('kit protein unselected', pid({ ...DEFAULT_PLAN, kitProtein: { texmex: 'lax' } }), ['k', 'k', 'k', 'k', 'n', 'n', 'l', 'l']);
+// Pinned protein that is also ticked in step 2 must not spill. Lax, kyckling, nötfärs share 3/3/2; tex-mex (2 boxes) pinned
+// to lax leaves lax 1 over. Teriyaki takes kyckling ×3, grekisk has no listed protein left, so it gets nötfärs ×2 then kyckling.
+eq('pinned protein stays in its kit', pid({ ...DEFAULT_PLAN, proteins: [{ id: 'lax', method: 'ugn' }, ...DEFAULT_PLAN.proteins], kitProtein: { texmex: 'lax' } }),
+  ['k', 'k', 'k', 'n', 'n', 'k', 'l', 'l']);
+// Veg mode Frysta: broccoli goes frozen, aubergine (freshOnly) is still roasted.
+const frys: Plan = { ...DEFAULT_PLAN, vegMode: 'frysta', kits: ['teriyaki', 'moussaka'] };
+const frysSch = schedule(resolveBoxes(frys).map((b) => calcBox(b, frys, null)), frys);
+eq('frysta: aubergine still roasted', frysSch.steps.find((s) => s.id === 'veg')?.details, 'Aubergine på egen plåt.');
+eq('frysta: broccoli frozen', calcBox(resolveBoxes(frys)[0], frys, null).parts.find((x) => x.role === 'veg')?.name, 'Broccoli (fryst)');
 eq('kit veg', resolveBoxes({ ...DEFAULT_PLAN, kitVeg: { teriyaki: 'haricots' } })[0].veg?.id, 'haricots');
 const cleared: Plan = { ...DEFAULT_PLAN, overrides: { 2: { protein: null } } };
 eq('override clears slot', resolveBoxes(cleared)[2].protein, undefined);

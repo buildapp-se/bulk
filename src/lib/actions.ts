@@ -14,22 +14,33 @@ export const toggleKit = (id: string) =>
   structural((p) => ({ kits: p.kits.includes(id) ? p.kits.filter((k) => k !== id) : [...p.kits, id] }));
 
 export const toggleProtein = (id: string) =>
-  structural((p) => ({
-    proteins: p.proteins.some((x) => x.id === id)
-      ? p.proteins.filter((x) => x.id !== id)
-      : [...p.proteins, { id, method: DEFAULT_METHOD(byId(PROTEINS, id)) }],
-  }));
+  structural((p) => {
+    const off = p.proteins.some((x) => x.id === id);
+    return {
+      proteins: off ? p.proteins.filter((x) => x.id !== id) : [...p.proteins, { id, method: DEFAULT_METHOD(byId(PROTEINS, id)) }],
+      // Unticking a protein also unpins it from kits, so no kit keeps a protein you removed.
+      kitProtein: off ? Object.fromEntries(Object.entries(p.kitProtein).filter(([, pr]) => pr !== id)) : p.kitProtein,
+    };
+  });
 
 export const setMethod = (id: string, method: MethodId) => {
   haptic();
   setPlan((p) => ({ ...p, proteins: p.proteins.map((x) => (x.id === id ? { ...x, method } : x)) }));
 };
 
-export const setKitProtein = (kit: string, protein: string) => { haptic(); setPlan((p) => ({ ...p, kitProtein: { ...p.kitProtein, [kit]: protein } })); };
+/** Pin a protein to every box of a kit, and tick it in step 2 if it isn't already. */
+export const setKitProtein = (kit: string, protein: string) => {
+  haptic();
+  setPlan((p) => ({
+    ...p,
+    kitProtein: { ...p.kitProtein, [kit]: protein },
+    proteins: p.proteins.some((x) => x.id === protein) ? p.proteins : [...p.proteins, { id: protein, method: DEFAULT_METHOD(byId(PROTEINS, protein)) }],
+  }));
+};
 export const setKitVeg = (kit: string, veg: string) => { haptic(); setPlan((p) => ({ ...p, kitVeg: { ...p.kitVeg, [kit]: veg } })); };
 /** Empty the batch: kits, proteins, per-kit and per-box choices. Goal, box count and veg mode stay. */
 export const clearAll = () => { haptic(14); setPlan((p) => ({ ...p, kits: [], proteins: [], kitProtein: {}, kitCarb: {}, kitVeg: {}, overrides: {} })); };
-export const setKitCarb =(kit: string, carb: string) => { haptic(); setPlan((p) => ({ ...p, kitCarb: { ...p.kitCarb, [kit]: carb } })); };
+export const setKitCarb = (kit: string, carb: string) => { haptic(); setPlan((p) => ({ ...p, kitCarb: { ...p.kitCarb, [kit]: carb } })); };
 export const setVegMode = (vegMode: Plan['vegMode']) => { haptic(); setPlan((p) => ({ ...p, vegMode })); };
 export const setGoal = (g: Partial<Goal>) => setPlan((p) => ({ ...p, goal: { ...p.goal, ...g } }));
 
