@@ -179,14 +179,19 @@ function BoxTile({ c, warn, onOpen }: { c: BoxCalc; warn: boolean; onOpen: () =>
         if (el) swapBoxes(c.box.i, Number(el.dataset.box));
       }}
       style={hue !== undefined ? ({ '--hue': hue, touchAction: lifted ? 'none' : 'manipulation' } as React.CSSProperties) : undefined}
-      className={`relative flex aspect-[1.2] select-none flex-col justify-between rounded-lg p-1.5 text-left text-[#23211d] ${empty ? 'border border-dashed border-warn bg-transparent text-ink' : 'kit-bg'}`}
+      // Neutral tile: the kit's art carries the identity, its colour only as a small dot (Patrik 2026-09-24).
+      className={`relative flex aspect-[1.2] select-none flex-col justify-between rounded-lg border p-1.5 text-left ${empty ? 'border-dashed border-warn bg-transparent' : 'border-line bg-bg'}`}
     >
-      <span className="flex items-center justify-between font-mono text-[10px]">
+      <span className="flex items-center gap-1 font-mono text-[10px] text-muted">
         {String(c.box.i + 1).padStart(2, '0')}
-        {(warn || empty) && <span className="h-1.5 w-1.5 rounded-full bg-warn ring-2 ring-[color:var(--surface)]" />}
+        {(warn || empty) && <span className="h-1.5 w-1.5 rounded-full bg-warn" />}
       </span>
+      {c.box.kit && <span className="pointer-events-none absolute -right-1 -top-1"><KitArt kit={c.box.kit} size={30} spin /></span>}
       <span className="flex flex-col leading-[1.1]">
-        <span className="truncate text-[11px] font-semibold">{c.box.kit?.name ?? t.box.empty}</span>
+        <span className="flex items-center gap-1 text-[11px] font-semibold">
+          {c.box.kit && <span className="kit-bg h-1.5 w-1.5 shrink-0 rounded-full" />}
+          <span className="truncate">{c.box.kit?.name ?? t.box.empty}</span>
+        </span>
         <span className="truncate text-[10px] opacity-70">{c.box.protein?.name ?? '—'}</span>
       </span>
     </motion.button>
@@ -217,7 +222,7 @@ function BoxSheet({ c, onClose }: { c: BoxCalc; onClose: () => void }) {
         drag="y" dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.6 }}
         onDragEnd={(_, info) => { if (info.offset.y > 100 || info.velocity.y > 600) onClose(); }}
       >
-        <motion.div layoutId={`box-${i}`} className={`relative m-3 mt-12 flex items-end justify-between rounded-2xl p-4 pr-28 ${c.missing.length ? 'border border-dashed border-warn' : 'kit-bg text-[#23211d]'}`} style={{ '--hue': hue } as React.CSSProperties}>
+        <motion.div layoutId={`box-${i}`} className={`relative m-3 mt-12 flex items-end justify-between rounded-2xl p-4 pr-28 ${c.missing.length ? 'border border-dashed border-warn' : 'border border-line bg-bg'}`} style={{ '--hue': hue } as React.CSSProperties}>
           <div>
             <div className="font-mono text-xs opacity-70">{t.box.title(i + 1)}</div>
             <div className="text-2xl font-semibold tracking-tight">{c.box.kit?.name ?? t.box.empty}</div>

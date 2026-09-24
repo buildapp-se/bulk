@@ -259,7 +259,7 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, end }: {
   const tickStep = [15, 30, 60, 120, 180].find((m) => span / m <= 4) ?? 240;
   const ticks: number[] = [];
   if (now > 0) for (let v = Math.ceil(at(t0) / (tickStep * MIN)) * tickStep * MIN; v <= at(t1); v += tickStep * MIN) ticks.push(v);
-  const cols = 'grid-cols-[minmax(0,7.5rem)_1fr_3.25rem] sm:grid-cols-[minmax(0,12rem)_1fr_3.5rem]';
+  const cols = 'grid-cols-[minmax(0,7rem)_1fr_3.25rem_1.75rem] sm:grid-cols-[minmax(0,12rem)_1fr_3.5rem_1.75rem]';
   const jump = (s: Step) => document.getElementById(`step-${s.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const right = (s: Step) => {
     const c = cl[s.id];
@@ -268,6 +268,14 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, end }: {
       : <Digits ms={leftMs(c, now)} className={running(c) ? '' : 'opacity-40'} />;
     return now > 0 ? <When w={fmtAt(at(s.t), now, end)} /> : null;
   };
+  // Start a step's timer straight from the overview; same clock as the list's button.
+  const play = (s: Step) => (s.what && s.dur > 0 && !done[s.id] && !cl[s.id]
+    ? <motion.button whileTap={{ scale: 0.9 }} aria-label={`${t.cook.start}: ${s.what}`} onClick={(e) => { e.stopPropagation(); clocks.start(s); }} onKeyDown={(e) => e.stopPropagation()}
+        className="flex h-6 w-6 items-center justify-center rounded-full bg-ink text-[9px] text-on-ink"><span aria-hidden>▶</span></motion.button>
+    : <span />);
+  // Rows are divs acting as buttons (they jump to the step), so the play button inside is valid HTML.
+  const rowProps = (s: Step) => ({ role: 'button', tabIndex: 0, onClick: () => jump(s),
+    onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jump(s); } } });
   const fade = (p: number) => (
     // Time that has gone loses its colour; what is left stays full.
     <motion.span className="absolute inset-y-0 left-0 bg-surface/70" initial={false} animate={{ width: `${p * 100}%` }} transition={{ type: 'tween', duration: 0.9, ease: 'linear' }} />
@@ -276,31 +284,30 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, end }: {
     <div className="flex flex-col gap-1 rounded-2xl border border-line bg-surface p-4">
       <div className="label mb-1">{t.cook.live}</div>
       {long.map((s) => (
-        <button key={s.id} onClick={() => jump(s)} className={`grid ${cols} items-start gap-2 rounded-md pb-1 text-left hover:bg-bg`}>
+        <div key={s.id} {...rowProps(s)} className={`grid ${cols} cursor-pointer items-start gap-2 rounded-md pb-1 text-left outline-none hover:bg-bg focus-visible:ring-2 focus-visible:ring-ink`}>
           <span className={`truncate pt-0.5 text-[12px] ${done[s.id] ? 'text-muted line-through' : ''}`}>{s.title}</span>
           <span className="flex min-w-0 flex-col gap-0.5">
             <span className="relative mt-0.5 h-4 overflow-hidden rounded" style={{ background: TRACK_COLOR[s.track] }}>{fade(passed(s))}</span>
             {now > 0 && <span className="truncate font-mono text-[10px] text-muted">{fmtAtStr(at(s.t), now, end)} → {fmtAtStr(at(s.t + s.dur), now, end)} · {fmtMin(s.dur)}</span>}
           </span>
           <span className="text-right text-[12px] font-semibold">{right(s)}</span>
-        </button>
+          {play(s)}
+        </div>
       ))}
       {long.length > 0 && <div className="my-1 h-px bg-line" />}
       {steps.map((s, i) => (
         // Each row jumps to its step in the list below.
-        <button key={s.id} onClick={() => jump(s)} className={`grid ${cols} items-center gap-2 rounded-md text-left hover:bg-bg`}>
+        <div key={s.id} {...rowProps(s)} className={`grid ${cols} cursor-pointer items-center gap-2 rounded-md text-left outline-none hover:bg-bg focus-visible:ring-2 focus-visible:ring-ink`}>
           <span className={`truncate text-[12px] ${done[s.id] ? 'text-muted line-through' : ''}`}>{s.title}</span>
           <span className="relative h-5 rounded-md bg-bg">
             <motion.span className="absolute inset-y-0.5 overflow-hidden rounded" style={{ left: `${x(s.t)}%`, background: TRACK_COLOR[s.track] }}
               initial={{ width: 0 }} animate={{ width: `${Math.max(1.5, (Math.max(s.dur, 2) / span) * 100)}%` }} transition={{ ...spring, delay: 0.03 * i }}>
               {fade(passed(s))}
             </motion.span>
-            {nowT !== null && nowT >= t0 && nowT <= t1 && (
-              <motion.span className="absolute -inset-y-0.5 w-0.5 rounded bg-ink" animate={{ left: `${x(nowT)}%` }} transition={{ type: 'tween', duration: 0.9, ease: 'linear' }} />
-            )}
           </span>
           <span className="text-right text-[12px] font-semibold">{right(s)}</span>
-        </button>
+          {play(s)}
+        </div>
       ))}
       <div className={`grid ${cols} gap-2 font-mono text-[10px] text-muted`}>
         <span />
@@ -310,6 +317,7 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, end }: {
             return l > 4 && l < 96 && <span key={v} className="absolute -translate-x-1/2" style={{ left: `${l}%` }}>{fmtAt(v, now).time}</span>;
           })}
         </span>
+        <span />
         <span />
       </div>
     </div>
