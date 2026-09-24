@@ -11,4 +11,8 @@ reviewedAt: 2026-09-24
 
 **Lokalt på Windows:** `next build` skriver prefetch-filer fel (se BACKLOG P3), ger 404 i konsolen vid lokal test. Produktion byggs på Linux.
 
+**Sedan v1 (2026-09-24 kväll):** hela kort klickbara, kitens innehåll syns före val, standard Behåll, 8 egna lätta krämiga kit, 8 Filips-testkit, illustration per kit.
+
+**Väntar på Patrik:** förslaget om grundbaser (tomatbas, asiatisk bas, krämig bas, rökig rub) med kit som twist ovanpå, trädvy i Välj och gemensamt grytsteg i Tillagning.
+
 **Nästa:** BACKLOG P1.

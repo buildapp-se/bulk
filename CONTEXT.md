@@ -30,6 +30,7 @@ Design från Claude Design-projektet "Mealprep" (ade1c1e3-d70f-4582-995b-bb751a5
 - **Mål:** standard Enkel + Behåll, 75 kg (Patrik 2026-09-24). Av / Enkel (Bulka, Behåll, Deffa + vikt) / Avancerad (Mifflin-St Jeor, aktivitet, lådor per dag). En låda = min(35 %, 60 %/lådor per dag) av dagsbehovet. Protein-reglaget styr proteinets gram, kcal-reglaget styr kolhydratens gram (löses iterativt eftersom de påverkar varandra).
 - **Inköp avrundas till förpackningar**, minsta spill med högst två storlekar. Handskriven tabell i data.ts.
 - **Svenska först**, engelska senare (text redan samlad i `sv.ts`).
+- **Bilder:** en gouache-illustration per kit (transparent PNG, Codex imagegen på Patriks prenumeration), stil vald av Patrik bland 5 spår 2026-09-24. `node scripts/kit-art.ts [id]` genererar saknade, 640 px WebP i `public/kits/`. Råfiler i `design/art/` (ignoreras av git).
 - **Ingen inloggning ännu.** Firebase Auth kommer senare, samma mönster som familjehubben.
 
 ## Källor för smakkit

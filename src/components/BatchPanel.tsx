@@ -10,6 +10,7 @@ import { useBatch } from '@/lib/useBatch';
 import { haptic } from '@/lib/haptics';
 import { Num } from './Num';
 import { Pill, spring } from './ui';
+import { KitArt } from './KitArt';
 
 export function BatchPanel() {
   const { plan, calcs, avg, incomplete, offGoal, sched } = useBatch();
@@ -159,12 +160,13 @@ function BoxSheet({ c, onClose }: { c: BoxCalc; onClose: () => void }) {
         drag="y" dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.6 }}
         onDragEnd={(_, info) => { if (info.offset.y > 100 || info.velocity.y > 600) onClose(); }}
       >
-        <motion.div layoutId={`box-${i}`} className={`m-3 flex items-end justify-between rounded-2xl p-4 ${c.missing.length ? 'border border-dashed border-warn' : 'kit-bg text-[#23211d]'}`} style={{ '--hue': hue } as React.CSSProperties}>
+        <motion.div layoutId={`box-${i}`} className={`relative m-3 mt-12 flex items-end justify-between rounded-2xl p-4 pr-28 ${c.missing.length ? 'border border-dashed border-warn' : 'kit-bg text-[#23211d]'}`} style={{ '--hue': hue } as React.CSSProperties}>
           <div>
             <div className="font-mono text-xs opacity-70">{t.box.title(i + 1)}</div>
             <div className="text-2xl font-semibold tracking-tight">{c.box.kit?.name ?? t.box.empty}</div>
           </div>
           {!c.missing.length && <div className="text-right font-mono text-sm"><Num v={c.m[0]} /> kcal<br /><Num v={c.m[1]} /> g P</div>}
+          {c.box.kit && <span className="pointer-events-none absolute -right-2 -top-10"><KitArt kit={c.box.kit} size={112} spin /></span>}
         </motion.div>
         <div className="flex flex-col gap-4 px-4 pt-1">
           {rows.map((r) => (

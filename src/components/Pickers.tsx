@@ -8,6 +8,7 @@ import { setBoxes, setMethod, setVegMode, toggleKit, toggleProtein } from '@/lib
 import { useBatch } from '@/lib/useBatch';
 import { Num } from './Num';
 import { Segmented, spring, stagger } from './ui';
+import { KitArt } from './KitArt';
 
 export function ProteinPicker() {
   const { plan } = useBatch();
@@ -86,11 +87,15 @@ export function KitPicker() {
             aria-pressed={sel} style={{ '--hue': k.hue } as React.CSSProperties} transition={spring}
             className={`group relative flex flex-col gap-2 overflow-hidden rounded-xl border p-3 text-left transition-colors ${sel ? 'border-ink bg-surface shadow-[0_8px_24px_-16px_rgba(35,33,29,.5)]' : 'border-line hover:border-muted'}`}>
             <span className="flex w-full items-center gap-3">
-              <span className="kit-bg relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg font-mono text-[12px] text-[#23211d]">
-                <AnimatePresence mode="popLayout" initial={false}>
-                  <motion.span key={sel ? counts[idx] : 'x'} initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.4, opacity: 0 }} transition={spring}>
-                    {sel ? `×${counts[idx]}` : '+'}
-                  </motion.span>
+              <span className="relative shrink-0">
+                <KitArt kit={k} size={64} spin={sel} />
+                <AnimatePresence initial={false}>
+                  {sel && (
+                    <motion.span key={counts[idx]} initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={spring}
+                      className="absolute -right-1 -top-1 flex h-6 min-w-6 items-center justify-center rounded-full bg-ink px-1 font-mono text-[11px] text-on-ink">
+                      ×{counts[idx]}
+                    </motion.span>
+                  )}
                 </AnimatePresence>
               </span>
               <span className="flex min-w-0 flex-1 flex-col">

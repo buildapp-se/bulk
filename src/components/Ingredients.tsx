@@ -10,6 +10,7 @@ import { haptic } from '@/lib/haptics';
 import { Num } from './Num';
 import { Check } from './Pickers';
 import { spring, stagger } from './ui';
+import { KitArt } from './KitArt';
 
 const CATS = ['kött', 'grönt', 'fryst', 'mejeri', 'skafferi'] as const;
 const MC = ['var(--p)', 'var(--c)', 'var(--f)'];
@@ -57,8 +58,8 @@ function BoxCard({ c, n }: { c: BoxCalc; n: number }) {
   const k = c.box.kit!;
   return (
     <motion.article variants={stagger.child} style={{ '--hue': k.hue } as React.CSSProperties}
-      className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-5">
-      <span className="kit-bg absolute inset-x-0 top-0 h-1" />
+      className="relative mt-16 flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5 pt-24">
+      <span className="absolute -top-16 left-1/2 -translate-x-1/2"><KitArt kit={k} size={168} spin /></span>
       <div className="flex items-baseline justify-between gap-2">
         <div>
           <div className="text-[17px] font-semibold">{k.name}</div>
