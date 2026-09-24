@@ -209,15 +209,15 @@ const MICRO = 'Mikro 800 W 2,5–3 min, rör om halvvägs.';
 // ---------- Bases ----------
 // One fixed recipe per box, cooked once for every kit on it, then split and twisted per kit.
 export type BaseId = 'tomat' | 'asia' | 'kram' | 'rub';
-export interface Base { id: BaseId; name: string; title: string; pot: string; items: readonly KitItem[]; min: number; how: string }
+export interface Base { id: BaseId; name: string; title: string; def: string; pot: string; items: readonly KitItem[]; min: number; how: string }
 export const BASES: readonly Base[] = [
-  { id: 'tomat', name: 'Tomatbas', title: 'Koka tomatbasen', pot: 'gryta', min: 15, how: 'Fräs löken mjuk, sedan vitlök och tomatpuré 1 min tills purén mörknar. Häll i tomaterna och puttra 15 min.',
+  { id: 'tomat', name: 'Tomatbas', title: 'Koka tomatbasen', def: 'tomatbasen', pot: 'gryta', min: 15, how: 'Fräs löken mjuk, sedan vitlök och tomatpuré 1 min tills purén mörknar. Häll i tomaterna och puttra 15 min.',
     items: [g('Krossade tomater', 'krossade', 100), g('Tomatpuré', 'tomatpure', 8), g('Gul lök', 'gullok', 30), s('Vitlöksklyfta', 0.5, 'st')] },
-  { id: 'asia', name: 'Asiatisk bas', title: 'Fräs den asiatiska basen', pot: 'panna', min: 3, how: 'Fräs riven ingefära och vitlök 30 s, slå i sojan och ta av värmen.',
+  { id: 'asia', name: 'Asiatisk bas', title: 'Fräs den asiatiska basen', def: 'den asiatiska basen', pot: 'panna', min: 3, how: 'Fräs riven ingefära och vitlök 30 s, slå i sojan och ta av värmen.',
     items: [g('Japansk soja', 'soja', 8), s('Riven ingefära', 0.5, 'tsk'), s('Vitlöksklyfta', 0.5, 'st')] },
-  { id: 'kram', name: 'Krämig bas', title: 'Smält den krämiga basen', pot: 'kastrull', min: 3, how: 'Smält färskosten med vitlöken och en skvätt vatten på låg värme, slät och blank.',
+  { id: 'kram', name: 'Krämig bas', title: 'Smält den krämiga basen', def: 'den krämiga basen', pot: 'kastrull', min: 3, how: 'Smält färskosten med vitlöken och en skvätt vatten på låg värme, slät och blank.',
     items: [g('Philadelphia light', 'philadelphia', 25), s('Vitlöksklyfta', 0.5, 'st')] },
-  { id: 'rub', name: 'Rökig rub', title: 'Rosta rubben', pot: 'kryddblandning', min: 1, how: 'Rosta kryddorna torrt i en panna 30 s tills de doftar.',
+  { id: 'rub', name: 'Rökig rub', title: 'Rosta rubben', def: 'rubben', pot: 'kryddblandning', min: 1, how: 'Rosta kryddorna torrt i en panna 30 s tills de doftar.',
     items: [s('Spiskummin', 0.5, 'tsk'), s('Rökt paprikapulver', 0.5, 'tsk'), s('Vitlökspulver', 1, 'krm')] },
 ];
 

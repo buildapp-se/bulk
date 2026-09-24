@@ -76,7 +76,10 @@ const chili = mixedCalcs[0];
 const noBase = calcBox({ ...chili.box, kit: { ...chili.box.kit!, base: undefined } }, mixed, null);
 near('tomatbas kcal in box', chili.m[0] - noBase.m[0], 40.42, 0.01);
 near('tomatbas protein in box', chili.m[1] - noBase.m[1], 0.8 + 0.352 + 0.36, 0.01);
-eq('split step names kits', schedule(mixedCalcs, mixed).steps.find((s) => s.id === 'split-tomat')?.title, 'Dela tomatbas i 2');
+const mixedSch = schedule(mixedCalcs, mixed).steps;
+eq('split rows per kit', mixedSch.find((s) => s.id === 'split-tomat')?.rows?.map((r) => [r.name, r.right]), [['Chili con carne', '×3'], ['Keema matar', '×3']]);
+eq('base rows scaled', mixedSch.find((s) => s.id === 'base-tomat')?.rows?.map((r) => r.right), ['600 g', '50 g', '180 g', '3 st']);
+eq('split step names kits', schedule(mixedCalcs, mixed).steps.find((s) => s.id === 'split-tomat')?.title, 'Dela tomatbasen i 2');
 
 // Clocks: 20 min started at 0, paused at 5 min, resumed at 8 min, +1 min at 10 min -> ends at 20 + 3 + 1 = 24 min.
 const M = 60000;

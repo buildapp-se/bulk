@@ -235,7 +235,9 @@ export function baseBatches(calcs: BoxCalc[]): BaseBatch[] {
 
 export type Track = 'prep' | 'ugn' | 'spis' | 'sousvide' | 'form' | 'klar';
 // `what` = short caption under a running clock ("Kyckling i ugnen"); only steps that have it get a timer.
-export interface Step { id: string; track: Track; t: number; dur: number; title: string; details: string; temp?: number; label?: string; what?: string }
+export interface Step { id: string; track: Track; t: number; dur: number; title: string; details: string; temp?: number; label?: string; what?: string; rows?: StepLine[] }
+/** One line in a step's list: an ingredient with its amount, or a kit with its twist and tip. */
+export interface StepLine { name: string; right: string; sub?: string; note?: string; hue?: number }
 export interface Schedule { steps: Step[]; trays: number; total: number; warnings: string[] }
 
 export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
@@ -296,21 +298,24 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   // Each shared base is cooked once for all its boxes while the oven runs.
   const batches = baseBatches(calcs);
   for (const { base, n } of batches) {
-    const amounts = base.items.map((x) => `${fmtQty(x.q * n, x.u)} ${x.name.toLowerCase()}`).join(', ');
     steps.push({ id: `base-${base.id}`, track: 'spis', t: Math.max(0, E - base.min), dur: base.min, title: `${base.title} för ${n} lådor`,
-      what: base.min >= 5 ? `${base.name} puttrar` : undefined, details: `${amounts.replace(/^./, (m) => m.toUpperCase())}. ${base.how}` });
+      what: base.min >= 5 ? `${base.name} puttrar` : undefined, details: base.how,
+      rows: base.items.map((x) => ({ name: x.name, right: fmtQty(x.q * n, x.u) })) });
   }
   steps.push({ id: 'out', track: 'ugn', t: E, dur: 5, title: 'Ta ut allt', details: 'Låt ånga av.' });
   let T = E + 5;
-  // Split each base between its kits, then the sauce kits that have no base.
-  const twist = (k: Kit) => (k.mix.length ? `${k.name} + ${k.mix.map((x) => x.name.toLowerCase()).join(', ')}` : k.name);
+  // Split each base between its kits, then the sauce kits that have no base. One row per kit.
+  const kitRow = (kit: Kit): StepLine => {
+    const n = calcs.filter((c) => c.box.kit?.id === kit.id).length;
+    return { name: kit.name, right: `×${n}`, sub: kit.mix.length ? '+ ' + kit.mix.map((x) => x.name.toLowerCase()).join(', ') : undefined, note: kit.tip, hue: kit.hue };
+  };
   const splitDur = batches.length ? Math.max(...batches.map((x) => (x.kits.some((k) => k.kit.sauce) ? 10 : 5))) : 0;
   for (const { base, kits } of batches) {
-    steps.push({ id: `split-${base.id}`, track: 'spis', t: T, dur: splitDur, title: kits.length > 1 ? `Dela ${base.name.toLowerCase()} i ${kits.length}` : `Smaksätt ${base.name.toLowerCase()}`,
-      details: kits.map(({ kit, n }) => `${twist(kit)} (${n} ${n === 1 ? 'låda' : 'lådor'}). ${kit.tip}`).join(' ') });
+    steps.push({ id: `split-${base.id}`, track: 'spis', t: T, dur: splitDur, title: kits.length > 1 ? `Dela ${base.def} i ${kits.length}` : `Smaksätt ${base.def}`,
+      details: '', rows: kits.map(({ kit }) => kitRow(kit)) });
   }
   const sauceKits = used((b) => (b.kit?.sauce && !b.kit.base ? b.kit : undefined));
-  if (sauceKits.length) steps.push({ id: 'sauce', track: 'spis', t: T, dur: 10, title: 'Koka ihop såserna', details: sauceKits.map((k) => `${k.name}: ${k.tip}`).join(' ') });
+  if (sauceKits.length) steps.push({ id: 'sauce', track: 'spis', t: T, dur: 10, title: 'Koka ihop såserna', details: '', rows: sauceKits.map(kitRow) });
   T += Math.max(splitDur, sauceKits.length ? 10 : 0);
   steps.push({ id: 'portion', track: 'klar', t: T, dur: 15, title: 'Kyl ner och portionera', details: `Fördela i ${calcs.length} lådor enligt listan.${frozen.length ? ` ${frozen.map((v) => v.name).join(', ')} läggs frysta direkt i lådan.` : ''} Toppings i separata burkar.` });
   T += 15;

@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { t } from '@/i18n/sv';
-import { fmtMin, type Step } from '@/lib/calc';
+import { fmtMin, type Step, type StepLine } from '@/lib/calc';
 import { leftMs, running, type Clock } from '@/lib/clock';
 import { useBatch } from '@/lib/useBatch';
 import { setCook, useCook } from '@/lib/store';
@@ -106,7 +106,8 @@ function StepRow({ s, isNext, done, c, now, onDone }: { s: Step; isNext: boolean
           <span className="rounded-full px-2 py-0.5 font-mono text-[10px] text-white" style={{ background: TRACK_COLOR[s.track] }}>{t.cook.tracks[s.track]}{s.temp ? ` · ${s.temp} °C` : ''}</span>
           {s.dur > 0 && <span className="font-mono text-[11px] text-muted">{fmtMin(s.dur)}</span>}
         </span>
-        <span className="text-sm text-muted [text-wrap:pretty]">{s.details}</span>
+        {s.rows && <Lines rows={s.rows} />}
+        {s.details && <span className={`text-sm text-muted [text-wrap:pretty] ${s.rows ? 'mt-1.5' : ''}`}>{s.details}</span>}
       </span>
       {timed && !done && !c ? (
         <motion.button whileTap={{ scale: 0.92 }} onClick={(e) => { e.stopPropagation(); clocks.start(s); }} onKeyDown={(e) => e.stopPropagation()}
@@ -124,6 +125,26 @@ function StepRow({ s, isNext, done, c, now, onDone }: { s: Step; isNext: boolean
         )}
       </AnimatePresence>
     </motion.div>
+  );
+}
+
+/** A step's list: ingredient amounts as a tight table, kits as blocks with twist and tip. */
+function Lines({ rows }: { rows: StepLine[] }) {
+  const kits = rows.some((r) => r.sub || r.note);
+  return (
+    <span className={`mt-1 flex flex-col ${kits ? 'gap-3' : 'gap-0.5'}`}>
+      {rows.map((r) => (
+        <span key={r.name} className="flex flex-col gap-0.5" style={r.hue !== undefined ? ({ '--hue': r.hue } as React.CSSProperties) : undefined}>
+          <span className="flex items-baseline gap-2 text-sm">
+            {r.hue !== undefined && <span className="kit-bg h-2 w-2 shrink-0 translate-y-[-1px] rounded-sm" />}
+            <span className={kits ? 'font-semibold' : ''}>{r.name}</span>
+            <span className="ml-auto whitespace-nowrap font-mono text-[12px] text-muted">{r.right}</span>
+          </span>
+          {r.sub && <span className={`text-sm text-muted ${r.hue !== undefined ? 'pl-4' : ''}`}>{r.sub}</span>}
+          {r.note && <span className={`text-[12px] text-muted opacity-80 [text-wrap:pretty] ${r.hue !== undefined ? 'pl-4' : ''}`}>{r.note}</span>}
+        </span>
+      ))}
+    </span>
   );
 }
 
