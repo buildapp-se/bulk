@@ -55,7 +55,8 @@ export const sv = {
     notifDone: (s: string) => `Klart: ${s}`,
     nowLabel: 'Klockan nu', startNow: 'Börja nu', readyAt: 'Klart kl', follows: 'följer timern',
     plan: (start: string, end: string) => `Start ${start} · klart ${end}`,
-    late: (end: string) => `Hinner inte: börjar du nu blir det klart ${end}`,
+    stale: (when: string) => `Förra tillagningen: ${when}.`, restart: 'Börja om',
+    late: (end: string) =>`Hinner inte: börjar du nu blir det klart ${end}`,
   },
 } as const;
 

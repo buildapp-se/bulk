@@ -11,8 +11,11 @@ export interface Cook {
   sub: Record<string, boolean>; // `stepId:row:name` -> ticked row inside a step
   at: number | null; // wall-clock ms of schedule minute 0, set when a timer starts (schedule follows reality from then)
   ready: string | null; // "klart kl" HH:MM; null = start now
+  last: number | null; // ms of the latest tick or timer start, to spot a stale session
 }
-const DEFAULT_COOK: Cook = { done: {}, clocks: {}, bought: {}, sub: {}, at: null, ready: null };
+const DEFAULT_COOK: Cook = { done: {}, clocks: {}, bought: {}, sub: {}, at: null, ready: null, last: null };
+/** A cooking session's progress, cleared by Nollställ and "Börja om". Rensa allt also clears `bought` and `ready`. */
+export const FRESH_COOK = { done: {}, clocks: {}, sub: {}, at: null, last: null } satisfies Partial<Cook>;
 
 function createStore<T extends object>(key: string, initial: T) {
   let state = initial;

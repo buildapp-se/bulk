@@ -37,7 +37,7 @@ export function BatchPanel() {
         <div className="font-mono text-xs text-muted">{t.trays(sched.trays, fmtMin(sched.total))}</div>
       </div>
 
-      <motion.div layout className="grid grid-cols-4 gap-1.5">
+      <motion.div layout className="grid grid-cols-4 gap-x-1.5 gap-y-3 pt-2.5">
         {calcs.map((c) => <BoxTile key={c.box.i} c={c} warn={offGoal(c)} onOpen={() => setOpen(c.box.i)} />)}
       </motion.div>
       <p className="-mt-3 text-[11px] text-muted">{t.box.drag}</p>
@@ -186,7 +186,8 @@ function BoxTile({ c, warn, onOpen }: { c: BoxCalc; warn: boolean; onOpen: () =>
         {String(c.box.i + 1).padStart(2, '0')}
         {(warn || empty) && <span className="h-1.5 w-1.5 rounded-full bg-warn" />}
       </span>
-      {c.box.kit && <span className="pointer-events-none absolute -right-1 -top-1"><KitArt kit={c.box.kit} size={30} spin /></span>}
+      {/* The bowl sits on the box's corner, a quarter hanging over. 46 px, scaled to 38 on phones where the tile is ~75 px wide. */}
+      {c.box.kit && <span className="pointer-events-none absolute -right-2.5 -top-2.5 origin-top-right scale-[0.83] sm:scale-100"><KitArt kit={c.box.kit} size={46} spin /></span>}
       <span className="flex flex-col leading-[1.1]">
         <span className="flex items-center gap-1 text-[11px] font-semibold">
           {c.box.kit && <span className="kit-bg h-1.5 w-1.5 shrink-0 rounded-full" />}

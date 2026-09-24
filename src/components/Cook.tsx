@@ -5,7 +5,7 @@ import { t } from '@/i18n/sv';
 import { fmtMin, isLong, type Step, type StepLine } from '@/lib/calc';
 import { fmtAt, fmtAtStr, leftMs, MIN, ringing, running, zeroAt, type Clock } from '@/lib/clock';
 import { useBatch } from '@/lib/useBatch';
-import { setCook, useCook } from '@/lib/store';
+import { FRESH_COOK, setCook, useCook } from '@/lib/store';
 import { haptic } from '@/lib/haptics';
 import { Check } from './Pickers';
 import { Segmented, spring } from './ui';
@@ -52,7 +52,12 @@ export function Cook() {
   const zero = zeroAt(first, last, now, pinned, cook.ready);
   const at = (m: number) => zero + m * MIN;
   const end = at(last);
+  // Day words are relative to the day the short session starts, so an evening batch that ends after midnight
+  // only marks the steps after midnight, and an overnight sous vide marks only itself.
+  const ref = at(Math.min(...steps.filter((s) => !isLong(s)).map((s) => s.t)));
   const late = pinned === null && !!cook.ready && at(first) < now;
+  const STALE_MS = 12 * 3600000;
+  const stale = now > 0 && cook.last !== null && now - cook.last > STALE_MS && (doneN > 0 || Object.keys(cook.clocks).length > 0 || Object.values(cook.sub).some(Boolean));
   // Default "klart kl": the next half hour after the schedule would end if started now.
   const suggest = () => fmtAt(Math.ceil((now + (last - first) * MIN) / (30 * MIN)) * 30 * MIN, now).time;
 
@@ -63,7 +68,7 @@ export function Cook() {
       const undo = !!c.done[s.id];
       // Un-ticking a step also clears its row ticks, so it doesn't sit there fully ticked but open.
       const sub = undo ? Object.fromEntries(Object.entries(c.sub).filter(([k]) => !k.startsWith(`${s.id}:`))) : c.sub;
-      return { ...c, done: { ...c.done, [s.id]: !undo }, clocks: cl, sub };
+      return { ...c, done: { ...c.done, [s.id]: !undo }, clocks: cl, sub, last: Date.now() };
     });
   };
   // Ticking the last row of a step ticks the step (which folds it); un-ticking a row reopens it.
@@ -73,7 +78,7 @@ export function Cook() {
       const sub = { ...c.sub, [key]: !c.sub[key] };
       const all = (s.rows ?? []).every((r, i) => sub[rowKey(s, i, r)]);
       const cl = { ...c.clocks }; if (all) delete cl[s.id];
-      return { ...c, sub, clocks: cl, done: { ...c.done, [s.id]: all } };
+      return { ...c, sub, clocks: cl, done: { ...c.done, [s.id]: all }, last: Date.now() };
     });
   };
 
@@ -115,7 +120,7 @@ export function Cook() {
             {perm !== 'na' && perm !== 'granted' && (
               <button className="underline" onClick={async () => setPerm(await Notification.requestPermission())} title={t.cook.notifyHint}>{t.cook.notify}</button>
             )}
-            <button className="underline" onClick={() => { haptic(); setCook((c) => ({ ...c, done: {}, clocks: {}, sub: {}, at: null })); }}>{t.cook.reset}</button>
+            <button className="underline" onClick={() => { haptic(); setCook((c) => ({ ...c, ...FRESH_COOK })); }}>{t.cook.reset}</button>
           </div>
         </div>
         <div className="h-1 overflow-hidden rounded-full bg-line">
@@ -123,11 +128,19 @@ export function Cook() {
         </div>
       </div>
 
-      <Timeline steps={steps} clocks={cook.clocks} done={cook.done} now={now} nowT={live === null ? null : (now - live) / MIN} at={at} end={end} />
+      {/* Progress left from an earlier cooking day: offer a clean start instead of wiping it behind the user's back. */}
+      {stale && cook.last !== null && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-line bg-bg px-4 py-3 text-[13px]">
+          <span className="text-muted">{t.cook.stale(new Date(cook.last).toLocaleString('sv-SE', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }))}</span>
+          <button className="rounded-full bg-ink px-3 py-1.5 font-semibold text-on-ink" onClick={() => { haptic(); setCook((c) => ({ ...c, ...FRESH_COOK })); }}>{t.cook.restart}</button>
+        </div>
+      )}
+
+      <Timeline steps={steps} clocks={cook.clocks} done={cook.done} now={now} nowT={live === null ? null : (now - live) / MIN} at={at} ref={ref} />
 
       <div className="flex flex-col">
         {steps.map((s) => (
-          <StepRow key={s.id} s={s} when={now > 0 ? fmtAt(at(s.t), now, end) : null} isNext={s.id === next?.id} done={!!cook.done[s.id]} c={cook.clocks[s.id]} now={now} onDone={() => toggleDone(s)}
+          <StepRow key={s.id} s={s} when={now > 0 ? fmtAt(at(s.t), now, ref) : null} isNext={s.id === next?.id} done={!!cook.done[s.id]} c={cook.clocks[s.id]} now={now} onDone={() => toggleDone(s)}
             ticked={cook.sub} onTick={(k) => toggleSub(s, k)} />
         ))}
       </div>
@@ -236,8 +249,8 @@ function When({ w }: { w: { day: string; time: string } }) {
   return <span className="flex flex-col items-end font-mono font-normal leading-tight text-muted">{w.day && <span className="text-[9px]">{w.day}</span>}<span>{w.time}</span></span>;
 }
 
-function Timeline({ steps: all, clocks: cl, done, now, nowT, at, end }: {
-  steps: Step[]; clocks: Record<string, Clock>; done: Record<string, boolean>; now: number; nowT: number | null; at: (m: number) => number; end: number;
+function Timeline({ steps: all, clocks: cl, done, now, nowT, at, ref }: {
+  steps: Step[]; clocks: Record<string, Clock>; done: Record<string, boolean>; now: number; nowT: number | null; at: (m: number) => number; ref: number;
 }) {
   // Long jobs get their own full-width rows on their own scale, so they don't squash the short steps' axis.
   const long = all.filter(isLong);
@@ -266,7 +279,7 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, end }: {
     if (c && !done[s.id]) return ringing(c, now)
       ? <motion.span className="font-mono" animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
       : <Digits ms={leftMs(c, now)} className={running(c) ? '' : 'opacity-40'} />;
-    return now > 0 ? <When w={fmtAt(at(s.t), now, end)} /> : null;
+    return now > 0 ? <When w={fmtAt(at(s.t), now, ref)} /> : null;
   };
   // Start a step's timer straight from the overview; same clock as the list's button.
   const play = (s: Step) => (s.what && s.dur > 0 && !done[s.id] && !cl[s.id]
@@ -288,7 +301,7 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, end }: {
           <span className={`truncate pt-0.5 text-[12px] ${done[s.id] ? 'text-muted line-through' : ''}`}>{s.title}</span>
           <span className="flex min-w-0 flex-col gap-0.5">
             <span className="relative mt-0.5 h-4 overflow-hidden rounded" style={{ background: TRACK_COLOR[s.track] }}>{fade(passed(s))}</span>
-            {now > 0 && <span className="truncate font-mono text-[10px] text-muted">{fmtAtStr(at(s.t), now, end)} → {fmtAtStr(at(s.t + s.dur), now, end)} · {fmtMin(s.dur)}</span>}
+            {now > 0 && <span className="truncate font-mono text-[10px] text-muted">{fmtAtStr(at(s.t), now, ref)} → {fmtAtStr(at(s.t + s.dur), now, ref)} · {fmtMin(s.dur)}</span>}
           </span>
           <span className="text-right text-[12px] font-semibold">{right(s)}</span>
           {play(s)}

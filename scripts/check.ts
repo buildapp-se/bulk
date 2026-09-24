@@ -3,7 +3,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
-import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
+import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 
 const fails: string[] = [];
 const eq = (name: string, got: unknown, want: unknown) => {
@@ -89,7 +89,9 @@ const kp: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'flaskkarre', method: 'form
 const ks = schedule(resolveBoxes(kp).map((b) => calcBox(b, kp, null)), kp).steps;
 const span = (st: typeof ks) => [Math.min(...st.map((s) => s.t)), Math.max(...st.map((s) => s.t + s.dur))] as const;
 const thu10 = new Date(2026, 8, 24, 10, 0).getTime(); // torsdag
-const hm = (st: typeof ks, zero: number, now: number, id: string) => fmtAtStr(zero + st.find((s) => s.id === id)!.t * MIN, now, zero + span(st)[1] * MIN);
+// Day words are relative to the day the short session starts (as in Cook.tsx).
+const hm = (st: typeof ks, zero: number, now: number, id: string) =>
+  fmtAtStr(zero + st.find((s) => s.id === id)!.t * MIN, now, zero + Math.min(...st.filter((s) => !isLong(s)).map((s) => s.t)) * MIN);
 const kz = zeroAt(...span(ks), thu10, null, '18:00');
 eq('klart 18:00: times', ['form-flaskkarre', 'prep', 'form-up', 'carb-potatis', 'store'].map((id) => hm(ks, kz, thu10, id)), ['13:15', '16:15', '16:45', '17:00', '18:00']);
 // Start now: the first step (the form) starts at 10:00, klart 14:45 (285 min later).
@@ -101,6 +103,10 @@ const svs = schedule(resolveBoxes(svk).map((b) => calcBox(b, svk, null)), svk).s
 const thu20 = new Date(2026, 8, 24, 20, 0).getTime();
 const sz = zeroAt(...span(svs), thu20, null, '18:00');
 eq('sous vide the evening before', [hm(svs, sz, thu20, 'sv-flaskkarre'), hm(svs, sz, thu20, 'store')], ['i kväll 23:00', '18:00']);
+// Default batch (prep -30, klart 60) started at 22:30: only the step after midnight gets a day word.
+const ds = sch.steps;
+const d2230 = new Date(2026, 8, 24, 22, 30).getTime();
+eq('evening batch past midnight', [hm(ds, zeroAt(...span(ds), d2230, null, null), d2230, 'prep'), hm(ds, zeroAt(...span(ds), d2230, null, null), d2230, 'store')], ['22:30', 'i morgon 00:00']);
 eq('passed klart time is tomorrow', new Date(readyAt('18:00', new Date(2026, 8, 24, 19, 0).getTime())).getDate(), 25);
 eq('day words', [new Date(2026, 8, 23, 23, 0), new Date(2026, 8, 25, 7, 0), new Date(2026, 8, 26, 7, 0)].map((d) => fmtAtStr(d.getTime(), thu20, 0)), ['i går 23:00', 'i morgon 07:00', 'lör 07:00']);
 // Lax sous vide (45 min) ends with the oven (35), so it starts at -10; the bath is heated in prep.

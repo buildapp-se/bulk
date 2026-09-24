@@ -1,7 +1,7 @@
 'use client';
 import { DEFAULT_METHOD, PROTEINS, byId, type MethodId } from './data.ts';
 import { resolveBoxes, type Goal, type Plan, type Slot } from './calc.ts';
-import { setPlan } from './store.ts';
+import { FRESH_COOK, setCook, setPlan } from './store.ts';
 import { haptic } from './haptics.ts';
 
 // ponytail: structural changes (boxes/kits/proteins) drop per-box overrides, since indexes shift.
@@ -39,7 +39,12 @@ export const setKitProtein = (kit: string, protein: string) => {
 };
 export const setKitVeg = (kit: string, veg: string) => { haptic(); setPlan((p) => ({ ...p, kitVeg: { ...p.kitVeg, [kit]: veg } })); };
 /** Empty the batch: kits, proteins, per-kit and per-box choices. Goal, box count and veg mode stay. */
-export const clearAll = () => { haptic(14); setPlan((p) => ({ ...p, kits: [], proteins: [], kitProtein: {}, kitCarb: {}, kitVeg: {}, overrides: {} })); };
+// A new batch starts clean: cooking progress and the shopping ticks go too, goal and box count stay.
+export const clearAll = () => {
+  haptic(14);
+  setPlan((p) => ({ ...p, kits: [], proteins: [], kitProtein: {}, kitCarb: {}, kitVeg: {}, overrides: {} }));
+  setCook((c) => ({ ...c, ...FRESH_COOK, bought: {}, ready: null }));
+};
 export const setKitCarb = (kit: string, carb: string) => { haptic(); setPlan((p) => ({ ...p, kitCarb: { ...p.kitCarb, [kit]: carb } })); };
 export const setVegMode = (vegMode: Plan['vegMode']) => { haptic(); setPlan((p) => ({ ...p, vegMode })); };
 export const setGoal = (g: Partial<Goal>) => setPlan((p) => ({ ...p, goal: { ...p.goal, ...g } }));

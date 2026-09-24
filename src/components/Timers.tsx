@@ -65,7 +65,7 @@ const edit = (id: string, f: (c: Clock | undefined, now: number) => Clock | unde
 };
 export const clocks = {
   // Starting a step also pins the schedule's clock times to now: that step starts this minute.
-  start: (s: Step) => { unlockAudio(); haptic(12); edit(s.id, (_, n) => start(s.dur, n)); setCook((c) => ({ ...c, at: now - s.t * 60000 })); },
+  start: (s: Step) => { unlockAudio(); haptic(12); edit(s.id, (_, n) => start(s.dur, n)); setCook((c) => ({ ...c, at: now - s.t * 60000, last: now })); },
   toggle: (id: string) => { unlockAudio(); haptic(); edit(id, (c, n) => c && (running(c) ? pause(c, n) : resume(c, n))); },
   nudge: (id: string, min: number) => { haptic(); edit(id, (c, n) => c && nudge(c, min * 60000, n)); },
   stop: (id: string) => { haptic(); edit(id, () => undefined); },
