@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { Fragment } from 'react';
 import { t } from '@/i18n/sv';
-import { KITS, PROTEINS, INGR, CARBS, VEGS, byId, DEFAULT_METHOD, type KitItem, type MethodId } from '@/lib/data';
+import { BASES, KITS, PROTEINS, INGR, CARBS, VEGS, byId, DEFAULT_METHOD, type Base, type Kit, type KitItem, type MethodId } from '@/lib/data';
 import { calcBox, fmtMin, fmtQty, nf, split } from '@/lib/calc';
 import { setBoxes, setMethod, setVegMode, toggleKit, toggleProtein } from '@/lib/actions';
 import { useBatch } from '@/lib/useBatch';
@@ -70,67 +70,95 @@ export function BoxCount() {
   );
 }
 
+/** Kits as a tree under their shared base: kits on the same base share one pot. */
 export function KitPicker() {
-  const { plan, t: tg } = useBatch();
-  const counts = split(plan.boxes, Math.max(1, plan.kits.length));
+  const { plan } = useBatch();
+  const groups = [...BASES.map((b) => ({ base: b as Base | undefined, kits: KITS.filter((k) => k.base === b.id) })), { base: undefined, kits: KITS.filter((k) => !k.base) }];
   return (
-    <motion.div variants={stagger.parent} initial="hidden" animate="show" className="grid grid-cols-1 items-start gap-1.5 sm:grid-cols-2">
-      {KITS.map((k) => {
-        const idx = plan.kits.indexOf(k.id);
-        const sel = idx >= 0;
-        // Preview box: the kit's own defaults, sized to the current goal.
-        const pr = byId(PROTEINS, k.protein[0]);
-        const box = calcBox({ i: 0, kit: k, protein: pr, method: DEFAULT_METHOD(pr), carb: byId(CARBS, k.carb), veg: byId(VEGS, k.veg) }, plan, tg);
-        const list = (xs: readonly KitItem[]) => xs.map((x) => x.name.toLowerCase()).join(', ');
+    <motion.div variants={stagger.parent} initial="hidden" animate="show" className="flex flex-col gap-5">
+      {groups.map(({ base, kits }) => {
+        const picked = kits.filter((k) => plan.kits.includes(k.id)).length;
         return (
-          <motion.button key={k.id} layout variants={stagger.child} whileTap={{ scale: 0.985 }} onClick={() => toggleKit(k.id)}
-            aria-pressed={sel} style={{ '--hue': k.hue } as React.CSSProperties} transition={spring}
-            className={`group relative flex flex-col gap-2 overflow-hidden rounded-xl border p-3 text-left transition-colors ${sel ? 'border-ink bg-surface shadow-[0_8px_24px_-16px_rgba(35,33,29,.5)]' : 'border-line hover:border-muted'}`}>
-            <span className="flex w-full items-center gap-3">
-              <span className="relative shrink-0">
-                <KitArt kit={k} size={64} spin={sel} />
-                <AnimatePresence initial={false}>
-                  {sel && (
-                    <motion.span key={counts[idx]} initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={spring}
-                      className="absolute -right-1 -top-1 flex h-6 min-w-6 items-center justify-center rounded-full bg-ink px-1 font-mono text-[11px] text-on-ink">
-                      ×{counts[idx]}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+          <motion.div key={base?.id ?? 'egen'} variants={stagger.parent} className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+              <span className="flex items-baseline gap-2">
+                <span className="font-semibold">{base?.name ?? t.base.own}</span>
+                <span className="text-[12px] text-muted">{base ? base.items.map((x) => x.name.toLowerCase()).join(', ') : t.base.ownHint}</span>
               </span>
-              <span className="flex min-w-0 flex-1 flex-col">
-                <span className="font-semibold">{k.name}</span>
-                <span className="text-[13px] text-muted">{k.tagline}</span>
-              </span>
-              <span className="flex flex-col items-end font-mono text-[11px] leading-tight">
-                <span>{nf(box.m[0])} kcal</span><span className="text-muted">{nf(box.m[1])} g P</span>
-              </span>
-            </span>
-            <span className="text-[12px] leading-snug text-muted">
-              <span className="text-ink">{pr.name}, {byId(CARBS, k.carb).name.toLowerCase()}, {byId(VEGS, k.veg).name.toLowerCase()}.</span>{' '}
-              {k.mix.length > 0 && <>I såsen: {list(k.mix)}. </>}
-              {k.top.length > 0 && <>Toppas: {list(k.top)}.</>}
-            </span>
-            <AnimatePresence initial={false}>
-              {sel && (
-                <motion.span initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring} className="block overflow-hidden">
-                  <span className="mt-1 grid grid-cols-[1fr_auto] gap-x-3 gap-y-0.5 border-t border-line-soft pt-2 text-[12px]">
-                    {box.parts.filter((x) => x.role !== 'olja').map((x, i) => (
-                      <Fragment key={i}>
-                        <span className={x.role === 'topp' ? 'text-muted' : ''}>{x.role === 'topp' ? '+ ' : ''}{x.name}</span>
-                        <span className="font-mono">{x.u === 'g' && x.cooked ? `${nf(x.q)} g rå` : fmtQty(x.q, x.u)}</span>
-                      </Fragment>
-                    ))}
-                  </span>
-                  <span className="mt-2 block rounded-lg bg-bg px-2.5 py-1.5 text-[12px] text-muted">{k.tip}</span>
-                </motion.span>
-              )}
-            </AnimatePresence>
-            {sel && <motion.span layoutId={`kitbar-${k.id}`} className="kit-bg absolute inset-y-0 left-0 w-1" />}
-          </motion.button>
+              <AnimatePresence initial={false}>
+                {base && picked > 1 && (
+                  <motion.span key={picked} initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring}
+                    className="rounded-full bg-ink px-2 py-0.5 font-mono text-[11px] text-on-ink">{t.base.tip(picked, base.name, base.pot)}</motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+            <div className="grid grid-cols-1 items-start gap-1.5 border-l-2 border-line pl-3 sm:grid-cols-2">
+              {kits.map((k) => <KitCard key={k.id} k={k} />)}
+            </div>
+          </motion.div>
         );
       })}
     </motion.div>
+  );
+}
+
+function KitCard({ k }: { k: Kit }) {
+  const { plan, t: tg } = useBatch();
+  const counts = split(plan.boxes, Math.max(1, plan.kits.length));
+  const idx = plan.kits.indexOf(k.id);
+  const sel = idx >= 0;
+  // Preview box: the kit's own defaults, sized to the current goal.
+  const pr = byId(PROTEINS, k.protein[0]);
+  const box = calcBox({ i: 0, kit: k, protein: pr, method: DEFAULT_METHOD(pr), carb: byId(CARBS, k.carb), veg: byId(VEGS, k.veg) }, plan, tg);
+  const list = (xs: readonly KitItem[]) => xs.map((x) => x.name.toLowerCase()).join(', ');
+  return (
+    <motion.button layout variants={stagger.child} whileTap={{ scale: 0.985 }} onClick={() => toggleKit(k.id)}
+      aria-pressed={sel} style={{ '--hue': k.hue } as React.CSSProperties} transition={spring}
+      className={`group relative flex flex-col gap-2 overflow-hidden rounded-xl border p-3 text-left transition-colors ${sel ? 'border-ink bg-surface shadow-[0_8px_24px_-16px_rgba(35,33,29,.5)]' : 'border-line hover:border-muted'}`}>
+      <span className="flex w-full items-center gap-3">
+        <span className="relative shrink-0">
+          <KitArt kit={k} size={64} spin={sel} />
+          <AnimatePresence initial={false}>
+            {sel && (
+              <motion.span key={counts[idx]} initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={spring}
+                className="absolute -right-1 -top-1 flex h-6 min-w-6 items-center justify-center rounded-full bg-ink px-1 font-mono text-[11px] text-on-ink">
+                ×{counts[idx]}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </span>
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span className="font-semibold">{k.name}</span>
+          <span className="text-[13px] text-muted">{k.tagline}</span>
+        </span>
+        <span className="flex flex-col items-end font-mono text-[11px] leading-tight">
+          <span>{nf(box.m[0])} kcal</span><span className="text-muted">{nf(box.m[1])} g P</span>
+        </span>
+      </span>
+      <span className="text-[12px] leading-snug text-muted">
+        <span className="text-ink">{pr.name}, {byId(CARBS, k.carb).name.toLowerCase()}, {byId(VEGS, k.veg).name.toLowerCase()}.</span>{' '}
+        {k.base && <>På {byId(BASES, k.base).name.toLowerCase()}. </>}
+        {k.mix.length > 0 && <>{k.base ? 'Plus' : 'I såsen'}: {list(k.mix)}. </>}
+        {k.top.length > 0 && <>Toppas: {list(k.top)}.</>}
+      </span>
+      <AnimatePresence initial={false}>
+        {sel && (
+          <motion.span initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring} className="block overflow-hidden">
+            <span className="mt-1 grid grid-cols-[1fr_auto] gap-x-3 gap-y-0.5 border-t border-line-soft pt-2 text-[12px]">
+              {k.base && <><span>{byId(BASES, k.base).name}</span><span className="font-mono">{t.base.portion}</span></>}
+              {box.parts.filter((x) => x.role !== 'olja' && x.role !== 'bas').map((x, i) => (
+                <Fragment key={i}>
+                  <span className={x.role === 'topp' ? 'text-muted' : ''}>{x.role === 'topp' ? '+ ' : ''}{x.name}</span>
+                  <span className="font-mono">{x.u === 'g' && x.cooked ? `${nf(x.q)} g rå` : fmtQty(x.q, x.u)}</span>
+                </Fragment>
+              ))}
+            </span>
+            <span className="mt-2 block rounded-lg bg-bg px-2.5 py-1.5 text-[12px] text-muted">{k.tip}</span>
+          </motion.span>
+        )}
+      </AnimatePresence>
+      {sel && <motion.span layoutId={`kitbar-${k.id}`} className="kit-bg absolute inset-y-0 left-0 w-1" />}
+    </motion.button>
   );
 }
 

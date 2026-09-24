@@ -1,7 +1,7 @@
 // Pure calculation engine: plan in, boxes/nutrition/shopping/schedule out. No React, no DOM.
 import {
-  byId, CARBS, DEFAULT_METHOD, INGR, KITS, OIL_G_PER_RAW_G, PROTEINS, TRAY_CAPACITY_G, VEGS,
-  type Carb, type IngrId, type Kit, type Macro, type MethodId, type Protein, type Unit, type Veg,
+  BASES, byId, CARBS, DEFAULT_METHOD, INGR, KITS, OIL_G_PER_RAW_G, PROTEINS, TRAY_CAPACITY_G, VEGS,
+  type Base, type Carb, type IngrId, type Kit, type Macro, type MethodId, type Protein, type Unit, type Veg,
 } from './data.ts';
 
 // ---------- Plan (persisted state) ----------
@@ -127,7 +127,7 @@ export function targets(g: Goal): Targets | null {
 
 // ---------- Nutrition per box ----------
 
-export type Role = 'protein' | 'carb' | 'veg' | 'olja' | 'kit' | 'topp';
+export type Role = 'protein' | 'carb' | 'veg' | 'olja' | 'bas' | 'kit' | 'topp';
 export interface Part { role: Role; ingr?: IngrId; name: string; q: number; u: Unit; cooked?: number }
 export interface BoxCalc { box: Box; parts: Part[]; m: Macro; missing: Slot[] }
 
@@ -149,8 +149,10 @@ export function calcBox(b: Box, p: Plan, t: Targets | null): BoxCalc {
     const part: Part = { role, ingr, name, q, u: 'g', cooked: y ? r5(q * y) : undefined };
     return roasted(b, role, p.vegMode) ? [part, { role: 'olja', ingr: 'olja', name: 'Olja', q: q * OIL_G_PER_RAW_G, u: 'g' }] : [part];
   };
+  const base = b.kit?.base ? byId(BASES, b.kit.base) : undefined;
   const kitParts: Part[] = b.kit
-    ? [...b.kit.mix.map((x): Part => ({ role: 'kit', ingr: x.ingr, name: x.name, q: x.q, u: x.u })),
+    ? [...(base?.items ?? []).map((x): Part => ({ role: 'bas', ingr: x.ingr, name: x.name, q: x.q, u: x.u })),
+       ...b.kit.mix.map((x): Part => ({ role: 'kit', ingr: x.ingr, name: x.name, q: x.q, u: x.u })),
        ...b.kit.top.map((x): Part => ({ role: 'topp', ingr: x.ingr, name: x.name, q: x.q, u: x.u }))]
     : [];
   const veg = b.veg ? mk('veg', b.veg.ingr, b.veg.name + (b.veg.frozenOnly || p.vegMode === 'frysta' ? ' (fryst)' : ''), b.veg.raw) : [];
@@ -216,10 +218,24 @@ export function shopping(calcs: BoxCalc[]): ShopRow[] {
   return [...rows.values()].map((r) => ({ ...r, packs: INGR[r.key as IngrId]?.packs ? pickPacks(r.need, INGR[r.key as IngrId].packs ?? []) : [] }));
 }
 
+// ---------- Bases ----------
+
+export interface BaseBatch { base: Base; n: number; kits: { kit: Kit; n: number }[] }
+/** Boxes grouped by the shared base their kit sits on, in BASES order. */
+export function baseBatches(calcs: BoxCalc[]): BaseBatch[] {
+  return BASES.map((base) => {
+    const mine = calcs.filter((c) => c.box.kit?.base === base.id);
+    const kits = [...new Map(mine.map((c) => [c.box.kit!.id, c.box.kit!])).values()]
+      .map((kit) => ({ kit, n: mine.filter((c) => c.box.kit!.id === kit.id).length }));
+    return { base, n: mine.length, kits };
+  }).filter((x) => x.n > 0);
+}
+
 // ---------- Schedule ----------
 
 export type Track = 'prep' | 'ugn' | 'spis' | 'sousvide' | 'form' | 'klar';
-export interface Step { id: string; track: Track; t: number; dur: number; title: string; details: string; temp?: number; label?: string }
+// `what` = short caption under a running clock ("Kyckling i ugnen"); only steps that have it get a timer.
+export interface Step { id: string; track: Track; t: number; dur: number; title: string; details: string; temp?: number; label?: string; what?: string }
 export interface Schedule { steps: Step[]; trays: number; total: number; warnings: string[] }
 
 export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
@@ -257,29 +273,45 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   for (const { pr, m } of protMethods) {
     const md = pr.methods[m]!;
     if (m === 'sousvide') {
-      steps.push({ id: `sv-${pr.id}`, track: 'sousvide', t: -md.min, dur: md.min, temp: md.temp, title: `${pr.name} i sous vide`, details: md.note, label: md.min >= 600 ? 'Kvällen före' : undefined });
+      steps.push({ id: `sv-${pr.id}`, track: 'sousvide', t: -md.min, dur: md.min, temp: md.temp, title: `${pr.name} i sous vide`, what: `${pr.name} i sous vide`, details: md.note, label: md.min >= 600 ? 'Kvällen före' : undefined });
       steps.push({ id: `sear-${pr.id}`, track: 'spis', t: E, dur: 5, title: `Bryn ${pr.name.toLowerCase()}`, details: md.sear ?? '' });
     }
     if (m === 'form') {
-      steps.push({ id: `form-${pr.id}`, track: 'form', t: -md.min - 15, dur: md.min, temp: md.temp, title: `${pr.name} i form`, details: md.note });
+      steps.push({ id: `form-${pr.id}`, track: 'form', t: -md.min - 15, dur: md.min, temp: md.temp, title: `${pr.name} i form`, what: `${pr.name} i formen`, details: md.note });
       steps.push({ id: `form-up`, track: 'ugn', t: -15, dur: 15, temp: 200, title: 'Ta ut formen, höj ugnen till 200 °C', details: 'Låt köttet vila under folien medan ugnen blir varm.' });
     }
   }
   const t0 = Math.min(0, ...steps.map((s) => s.t));
   steps.unshift({ id: 'prep', track: 'prep', t: t0 - 10, dur: 10, title: 'Förbered allt', label: 'Före', details: `Sätt ugnen på ${steps.some((s) => s.track === 'form') ? '150' : '200'} °C varmluft.${cutTxt} Blanda med olja, salt, peppar och vitlökspulver. Ingen smaksättning ännu.` });
 
-  for (const c of ovenCarbs) steps.push({ id: `carb-${c.id}`, track: 'ugn', t: E - c.oven!, dur: c.oven!, temp: 200, title: `${c.name} in`, details: 'Ett lager på bakplåtspapper. Vänd halvvägs.' });
-  for (const { pr } of ovenProt) { const md = pr.methods.ugn!; steps.push({ id: `prot-${pr.id}`, track: 'ugn', t: E - md.min, dur: md.min, temp: md.temp, title: `${pr.name} in`, details: md.note }); }
-  if (ovenVegs.length) steps.push({ id: 'veg', track: 'ugn', t: E - Math.max(...ovenVegs.map((v) => v.oven!)), dur: Math.max(...ovenVegs.map((v) => v.oven!)), temp: 200, title: 'Grönsaker in', details: ovenVegs.map((v) => v.name).join(' och ') + ' på egen plåt.' });
-  for (const { pr } of protMethods.filter((x) => x.m === 'gryta')) { const md = pr.methods.gryta!; steps.push({ id: `gryta-${pr.id}`, track: 'spis', t: Math.max(0, E - md.min), dur: md.min, title: `Koka ${pr.name.toLowerCase()}`, details: md.note }); }
+  for (const c of ovenCarbs) steps.push({ id: `carb-${c.id}`, track: 'ugn', t: E - c.oven!, dur: c.oven!, temp: 200, title: `${c.name} in`, what: `${c.name} i ugnen`, details: 'Ett lager på bakplåtspapper. Vänd halvvägs.' });
+  for (const { pr } of ovenProt) { const md = pr.methods.ugn!; steps.push({ id: `prot-${pr.id}`, track: 'ugn', t: E - md.min, dur: md.min, temp: md.temp, title: `${pr.name} in`, what: `${pr.name} i ugnen`, details: md.note }); }
+  if (ovenVegs.length) steps.push({ id: 'veg', track: 'ugn', t: E - Math.max(...ovenVegs.map((v) => v.oven!)), dur: Math.max(...ovenVegs.map((v) => v.oven!)), temp: 200, title: 'Grönsaker in', what: 'Grönsaker i ugnen', details: ovenVegs.map((v) => v.name).join(' och ') + ' på egen plåt.' });
+  for (const { pr } of protMethods.filter((x) => x.m === 'gryta')) { const md = pr.methods.gryta!; steps.push({ id: `gryta-${pr.id}`, track: 'spis', t: Math.max(0, E - md.min), dur: md.min, title: `Koka ${pr.name.toLowerCase()}`, what: `${pr.name} kokar`, details: md.note }); }
   if (stoveCarbs.length) {
     const d = Math.max(...stoveCarbs.map((c) => c.stoveMin ?? 10));
-    steps.push({ id: 'stove', track: 'spis', t: Math.max(0, E - d), dur: d, title: 'Koka ' + stoveCarbs.map((c) => c.name.toLowerCase()).join(' och '), details: stoveCarbs.map((c) => c.stove).join('. ') + '.' });
+    const names = stoveCarbs.map((c) => c.name.toLowerCase()).join(' och ');
+    steps.push({ id: 'stove', track: 'spis', t: Math.max(0, E - d), dur: d, title: 'Koka ' + names, what: names.replace(/^./, (m) => m.toUpperCase()) + ' på spisen', details: stoveCarbs.map((c) => c.stove).join('. ') + '.' });
+  }
+  // Each shared base is cooked once for all its boxes while the oven runs.
+  const batches = baseBatches(calcs);
+  for (const { base, n } of batches) {
+    const amounts = base.items.map((x) => `${fmtQty(x.q * n, x.u)} ${x.name.toLowerCase()}`).join(', ');
+    steps.push({ id: `base-${base.id}`, track: 'spis', t: Math.max(0, E - base.min), dur: base.min, title: `${base.title} för ${n} lådor`,
+      what: base.min >= 5 ? `${base.name} puttrar` : undefined, details: `${amounts.replace(/^./, (m) => m.toUpperCase())}. ${base.how}` });
   }
   steps.push({ id: 'out', track: 'ugn', t: E, dur: 5, title: 'Ta ut allt', details: 'Låt ånga av.' });
   let T = E + 5;
-  const sauceKits = used((b) => (b.kit?.sauce ? b.kit : undefined));
-  if (sauceKits.length) { steps.push({ id: 'sauce', track: 'spis', t: T, dur: 10, title: 'Koka ihop såserna', details: sauceKits.map((k) => `${k.name}: ${k.tip}`).join(' ') }); T += 10; }
+  // Split each base between its kits, then the sauce kits that have no base.
+  const twist = (k: Kit) => (k.mix.length ? `${k.name} + ${k.mix.map((x) => x.name.toLowerCase()).join(', ')}` : k.name);
+  const splitDur = batches.length ? Math.max(...batches.map((x) => (x.kits.some((k) => k.kit.sauce) ? 10 : 5))) : 0;
+  for (const { base, kits } of batches) {
+    steps.push({ id: `split-${base.id}`, track: 'spis', t: T, dur: splitDur, title: kits.length > 1 ? `Dela ${base.name.toLowerCase()} i ${kits.length}` : `Smaksätt ${base.name.toLowerCase()}`,
+      details: kits.map(({ kit, n }) => `${twist(kit)} (${n} ${n === 1 ? 'låda' : 'lådor'}). ${kit.tip}`).join(' ') });
+  }
+  const sauceKits = used((b) => (b.kit?.sauce && !b.kit.base ? b.kit : undefined));
+  if (sauceKits.length) steps.push({ id: 'sauce', track: 'spis', t: T, dur: 10, title: 'Koka ihop såserna', details: sauceKits.map((k) => `${k.name}: ${k.tip}`).join(' ') });
+  T += Math.max(splitDur, sauceKits.length ? 10 : 0);
   steps.push({ id: 'portion', track: 'klar', t: T, dur: 15, title: 'Kyl ner och portionera', details: `Fördela i ${calcs.length} lådor enligt listan.${frozen.length ? ` ${frozen.map((v) => v.name).join(', ')} läggs frysta direkt i lådan.` : ''} Toppings i separata burkar.` });
   T += 15;
   steps.push({ id: 'store', track: 'klar', t: T, dur: 0, label: 'Efter', title: 'Märk och kyl', details: 'Håller 3–4 dagar i kylen, lax 2 dagar. Ät de känsligaste först och frys resten.' });

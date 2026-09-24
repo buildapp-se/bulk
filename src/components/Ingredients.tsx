@@ -1,9 +1,10 @@
 'use client';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'motion/react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { t } from '@/i18n/sv';
-import { fmtG, fmtPacks, fmtQty, nf, type BoxCalc, type ShopRow } from '@/lib/calc';
+import { baseBatches, fmtG, fmtPacks, fmtQty, nf, type BaseBatch, type BoxCalc, type ShopRow } from '@/lib/calc';
+import { BASES, byId } from '@/lib/data';
 import { useBatch } from '@/lib/useBatch';
 import { setCook, useCook } from '@/lib/store';
 import { haptic } from '@/lib/haptics';
@@ -26,6 +27,7 @@ export function Ingredients() {
     return m;
   }, new Map<string, { c: BoxCalc; n: number }>()).values()];
 
+  const bases = baseBatches(full);
   const measured = shop.filter((r) => r.u === 'g' || r.u === 'ml');
   const spices = shop.filter((r) => !(r.u === 'g' || r.u === 'ml'));
 
@@ -36,6 +38,12 @@ export function Ingredients() {
         <p className="text-muted">{t.ing.sub}</p>
         {incomplete.length > 0 && <Link href="/" transitionTypes={['nav-back']} className="text-[13px] text-warn underline">{t.missing(incomplete.length)}</Link>}
       </div>
+
+      {bases.length > 0 && (
+        <motion.div variants={stagger.parent} initial="hidden" animate="show" className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))]">
+          {bases.map((b) => <BaseCard key={b.base.id} b={b} />)}
+        </motion.div>
+      )}
 
       <motion.div variants={stagger.parent} initial="hidden" animate="show" className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))]">
         {types.map(({ c, n }) => <BoxCard key={c.box.i} c={c} n={n} />)}
@@ -49,6 +57,40 @@ export function Ingredients() {
         </Link>
       </div>
     </div>
+  );
+}
+
+/** One shared base, cooked once for all its boxes: total amounts, per box, and which kits it becomes. */
+function BaseCard({ b }: { b: BaseBatch }) {
+  return (
+    <motion.article variants={stagger.child} className="flex flex-col gap-3 rounded-2xl border-2 border-ink bg-surface p-5">
+      <div className="flex items-baseline justify-between gap-2">
+        <div className="text-[17px] font-semibold">{b.base.name} <span className="font-mono text-muted">× {b.n}</span></div>
+        <div className="label">{b.base.pot}</div>
+      </div>
+      <div className="grid grid-cols-[1fr_auto_auto] gap-x-4 gap-y-1 text-sm">
+        <span className="label">{t.ing.perBox}</span><span className="label text-right">1</span><span className="label text-right">{t.base.forBoxes(b.n)}</span>
+        {b.base.items.map((x) => (
+          <Fragment key={x.name}>
+            <span>{x.name}</span>
+            <span className="text-right font-mono text-[13px] text-muted">{fmtQty(x.q, x.u)}</span>
+            <span className="text-right font-mono text-[13px]">{fmtQty(x.q * b.n, x.u)}</span>
+          </Fragment>
+        ))}
+      </div>
+      <div className="flex flex-col gap-1 border-t border-line-soft pt-3 text-[13px]">
+        <div className="label">{t.base.twists}</div>
+        {b.kits.map(({ kit, n }) => (
+          <div key={kit.id} className="flex items-center gap-2" style={{ '--hue': kit.hue } as React.CSSProperties}>
+            <span className="kit-bg h-2 w-2 shrink-0 rounded-sm" />
+            <span className="whitespace-nowrap font-semibold">{kit.name}</span>
+            <span className="min-w-0 truncate text-muted">{kit.mix.length ? '+ ' + kit.mix.map((x) => x.name.toLowerCase()).join(', ') : ''}</span>
+            <span className="ml-auto font-mono text-muted">×{n}</span>
+          </div>
+        ))}
+      </div>
+      <div className="rounded-lg bg-bg px-3 py-2 text-[12px] text-muted">{b.base.how}</div>
+    </motion.article>
   );
 }
 
@@ -84,7 +126,8 @@ function BoxCard({ c, n }: { c: BoxCalc; n: number }) {
       </div>
       <div className="flex flex-col gap-1 border-t border-line-soft pt-3 text-sm">
         <div className="label mb-0.5">{t.ing.perBox}</div>
-        {c.parts.filter((x) => x.role !== 'olja').map((x, i) => (
+        {k.base && <div className="flex justify-between gap-3"><span>{byId(BASES, k.base).name}</span><span className="font-mono text-[13px]">{t.base.portion}</span></div>}
+        {c.parts.filter((x) => x.role !== 'olja' && x.role !== 'bas').map((x, i) => (
           <div key={i} className={`flex justify-between gap-3 ${x.role === 'topp' ? 'text-muted' : ''}`}>
             <span>{x.role === 'topp' ? '+ ' : ''}{x.name}</span>
             <span className="font-mono text-[13px]">{x.u === 'g' && x.cooked ? `${nf(x.q)} g rå` : fmtQty(x.q, x.u)}</span>

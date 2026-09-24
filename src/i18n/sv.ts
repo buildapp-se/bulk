@@ -27,6 +27,11 @@ export const sv = {
   toIngredients: 'Visa ingredienser',
   toCook: 'Börja laga',
   box: { title: (n: number) => `Låda ${n}`, clear: 'Töm', empty: 'Saknas', reset: 'Återställ lådan', drag: 'Håll inne och dra för att byta plats' },
+  base: {
+    own: 'Egen sås', ownHint: 'lagas var för sig', portion: '1 portion',
+    tip: (n: number, name: string, pot: string) => `${n} kit på ${name.toLowerCase()} = 1 ${pot}`,
+    forBoxes: (n: number) => `${n} ${n === 1 ? 'låda' : 'lådor'}`, twists: 'Delas i',
+  },
   slots: { protein: 'Protein', kit: 'Smakkit', carb: 'Kolhydrat', veg: 'Grönt' },
   ing: {
     title: (n: number) => `Ingredienser för ${n} lådor`,

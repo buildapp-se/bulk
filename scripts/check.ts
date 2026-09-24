@@ -2,7 +2,7 @@
 // Expected numbers are hand-computed from the per-100 g values in data.ts (see comments).
 import { existsSync, readFileSync } from 'node:fs';
 import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
-import { calcBox, DEFAULT_PLAN, fmtQty, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
+import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 
 const fails: string[] = [];
 const eq = (name: string, got: unknown, want: unknown) => {
@@ -19,17 +19,18 @@ const cleared: Plan = { ...DEFAULT_PLAN, overrides: { 2: { protein: null } } };
 eq('override clears slot', resolveBoxes(cleared)[2].protein, undefined);
 
 // One box: kyckling 175 g (ugn) + ris 60 g + broccoli 140 g rostad + teriyaki kit.
-// kcal: 182 + olja 40,22 + 212,4 + 50,4 + olja 32,18 + 33 + 52 + 17,19 = 619,39
-// protein: 40,43 + 4,5 + 4,06 + 0,96 + 4,36 + 0,53 = 54,84
+// Teriyaki sits on the asia base: teriyakisås 25 g + base soja 8 g.
+// kcal: 182 + olja 40,22 + 212,4 + 50,4 + olja 32,18 + 27,5 + soja 5,76 + 52 + 17,19 = 619,65
+// protein: 40,43 + 4,5 + 4,06 + 0,8 + soja 0,62 + 4,36 + 0,53 = 55,30
 const box: Box = { i: 0, kit: byId(KITS, 'teriyaki'), protein: byId(PROTEINS, 'kyckling'), method: 'ugn', carb: byId(CARBS, 'ris'), veg: byId(VEGS, 'broccoli') };
 const c = calcBox(box, DEFAULT_PLAN, null);
-near('box kcal', c.m[0], 619.39);
-near('box protein', c.m[1], 54.84, 0.05);
+near('box kcal', c.m[0], 619.65);
+near('box protein', c.m[1], 55.30, 0.05);
 
-// Goal solver, fixed point: round 2 gives kyckling (50 - 16,66) / 0,231 = 144,3 -> 145 g,
-// ris (700 - 368,9) / 3,54 = 93,5 -> 95 g; round 3 is stable. Result: 50,5 g protein.
+// Goal solver, fixed point: kyckling (50 - 17,49) / 0,231 = 140,7 -> 140 g,
+// ris (700 - 362,8) / 3,54 = 95,3 -> 95 g; stable. Result: ca 50 g protein.
 const solved = calcBox(box, DEFAULT_PLAN, { kcal: 700, protein: 50, dailyKcal: 0, dailyProtein: 0 });
-eq('solved protein raw', solved.parts.find((x) => x.role === 'protein')?.q, 145);
+eq('solved protein raw', solved.parts.find((x) => x.role === 'protein')?.q, 140);
 eq('solved carb raw', solved.parts.find((x) => x.role === 'carb')?.q, 95);
 near('solved hits protein goal', solved.m[1], 50, 1.5);
 near('solved hits kcal goal', solved.m[0], 700, 15);
@@ -60,6 +61,21 @@ const sv: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'kyckling', method: 'sousvi
 const svSch = schedule(resolveBoxes(sv).map((b) => calcBox(b, sv, null)), sv);
 eq('sous vide starts before oven', svSch.steps.find((s) => s.id === 'sv-kyckling')?.t, -120);
 eq('shopping has kyckling', shopping(calcs).some((r) => r.key === 'kycklingfile' && r.packs.length > 0), true);
+
+// Bases. Mixed batch: 8 boxes over chili, keema (tomat) and teriyaki (asia) -> split 3/3/2.
+// Tomato base is 100 g krossade per box and no kit adds its own, so 6 boxes need 600 g; asia soja 8 g × 2 = 16 g.
+const mixed: Plan = { ...DEFAULT_PLAN, kits: ['chili', 'keema', 'teriyaki'] };
+const mixedCalcs = resolveBoxes(mixed).map((b) => calcBox(b, mixed, null));
+eq('base batches', baseBatches(mixedCalcs).map((x) => [x.base.id, x.n, x.kits.map((k) => `${k.kit.id}:${k.n}`)]), [['tomat', 6, ['chili:3', 'keema:3']], ['asia', 2, ['teriyaki:2']]]);
+const need = (key: string) => shopping(mixedCalcs).find((r) => r.key === key)?.need;
+eq('tomatbas krossade', need('krossade'), 600);
+eq('asia soja', need('soja'), 16);
+// Base + twist sum to the box: base kcal = krossade 22 + puré 8 × 0,84 = 6,72 + lök 30 × 0,39 = 11,7 -> 40,42.
+const chili = mixedCalcs[0];
+const noBase = calcBox({ ...chili.box, kit: { ...chili.box.kit!, base: undefined } }, mixed, null);
+near('tomatbas kcal in box', chili.m[0] - noBase.m[0], 40.42, 0.01);
+near('tomatbas protein in box', chili.m[1] - noBase.m[1], 0.8 + 0.352 + 0.36, 0.01);
+eq('split step names kits', schedule(mixedCalcs, mixed).steps.find((s) => s.id === 'split-tomat')?.title, 'Dela tomatbas i 2');
 
 // Data integrity: every kit/protein/carb/veg ingredient exists, every kit default resolves.
 for (const k of KITS) { byId(CARBS, k.carb); byId(VEGS, k.veg); k.protein.forEach((p) => byId(PROTEINS, p)); }

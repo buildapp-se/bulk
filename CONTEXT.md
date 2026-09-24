@@ -31,6 +31,7 @@ Design från Claude Design-projektet "Mealprep" (ade1c1e3-d70f-4582-995b-bb751a5
 - **Inköp avrundas till förpackningar**, minsta spill med högst två storlekar. Handskriven tabell i data.ts.
 - **Svenska först**, engelska senare (text redan samlad i `sv.ts`).
 - **Bilder:** en gouache-illustration per kit (transparent PNG, Codex imagegen på Patriks prenumeration), stil vald av Patrik bland 5 spår 2026-09-24. `node scripts/kit-art.ts [id]` genererar saknade, 640 px WebP i `public/kits/`. Råfiler i `design/art/` (ignoreras av git).
+- **Grundbaser (2026-09-24).** `Kit.base` = `tomat` | `asia` | `kram` | `rub` (`BASES` i data.ts). Basen är ett fast recept per låda som kokas en gång för alla dess lådor och sedan delas; kitets `mix` är bara twisten. Tomatkiten har exakt en basportion (100 g krossade, 8 g puré, 30 g gul lök, ½ klyfta), inga egna tomater. Övriga kit fick basens mängd dragen från sin mix. Primär bas där kit passar två: Chili och Chipotle på tomat (båda har tomat och behöver kastrull). Krämig bas = 25 g Philadelphia light + vitlök; Toscansk gick från 60 till 40 g kvarg. Filips kebab och cheeseburger har ingen färskost och står utan bas. Rub: Rökiga kikärtor, Shawarma, BBQ.
 - **Ingen inloggning ännu.** Firebase Auth kommer senare, samma mönster som familjehubben.
 
 ## Källor för smakkit
