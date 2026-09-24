@@ -225,6 +225,17 @@ export function shopping(calcs: BoxCalc[]): ShopRow[] {
   return [...rows.values()].map((r) => ({ ...r, packs: INGR[r.key as IngrId]?.packs ? pickPacks(r.need, INGR[r.key as IngrId].packs ?? []) : [] }));
 }
 
+/** Boxes grouped by identical recipe (kit + protein + carb + veg), first box of each group as the sample. */
+export function boxTypes(calcs: BoxCalc[]): { c: BoxCalc; n: number }[] {
+  const m = new Map<string, { c: BoxCalc; n: number }>();
+  for (const c of calcs) {
+    const k = [c.box.kit?.id, c.box.protein?.id, c.box.carb?.id, c.box.veg?.id].join('|');
+    const cur = m.get(k);
+    m.set(k, cur ? { ...cur, n: cur.n + 1 } : { c, n: 1 });
+  }
+  return [...m.values()];
+}
+
 // ---------- Bases ----------
 
 export interface BaseBatch { base: Base; n: number; kits: { kit: Kit; n: number }[] }
@@ -270,14 +281,19 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   if (p.proteins.length > 3) warnings.push('Fler än 3 proteiner gör schemat rörigt.');
   if (p.kits.length > 3) warnings.push('Fler än 3 smakkit: fler kastruller samtidigt.');
 
-  const cut = [
-    ovenProt.some((x) => x.pr.id === 'kyckling') && 'skär kycklingen i 2–3 cm bitar',
-    ovenProt.some((x) => x.pr.id === 'kikartor') && 'låt kikärtorna rinna av och torka dem',
-    ovenProt.some((x) => x.pr.id === 'halloumi') && 'skär halloumin i tärningar',
-    ovenCarbs.some((c) => c.id === 'potatis') && 'dela potatisen i klyftor',
-    ovenVegs.length > 0 && 'skär grönsakerna i bitar',
-  ].filter(Boolean) as string[];
-  const cutTxt = cut.length ? ' ' + cut.join(', ').replace(/^./, (m) => m.toUpperCase()).replace(/, ([^,]*)$/, ' och $1') + '.' : '';
+  // Prep list: every ingredient that needs knife work before cooking, with the batch's raw amount.
+  const batches = baseBatches(calcs);
+  const prepRows: StepLine[] = [
+    ...protMethods.filter(({ pr, m }) => pr.methods[m]!.prep).map(({ pr, m }) =>
+      ({ name: pr.name, right: fmtG(raw((c, x) => x.role === 'protein' && c.box.protein?.id === pr.id && c.box.method === m)), note: pr.methods[m]!.prep })),
+    ...used((b) => (b.carb?.prep ? b.carb : undefined)).map((cb) =>
+      ({ name: cb.name, right: fmtG(raw((c, x) => x.role === 'carb' && c.box.carb?.id === cb.id)), note: cb.prep })),
+    ...ovenVegs.filter((v) => v.prep).map((v) =>
+      ({ name: v.name, right: fmtG(raw((c, x) => x.role === 'veg' && c.box.veg?.id === v.id && roasted(c.box, 'veg', p.vegMode))), note: v.prep })),
+    ...batches.flatMap(({ base, n }) => base.items.filter((x) => x.prep).map((x) =>
+      ({ name: `${x.name} (${base.name.toLowerCase()})`, right: fmtQty(x.q * n, x.u), note: x.prep }))),
+  ];
+  const prepDur = clamp(prepRows.length * 5, 10, 30);
 
   // Long jobs before the oven session.
   for (const { pr, m } of protMethods) {
@@ -292,7 +308,8 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
     }
   }
   const t0 = Math.min(0, ...steps.map((s) => s.t));
-  steps.unshift({ id: 'prep', track: 'prep', t: t0 - 10, dur: 10, title: 'Förbered allt', label: 'Före', details: `Sätt ugnen på ${steps.some((s) => s.track === 'form') ? '150' : '200'} °C varmluft.${cutTxt} Blanda med olja, salt, peppar och vitlökspulver. Ingen smaksättning ännu.` });
+  steps.unshift({ id: 'prep', track: 'prep', t: t0 - prepDur, dur: prepDur, title: 'Förbered allt', label: 'Före', rows: prepRows.length ? prepRows : undefined,
+    details: `Sätt ugnen på ${steps.some((s) => s.track === 'form') ? '150' : '200'} °C varmluft. Det som ska in i ugnen: blanda med olja, salt, peppar och vitlökspulver. Ingen smaksättning ännu.` });
 
   for (const c of ovenCarbs) steps.push({ id: `carb-${c.id}`, track: 'ugn', t: E - c.oven!, dur: c.oven!, temp: 200, title: `${c.name} in`, what: `${c.name} i ugnen`, details: 'Ett lager på bakplåtspapper. Vänd halvvägs.' });
   for (const { pr } of ovenProt) { const md = pr.methods.ugn!; steps.push({ id: `prot-${pr.id}`, track: 'ugn', t: E - md.min, dur: md.min, temp: md.temp, title: `${pr.name} in`, what: `${pr.name} i ugnen`, details: md.note }); }
@@ -304,7 +321,6 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
     steps.push({ id: 'stove', track: 'spis', t: Math.max(0, E - d), dur: d, title: 'Koka ' + names, what: names.replace(/^./, (m) => m.toUpperCase()) + ' på spisen', details: stoveCarbs.map((c) => c.stove).join('. ') + '.' });
   }
   // Each shared base is cooked once for all its boxes while the oven runs.
-  const batches = baseBatches(calcs);
   for (const { base, n } of batches) {
     steps.push({ id: `base-${base.id}`, track: 'spis', t: Math.max(0, E - base.min), dur: base.min, title: `${base.title} för ${n} lådor`,
       what: base.min >= 5 ? `${base.name} puttrar` : undefined, details: base.how,
@@ -325,11 +341,22 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   const sauceKits = used((b) => (b.kit?.sauce && !b.kit.base ? b.kit : undefined));
   if (sauceKits.length) steps.push({ id: 'sauce', track: 'spis', t: T, dur: 10, title: 'Koka ihop såserna', details: '', rows: sauceKits.map(kitRow) });
   T += Math.max(splitDur, sauceKits.length ? 10 : 0);
-  steps.push({ id: 'portion', track: 'klar', t: T, dur: 15, title: 'Kyl ner och portionera', details: `Fördela i ${calcs.length} lådor enligt listan.${frozen.length ? ` ${frozen.map((v) => v.name).join(', ')} läggs frysta direkt i lådan.` : ''} Toppings i separata burkar.` });
+  // What goes in each box, by box type: cooked weights (what goes on the scale), frozen veg as is, toppings on the side.
+  const perKit = (id: string) => calcs.filter((c) => c.box.kit?.id === id).length;
+  const portionRows: StepLine[] = boxTypes(calcs).map(({ c, n }) => {
+    const kit = c.box.kit!;
+    const main = c.parts.filter((x) => x.role === 'protein' || x.role === 'carb' || x.role === 'veg')
+      .map((x) => `${x.name} ${x.cooked ? `ca ${fmtG(x.cooked)}` : fmtG(x.q)}`);
+    if (kit.base || kit.mix.length) main.push(`${kit.sauce || kit.base === 'tomat' || kit.base === 'kram' ? 'Såsen' : 'Smaksättningen'} delad på ${perKit(kit.id)}`);
+    const top = kit.top.map((x) => (x.u ? `${x.name.toLowerCase()} ${fmtQty(x.q, x.u)}` : x.name.toLowerCase()));
+    return { name: kit.name, right: `×${n}`, hue: kit.hue, sub: main.join(' · '), note: top.length ? `Egen burk: ${top.join(', ')}` : undefined };
+  });
+  steps.push({ id: 'portion', track: 'klar', t: T, dur: 15, title: 'Kyl ner och portionera', rows: portionRows,
+    details: `Låt allt svalna först.${frozen.length ? ` ${frozen.map((v) => v.name).join(', ')} läggs frysta direkt i lådan.` : ''} Toppings i separata burkar.` });
   T += 15;
   steps.push({ id: 'store', track: 'klar', t: T, dur: 0, label: 'Efter', title: 'Märk och kyl', details: 'Håller 3–4 dagar i kylen, lax 2 dagar. Ät de känsligaste först och frys resten.' });
 
-  return { steps: steps.sort((a, b) => a.t - b.t), trays, total: T - (t0 - 10), warnings };
+  return { steps: steps.sort((a, b) => a.t - b.t), trays, total: T - (t0 - prepDur), warnings };
 }
 
 // ---------- Formatting (sv-SE: decimal comma, space thousands) ----------

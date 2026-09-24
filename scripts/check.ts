@@ -110,6 +110,18 @@ eq('halloumi and sojafärs in the oven', ['prot-halloumi', 'prot-sojafars'].map(
 const hal = calcBox(resolveBoxes(veg)[0], veg, { kcal: 740, protein: 41, dailyKcal: 0, dailyProtein: 0 });
 eq('halloumi: goal hit, carbs traded for fat', [Math.abs(hal.m[1] - 41) < 2, Math.abs(hal.m[0] - 740) < 15, hal.m[3] > 45, hal.m[2] < 30], [true, true, true, true]);
 
+// Prep list, default plan (no goal): kyckling in the oven 4 × 175 g = 700 g, then carbs/veg needing knife work,
+// then the asia base for 3 teriyaki boxes: 3 × ½ tsk ginger = 1,5 tsk, 3 × ½ clove = 1,5 st.
+const prep = sch.steps.find((s) => s.id === 'prep')!;
+eq('prep rows', prep.rows?.map((r) => `${r.name}: ${r.right}`),
+  ['Kyckling: 700 g', 'Potatisklyftor: 675 g', 'Broccoli: 420 g', 'Haricots verts: 330 g', 'Paprikamix: 280 g', 'Riven ingefära (asiatisk bas): 1,5 tsk', 'Vitlöksklyfta (asiatisk bas): 1,5 st']);
+eq('prep time scales, capped', prep.dur, 30);
+eq('tomato base onion for 6 boxes', schedule(mixedCalcs, mixed).steps.find((s) => s.id === 'prep')?.rows?.find((r) => r.name.startsWith('Gul lök'))?.right, '180 g');
+// Portions: one row per box type, cooked weights (kyckling 175 × 0,75 = 131 -> 130 g, ris 60 × 2,8 = 168 -> 170 g).
+const portion = sch.steps.find((s) => s.id === 'portion')!;
+eq('portion rows', portion.rows?.map((r) => `${r.name} ${r.right}`), ['Teriyaki ×3', 'Grekisk citron ×1', 'Grekisk citron ×2', 'Tex-mex ×2']);
+eq('portion cooked weights', portion.rows?.[0].sub?.startsWith('Kyckling ca 130 g · Ris ca 170 g'), true);
+
 // Data integrity: every kit/protein/carb/veg ingredient exists, every kit default resolves.
 for (const k of KITS) { byId(CARBS, k.carb); byId(VEGS, k.veg); k.protein.forEach((p) => byId(PROTEINS, p)); }
 

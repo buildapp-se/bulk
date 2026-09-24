@@ -13,7 +13,7 @@ import { ClockPanel, Digits, clocks, useNow } from './Timers';
 
 const TRACK_COLOR: Record<string, string> = { prep: 'var(--muted)', ugn: 'var(--f)', spis: 'var(--c)', sousvide: 'oklch(0.62 0.1 240)', form: 'oklch(0.55 0.1 30)', klar: 'var(--p)' };
 
-/** Screen Wake Lock while any timer runs (re-acquired when the tab becomes visible again). */
+/** Screen Wake Lock while `on` (re-acquired when the tab becomes visible again, since the browser drops it on hide). */
 function useWakeLock(on: boolean) {
   const [held, setHeld] = useState(false);
   useEffect(() => {
@@ -34,7 +34,7 @@ export function Cook() {
   const cook = useCook();
   const anyClock = Object.keys(cook.clocks).length > 0;
   const now = useNow(anyClock);
-  const awake = useWakeLock(Object.values(cook.clocks).some(running));
+  const awake = useWakeLock(true); // whole cooking view: phones must not lock mid-recipe, timer or not
   const [perm, setPerm] = useState<NotificationPermission | 'na'>('na');
   useEffect(() => { setPerm(typeof Notification === 'undefined' ? 'na' : Notification.permission); }, []);
 
@@ -133,8 +133,8 @@ function Lines({ rows }: { rows: StepLine[] }) {
   const kits = rows.some((r) => r.sub || r.note);
   return (
     <span className={`mt-1 flex flex-col ${kits ? 'gap-3' : 'gap-0.5'}`}>
-      {rows.map((r) => (
-        <span key={r.name} className="flex flex-col gap-0.5" style={r.hue !== undefined ? ({ '--hue': r.hue } as React.CSSProperties) : undefined}>
+      {rows.map((r, i) => (
+        <span key={`${i}-${r.name}`} className="flex flex-col gap-0.5" style={r.hue !== undefined ? ({ '--hue': r.hue } as React.CSSProperties) : undefined}>
           <span className="flex items-baseline gap-2 text-sm">
             {r.hue !== undefined && <span className="kit-bg h-2 w-2 shrink-0 translate-y-[-1px] rounded-sm" />}
             <span className={kits ? 'font-semibold' : ''}>{r.name}</span>

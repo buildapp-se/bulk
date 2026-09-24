@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { AnimatePresence, motion } from 'motion/react';
 import { Fragment, useState } from 'react';
 import { t } from '@/i18n/sv';
-import { baseBatches, fmtG, fmtPacks, fmtQty, nf, type BaseBatch, type BoxCalc, type ShopRow } from '@/lib/calc';
+import { baseBatches, boxTypes, fmtG, fmtPacks, fmtQty, nf, type BaseBatch, type BoxCalc, type ShopRow } from '@/lib/calc';
 import { BASES, byId } from '@/lib/data';
 import { useBatch } from '@/lib/useBatch';
 import { setCook, useCook } from '@/lib/store';
@@ -19,13 +19,7 @@ const MC = ['var(--p)', 'var(--c)', 'var(--f)'];
 export function Ingredients() {
   const { calcs, shop, incomplete } = useBatch();
   const full = calcs.filter((c) => !c.missing.length);
-  // One card per distinct box recipe (kit + protein + carb + veg).
-  const types = [...full.reduce((m, c) => {
-    const k = [c.box.kit?.id, c.box.protein?.id, c.box.carb?.id, c.box.veg?.id].join('|');
-    const cur = m.get(k);
-    m.set(k, cur ? { ...cur, n: cur.n + 1 } : { c, n: 1 });
-    return m;
-  }, new Map<string, { c: BoxCalc; n: number }>()).values()];
+  const types = boxTypes(full); // one card per distinct box recipe
 
   const bases = baseBatches(full);
   const measured = shop.filter((r) => r.u === 'g' || r.u === 'ml');

@@ -115,7 +115,7 @@ export const INGR: Record<IngrId, Ingr> = INGR_;
 // ---------- Cooking ----------
 
 export type MethodId = 'ugn' | 'sousvide' | 'form' | 'gryta';
-export interface Method { temp: number; min: number; note: string; sear?: string }
+export interface Method { temp: number; min: number; note: string; sear?: string; prep?: string } // prep = what to do before cooking
 
 export interface Protein {
   id: string;
@@ -127,8 +127,8 @@ export interface Protein {
 
 export const PROTEINS: readonly Protein[] = [
   { id: 'kyckling', name: 'Kyckling', ingr: 'kycklingfile', raw: 175, methods: {
-    ugn: { temp: 200, min: 20, note: 'Filé i 2–3 cm bitar, ca 18–20 min. Ska vara genomstekt.' },
-    sousvide: { temp: 64, min: 120, note: 'Hela filéer i påse med salt, 64 °C i 1,5–4 h (+1 h direkt ur kylen).', sear: 'Bryn 1 min per sida i het panna.' },
+    ugn: { temp: 200, min: 20, note: 'Filé i 2–3 cm bitar, ca 18–20 min. Ska vara genomstekt.', prep: 'Skär i 2–3 cm bitar' },
+    sousvide: { temp: 64, min: 120, note: 'Hela filéer i påse med salt, 64 °C i 1,5–4 h (+1 h direkt ur kylen).', sear: 'Bryn 1 min per sida i het panna.', prep: 'Salta hela filéerna och lägg i påse' },
   } },
   { id: 'notfars', name: 'Nötfärs', ingr: 'notfars', raw: 175, methods: {
     ugn: { temp: 200, min: 15, note: 'Smula ut tunt på plåt, bryt isär efter 8 min. Minst 70 °C.' },
@@ -144,44 +144,44 @@ export const PROTEINS: readonly Protein[] = [
     sousvide: { temp: 74, min: 1080, note: 'Kryddad karré i påse med apelsinjuicen, 74 °C i 12–24 h. Starta kvällen före.', sear: 'Dra isär och stek i het panna.' },
   } },
   { id: 'lax', name: 'Lax', ingr: 'lax', raw: 150, methods: {
-    ugn: { temp: 200, min: 12, note: 'Bitar med skinnet nedåt, ca 12 min till 56 °C. Ät inom 2 dagar eller frys.' },
+    ugn: { temp: 200, min: 12, note: 'Bitar med skinnet nedåt, ca 12 min till 56 °C. Ät inom 2 dagar eller frys.', prep: 'Skär i portionsbitar' },
   } },
   { id: 'kikartor', name: 'Rostade kikärtor', ingr: 'kikartor', raw: 180, methods: {
-    ugn: { temp: 200, min: 25, note: 'Avrunna och torkade, 25 min. Skaka plåten halvvägs.' },
+    ugn: { temp: 200, min: 25, note: 'Avrunna och torkade, 25 min. Skaka plåten halvvägs.', prep: 'Låt rinna av och torka ordentligt' },
   } },
   { id: 'sojafars', name: 'Sojafärs', ingr: 'sojafars', raw: 175, methods: {
     ugn: { temp: 200, min: 15, note: 'Smula ut fryst på plåt med lite olja, rör om efter 8 min. Behöver inte tinas.' },
   } },
   { id: 'halloumi', name: 'Halloumi', ingr: 'halloumi', raw: 120, methods: {
-    ugn: { temp: 200, min: 15, note: 'Tärningar på bakplåtspapper, ca 15 min tills kanterna är gyllene. Värm kort i lådan, den blir seg av mycket värme.' },
+    ugn: { temp: 200, min: 15, note: 'Tärningar på bakplåtspapper, ca 15 min tills kanterna är gyllene. Värm kort i lådan, den blir seg av mycket värme.', prep: 'Skär i 2 cm tärningar' },
   } },
   { id: 'linser', name: 'Röda linser', ingr: 'linser', raw: 50, methods: {
-    gryta: { temp: 100, min: 15, note: 'Skölj, koka i kitets sås 15 min tills de faller sönder.' },
+    gryta: { temp: 100, min: 15, note: 'Skölj, koka i kitets sås 15 min tills de faller sönder.', prep: 'Skölj i sil' },
   } },
 ];
 
 export const DEFAULT_METHOD = (p: Protein): MethodId => (Object.keys(p.methods)[0] as MethodId);
 
-export interface Carb { id: string; name: string; short?: string; ingr: IngrId; raw: number; oven?: number; stove?: string; stoveMin?: number }
+export interface Carb { id: string; name: string; short?: string; ingr: IngrId; raw: number; oven?: number; stove?: string; stoveMin?: number; prep?: string }
 export const CARBS: readonly Carb[] = [
   { id: 'ris', name: 'Ris', ingr: 'ris', raw: 60, stove: 'Ris ca 15 min', stoveMin: 15 },
   { id: 'pasta', name: 'Pasta', ingr: 'pasta', raw: 70, stove: 'Pasta ca 10 min, spola kallt', stoveMin: 10 },
   { id: 'bulgur', name: 'Bulgur', ingr: 'bulgur', raw: 60, stove: 'Bulgur ca 12 min', stoveMin: 12 },
   { id: 'matvete', name: 'Matvete', ingr: 'matvete', raw: 60, stove: 'Matvete ca 12 min', stoveMin: 12 },
   { id: 'couscous', name: 'Couscous', ingr: 'couscous', raw: 60, stove: 'Couscous: häll över kokande vatten, 5 min', stoveMin: 5 },
-  { id: 'potatis', name: 'Potatisklyftor', short: 'Potatis', ingr: 'potatis', raw: 225, oven: 35 },
-  { id: 'mos', name: 'Potatismos', short: 'Mos', ingr: 'potatis', raw: 225, stove: 'Potatis till mos ca 20 min', stoveMin: 20 },
-  { id: 'sotpotatis', name: 'Sötpotatis', ingr: 'sotpotatis', raw: 220, oven: 30 },
+  { id: 'potatis', name: 'Potatisklyftor', short: 'Potatis', ingr: 'potatis', raw: 225, oven: 35, prep: 'Dela i klyftor' },
+  { id: 'mos', name: 'Potatismos', short: 'Mos', ingr: 'potatis', raw: 225, stove: 'Potatis till mos ca 20 min', stoveMin: 20, prep: 'Skala och dela i jämna bitar' },
+  { id: 'sotpotatis', name: 'Sötpotatis', ingr: 'sotpotatis', raw: 220, oven: 30, prep: 'Skala och skär i 2 cm tärningar' },
 ];
 
-export interface Veg { id: string; name: string; ingr: IngrId; raw: number; oven?: number; frozenOnly?: boolean }
+export interface Veg { id: string; name: string; ingr: IngrId; raw: number; oven?: number; frozenOnly?: boolean; prep?: string }
 export const VEGS: readonly Veg[] = [
-  { id: 'broccoli', name: 'Broccoli', ingr: 'broccoli', raw: 140, oven: 20 },
-  { id: 'paprika', name: 'Paprikamix', ingr: 'paprika', raw: 140, oven: 20 },
-  { id: 'haricots', name: 'Haricots verts', ingr: 'haricots', raw: 110, oven: 15 },
-  { id: 'vitkal', name: 'Vitkål', ingr: 'vitkal', raw: 125, oven: 25 },
-  { id: 'aubergine', name: 'Aubergine', ingr: 'aubergine', raw: 150, oven: 25 },
-  { id: 'champinjoner', name: 'Champinjoner', ingr: 'champinjoner', raw: 120, oven: 20 },
+  { id: 'broccoli', name: 'Broccoli', ingr: 'broccoli', raw: 140, oven: 20, prep: 'Dela i buketter' },
+  { id: 'paprika', name: 'Paprikamix', ingr: 'paprika', raw: 140, oven: 20, prep: 'Kärna ur och skär i bitar' },
+  { id: 'haricots', name: 'Haricots verts', ingr: 'haricots', raw: 110, oven: 15, prep: 'Toppa' },
+  { id: 'vitkal', name: 'Vitkål', ingr: 'vitkal', raw: 125, oven: 25, prep: 'Skär i klyftor' },
+  { id: 'aubergine', name: 'Aubergine', ingr: 'aubergine', raw: 150, oven: 25, prep: 'Tärna 2 cm' },
+  { id: 'champinjoner', name: 'Champinjoner', ingr: 'champinjoner', raw: 120, oven: 20, prep: 'Halvera' },
   { id: 'wokmix', name: 'Wokgrönsaker', ingr: 'wokmix', raw: 90, frozenOnly: true },
   { id: 'artmorot', name: 'Ärtor och morötter', ingr: 'artmorot', raw: 75, frozenOnly: true },
   { id: 'spenat', name: 'Spenat', ingr: 'spenat', raw: 50, frozenOnly: true },
@@ -193,7 +193,7 @@ export const VEGS: readonly Veg[] = [
 // ---------- Flavour kits ----------
 // Amounts are per box. Unit '' = efter smak. g/ml items with an ingr id count in nutrition.
 export type Unit = 'g' | 'ml' | 'krm' | 'tsk' | 'msk' | 'st' | '';
-export interface KitItem { name: string; ingr?: IngrId; q: number; u: Unit }
+export interface KitItem { name: string; ingr?: IngrId; q: number; u: Unit; prep?: string }
 export interface Kit {
   id: string;
   name: string;
@@ -220,11 +220,11 @@ export type BaseId = 'tomat' | 'asia' | 'kram' | 'rub';
 export interface Base { id: BaseId; name: string; title: string; def: string; pot: string; items: readonly KitItem[]; min: number; how: string }
 export const BASES: readonly Base[] = [
   { id: 'tomat', name: 'Tomatbas', title: 'Koka tomatbasen', def: 'tomatbasen', pot: 'gryta', min: 15, how: 'Fräs löken mjuk, sedan vitlök och tomatpuré 1 min tills purén mörknar. Häll i tomaterna och puttra 15 min.',
-    items: [g('Krossade tomater', 'krossade', 100), g('Tomatpuré', 'tomatpure', 8), g('Gul lök', 'gullok', 30), s('Vitlöksklyfta', 0.5, 'st')] },
+    items: [g('Krossade tomater', 'krossade', 100), g('Tomatpuré', 'tomatpure', 8), { ...g('Gul lök', 'gullok', 30), prep: 'Finhacka' }, { ...s('Vitlöksklyfta', 0.5, 'st'), prep: 'Hacka' }] },
   { id: 'asia', name: 'Asiatisk bas', title: 'Fräs den asiatiska basen', def: 'den asiatiska basen', pot: 'panna', min: 3, how: 'Fräs riven ingefära och vitlök 30 s, slå i sojan och ta av värmen.',
-    items: [g('Japansk soja', 'soja', 8), s('Riven ingefära', 0.5, 'tsk'), s('Vitlöksklyfta', 0.5, 'st')] },
+    items: [g('Japansk soja', 'soja', 8), { ...s('Riven ingefära', 0.5, 'tsk'), prep: 'Riv' }, { ...s('Vitlöksklyfta', 0.5, 'st'), prep: 'Hacka' }] },
   { id: 'kram', name: 'Krämig bas', title: 'Smält den krämiga basen', def: 'den krämiga basen', pot: 'kastrull', min: 3, how: 'Smält färskosten med vitlöken och en skvätt vatten på låg värme, slät och blank.',
-    items: [g('Philadelphia light', 'philadelphia', 25), s('Vitlöksklyfta', 0.5, 'st')] },
+    items: [g('Philadelphia light', 'philadelphia', 25), { ...s('Vitlöksklyfta', 0.5, 'st'), prep: 'Hacka' }] },
   { id: 'rub', name: 'Rökig rub', title: 'Rosta rubben', def: 'rubben', pot: 'kryddblandning', min: 1, how: 'Rosta kryddorna torrt i en panna 30 s tills de doftar.',
     items: [s('Spiskummin', 0.5, 'tsk'), s('Rökt paprikapulver', 0.5, 'tsk'), s('Vitlökspulver', 1, 'krm')] },
 ];
