@@ -42,7 +42,7 @@ export const DEFAULT_PLAN: Plan = {
   kitVeg: {},
   vegMode: 'rostade',
   overrides: {},
-  goal: { mode: 'off', kind: 'bulk', weight: 80, height: 180, age: 30, sex: 'm', activity: 1.55, perDay: 2, proteinBox: null, kcalBox: null },
+  goal: { mode: 'simple', kind: 'behall', weight: 75, height: 180, age: 30, sex: 'm', activity: 1.55, perDay: 2, proteinBox: null, kcalBox: null },
 };
 
 // ---------- Boxes ----------
@@ -290,7 +290,8 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
 // ---------- Formatting (sv-SE: decimal comma, space thousands) ----------
 
 export const nf = (v: number, d = 0) => v.toLocaleString('sv-SE', { maximumFractionDigits: d, minimumFractionDigits: 0 });
-export const fmtG = (g: number) => (g >= 1000 ? nf(g / 1000, 1) + ' kg' : nf(Math.max(5, r5(g))) + ' g');
+// Small amounts (sesame, feta) in whole grams; larger ones to the nearest 5.
+export const fmtG = (g: number) => (g >= 1000 ? nf(g / 1000, 1) + ' kg' : g < 20 ? nf(Math.max(1, Math.round(g))) + ' g' : nf(r5(g)) + ' g');
 export function fmtQty(q: number, u: Unit): string {
   if (!u) return 'efter smak';
   if (u === 'g') return fmtG(q);

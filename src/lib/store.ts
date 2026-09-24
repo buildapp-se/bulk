@@ -36,7 +36,7 @@ function createStore<T extends object>(key: string, initial: T) {
 }
 
 // Key carries the schema version: bump v when Plan changes shape incompatibly.
-export const planStore = createStore<Plan>('bulk:plan:v1', DEFAULT_PLAN);
+export const planStore = createStore<Plan>('bulk:plan:v2', DEFAULT_PLAN);
 export const cookStore = createStore<Cook>('bulk:cook:v1', DEFAULT_COOK);
 
 export const usePlan = () => useSyncExternalStore(planStore.subscribe, planStore.get, () => planStore.initial);

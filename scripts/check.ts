@@ -35,7 +35,7 @@ near('solved hits protein goal', solved.m[1], 50, 1.5);
 near('solved hits kcal goal', solved.m[0], 700, 15);
 
 // Simple goal: 80 kg bulk -> 80 × 38 × 0,3 = 912 -> 910 kcal, 80 × 2 × 0,3 = 48 g.
-const tg = targets({ ...DEFAULT_PLAN.goal, mode: 'simple' });
+const tg = targets({ ...DEFAULT_PLAN.goal, mode: 'simple', kind: 'bulk', weight: 80 });
 eq('simple targets', tg && [tg.kcal, tg.protein], [910, 48]);
 
 // Packages
@@ -45,6 +45,10 @@ eq('packs none', pickPacks(0, [500]), []);
 
 // Formatting
 eq('fmt g', fmtQty(1234, 'g'), '1,2 kg');
+eq('fmt small g exact', fmtQty(3, 'g'), '3 g');
+// Default = Behåll, 75 kg: 75 × 33 × 0,3 = 742,5 -> 740 kcal, 75 × 1,8 × 0,3 = 40,5 -> 41 g.
+const dflt = targets(DEFAULT_PLAN.goal);
+eq('default is behåll', dflt && [dflt.kcal, dflt.protein], [740, 41]);
 eq('fmt tsk->msk', fmtQty(4.5, 'tsk'), '1,5 msk');
 eq('fmt ml->dl', fmtQty(250, 'ml'), '2,5 dl');
 

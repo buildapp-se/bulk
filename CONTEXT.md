@@ -27,7 +27,7 @@ Design från Claude Design-projektet "Mealprep" (ade1c1e3-d70f-4582-995b-bb751a5
 - **Mjuka gränser.** Upp till 40 lådor. Fler än 3 kit eller proteiner, eller mer än ca 1,2 kg rått per plåt, ger varning, inte stopp.
 - **Tillagningsmetod per protein:** ugn, sous vide (kyckling 64 °C, fläskkarré 74 °C), långkok i form (fläskkarré 150 °C), gryta (röda linser). Lax har inte sous vide: 50 °C pastöriserar inte och lådorna ska hålla 3–4 dagar.
 - **Näring = rå vikt × Livsmedelsverket.** Värden från grammats `nutrients.json` (`gm`) eller LV:s API (`lv` = livsmedelsnummer). `src: 'est'` = etikett eller uppskattning. Olja ca 1 msk per 500 g rått på plåt räknas in. Utbytet används bara till "blir ca X g tillagat".
-- **Mål:** Av / Enkel (Bulka, Behåll, Deffa + vikt) / Avancerad (Mifflin-St Jeor, aktivitet, lådor per dag). En låda = min(35 %, 60 %/lådor per dag) av dagsbehovet. Protein-reglaget styr proteinets gram, kcal-reglaget styr kolhydratens gram (löses iterativt eftersom de påverkar varandra).
+- **Mål:** standard Enkel + Behåll, 75 kg (Patrik 2026-09-24). Av / Enkel (Bulka, Behåll, Deffa + vikt) / Avancerad (Mifflin-St Jeor, aktivitet, lådor per dag). En låda = min(35 %, 60 %/lådor per dag) av dagsbehovet. Protein-reglaget styr proteinets gram, kcal-reglaget styr kolhydratens gram (löses iterativt eftersom de påverkar varandra).
 - **Inköp avrundas till förpackningar**, minsta spill med högst två storlekar. Handskriven tabell i data.ts.
 - **Svenska först**, engelska senare (text redan samlad i `sv.ts`).
 - **Ingen inloggning ännu.** Firebase Auth kommer senare, samma mönster som familjehubben.

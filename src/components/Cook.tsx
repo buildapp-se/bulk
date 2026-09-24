@@ -135,11 +135,15 @@ function StepRow({ s, isNext, done, at, now, onStart, onStop, onDone }: {
   const frac = at && ms ? Math.min(1, (now - at) / ms) : 0;
   const over = !!at && left <= 0;
   return (
+    // Whole row toggles done; the timer button stops the click.
     <motion.div layout transition={spring}
-      className={`grid grid-cols-[64px_28px_minmax(0,1fr)_auto] items-start gap-3 border-b border-line py-4 ${isNext ? 'relative' : ''}`}>
+      role="checkbox" aria-checked={done} tabIndex={0} onClick={onDone}
+      onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onDone(); } }}
+      whileTap={{ scale: 0.99 }}
+      className={`relative grid cursor-pointer select-none grid-cols-[64px_28px_minmax(0,1fr)_auto] items-start gap-3 border-b border-line py-4 outline-none focus-visible:ring-2 focus-visible:ring-ink`}>
       {isNext && <motion.span layoutId="next-glow" className="absolute -inset-x-3 inset-y-1 -z-10 rounded-2xl bg-surface ring-1 ring-line" transition={spring} />}
       <span className="pt-1 font-mono text-xs text-muted">{s.label ?? `${s.t} min`}</span>
-      <button onClick={onDone} aria-label={done ? 'Ångra' : t.cook.done} className="pt-0.5"><Check on={done} /></button>
+      <span className="pt-0.5"><Check on={done} /></span>
       <span className={`flex flex-col gap-1 transition-opacity ${done ? 'opacity-45' : ''}`}>
         <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
           <span className="relative text-base font-semibold">
@@ -152,7 +156,7 @@ function StepRow({ s, isNext, done, at, now, onStart, onStop, onDone }: {
         <span className="text-sm text-muted [text-wrap:pretty]">{s.details}</span>
       </span>
       {s.dur > 0 && !done ? (
-        <button onClick={at ? onStop : onStart} className="relative flex h-14 w-14 items-center justify-center" aria-label={at ? t.cook.stop : t.cook.start}>
+        <button onClick={(e) => { e.stopPropagation(); (at ? onStop : onStart)(); }} onKeyDown={(e) => e.stopPropagation()} className="relative flex h-14 w-14 items-center justify-center" aria-label={at ? t.cook.stop : t.cook.start}>
           <svg viewBox="0 0 56 56" className="absolute inset-0 -rotate-90">
             <circle cx="28" cy="28" r="25" fill="none" stroke="var(--line)" strokeWidth="3" />
             <motion.circle cx="28" cy="28" r="25" fill="none" stroke={over ? 'var(--p)' : TRACK_COLOR[s.track]} strokeWidth="3" strokeLinecap="round"

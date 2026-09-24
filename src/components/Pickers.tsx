@@ -1,8 +1,9 @@
 'use client';
 import { AnimatePresence, motion } from 'motion/react';
+import { Fragment } from 'react';
 import { t } from '@/i18n/sv';
-import { KITS, PROTEINS, INGR, CARBS, VEGS, byId, type MethodId } from '@/lib/data';
-import { fmtMin, nf, split } from '@/lib/calc';
+import { KITS, PROTEINS, INGR, CARBS, VEGS, byId, DEFAULT_METHOD, type KitItem, type MethodId } from '@/lib/data';
+import { calcBox, fmtMin, fmtQty, nf, split } from '@/lib/calc';
 import { setBoxes, setMethod, setVegMode, toggleKit, toggleProtein } from '@/lib/actions';
 import { useBatch } from '@/lib/useBatch';
 import { Num } from './Num';
@@ -17,19 +18,22 @@ export function ProteinPicker() {
         const n = INGR[p.ingr].n;
         const methods = Object.keys(p.methods) as MethodId[];
         return (
+          // Whole card is the target. Inner method toggle stops the click so it doesn't also toggle the card.
           <motion.div key={p.id} variants={stagger.child} layout transition={spring}
-            className={`flex flex-col gap-1 rounded-xl border p-3 transition-colors ${sel ? 'border-ink bg-surface' : 'border-line'}`}>
-            <button onClick={() => toggleProtein(p.id)} className="flex flex-col items-start gap-0.5 text-left">
-              <span className="flex w-full items-center justify-between gap-2">
-                <span className="font-semibold">{p.name}</span>
-                <Check on={!!sel} />
-              </span>
-              <span className="font-mono text-[11px] text-muted">{nf(n[1], 1)} g P / 100 g</span>
-            </button>
+            role="checkbox" aria-checked={!!sel} tabIndex={0}
+            onClick={() => toggleProtein(p.id)}
+            onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleProtein(p.id); } }}
+            whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}
+            className={`flex cursor-pointer select-none flex-col gap-1 rounded-xl border p-3 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ink ${sel ? 'border-ink bg-surface shadow-[0_6px_20px_-12px_rgba(35,33,29,.45)]' : 'border-line hover:border-muted'}`}>
+            <span className="flex w-full items-center justify-between gap-2">
+              <span className="font-semibold">{p.name}</span>
+              <Check on={!!sel} />
+            </span>
+            <span className="font-mono text-[11px] text-muted">{nf(n[1], 1)} g P / 100 g</span>
             <AnimatePresence initial={false}>
               {sel && methods.length > 1 && (
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring} className="overflow-hidden">
-                  <div className="pt-1.5">
+                  <div className="pt-1.5" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
                     <Segmented id={`m-${p.id}`} small value={sel.method} onChange={(m) => setMethod(p.id, m)}
                       options={methods.map((m) => [m, t.method[m]] as const)} />
                   </div>
@@ -66,30 +70,57 @@ export function BoxCount() {
 }
 
 export function KitPicker() {
-  const { plan } = useBatch();
+  const { plan, t: tg } = useBatch();
   const counts = split(plan.boxes, Math.max(1, plan.kits.length));
   return (
-    <motion.div variants={stagger.parent} initial="hidden" animate="show" className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+    <motion.div variants={stagger.parent} initial="hidden" animate="show" className="grid grid-cols-1 items-start gap-1.5 sm:grid-cols-2">
       {KITS.map((k) => {
         const idx = plan.kits.indexOf(k.id);
         const sel = idx >= 0;
-        const kcal = k.mix.concat(k.top).reduce((s, x) => s + (x.ingr && (x.u === 'g' || x.u === 'ml') ? (INGR[x.ingr].n[0] * x.q) / 100 : 0), 0);
+        // Preview box: the kit's own defaults, sized to the current goal.
+        const pr = byId(PROTEINS, k.protein[0]);
+        const box = calcBox({ i: 0, kit: k, protein: pr, method: DEFAULT_METHOD(pr), carb: byId(CARBS, k.carb), veg: byId(VEGS, k.veg) }, plan, tg);
+        const list = (xs: readonly KitItem[]) => xs.map((x) => x.name.toLowerCase()).join(', ');
         return (
-          <motion.button key={k.id} variants={stagger.child} whileTap={{ scale: 0.98 }} onClick={() => toggleKit(k.id)}
-            style={{ '--hue': k.hue } as React.CSSProperties}
-            className={`group relative flex items-center gap-3 overflow-hidden rounded-xl border p-3 text-left transition-colors ${sel ? 'border-ink bg-surface' : 'border-line hover:border-muted'}`}>
-            <span className="kit-bg relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg font-mono text-[12px] text-[#23211d]">
-              <AnimatePresence mode="popLayout" initial={false}>
-                <motion.span key={sel ? counts[idx] : 'x'} initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.4, opacity: 0 }} transition={spring}>
-                  {sel ? `×${counts[idx]}` : ''}
+          <motion.button key={k.id} layout variants={stagger.child} whileTap={{ scale: 0.985 }} onClick={() => toggleKit(k.id)}
+            aria-pressed={sel} style={{ '--hue': k.hue } as React.CSSProperties} transition={spring}
+            className={`group relative flex flex-col gap-2 overflow-hidden rounded-xl border p-3 text-left transition-colors ${sel ? 'border-ink bg-surface shadow-[0_8px_24px_-16px_rgba(35,33,29,.5)]' : 'border-line hover:border-muted'}`}>
+            <span className="flex w-full items-center gap-3">
+              <span className="kit-bg relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg font-mono text-[12px] text-[#23211d]">
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.span key={sel ? counts[idx] : 'x'} initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.4, opacity: 0 }} transition={spring}>
+                    {sel ? `×${counts[idx]}` : '+'}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="font-semibold">{k.name}</span>
+                <span className="text-[13px] text-muted">{k.tagline}</span>
+              </span>
+              <span className="flex flex-col items-end font-mono text-[11px] leading-tight">
+                <span>{nf(box.m[0])} kcal</span><span className="text-muted">{nf(box.m[1])} g P</span>
+              </span>
+            </span>
+            <span className="text-[12px] leading-snug text-muted">
+              <span className="text-ink">{pr.name}, {byId(CARBS, k.carb).name.toLowerCase()}, {byId(VEGS, k.veg).name.toLowerCase()}.</span>{' '}
+              {k.mix.length > 0 && <>I såsen: {list(k.mix)}. </>}
+              {k.top.length > 0 && <>Toppas: {list(k.top)}.</>}
+            </span>
+            <AnimatePresence initial={false}>
+              {sel && (
+                <motion.span initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring} className="block overflow-hidden">
+                  <span className="mt-1 grid grid-cols-[1fr_auto] gap-x-3 gap-y-0.5 border-t border-line-soft pt-2 text-[12px]">
+                    {box.parts.filter((x) => x.role !== 'olja').map((x, i) => (
+                      <Fragment key={i}>
+                        <span className={x.role === 'topp' ? 'text-muted' : ''}>{x.role === 'topp' ? '+ ' : ''}{x.name}</span>
+                        <span className="font-mono">{x.u === 'g' && x.cooked ? `${nf(x.q)} g rå` : fmtQty(x.q, x.u)}</span>
+                      </Fragment>
+                    ))}
+                  </span>
+                  <span className="mt-2 block rounded-lg bg-bg px-2.5 py-1.5 text-[12px] text-muted">{k.tip}</span>
                 </motion.span>
-              </AnimatePresence>
-            </span>
-            <span className="flex min-w-0 flex-1 flex-col">
-              <span className="font-semibold">{k.name}</span>
-              <span className="truncate text-[13px] text-muted">{k.tagline} · {byId(PROTEINS, k.protein[0]).name.toLowerCase()}, {byId(CARBS, k.carb).name.toLowerCase()}, {byId(VEGS, k.veg).name.toLowerCase()}</span>
-            </span>
-            <span className="font-mono text-[11px] text-muted">+{nf(kcal)}</span>
+              )}
+            </AnimatePresence>
             {sel && <motion.span layoutId={`kitbar-${k.id}`} className="kit-bg absolute inset-y-0 left-0 w-1" />}
           </motion.button>
         );

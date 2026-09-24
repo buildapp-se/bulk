@@ -9,9 +9,9 @@ import { Num } from './Num';
 import { Segmented } from './ui';
 
 const TYPICAL: Record<GoalKind, { p: [number, number]; kcal: [number, number] }> = {
-  bulk: { p: [45, 55], kcal: [750, 950] },
-  behall: { p: [35, 45], kcal: [550, 700] },
-  deff: { p: [40, 50], kcal: [400, 550] },
+  bulk: { p: [45, 55], kcal: [800, 1000] },
+  behall: { p: [35, 45], kcal: [650, 800] },
+  deff: { p: [40, 50], kcal: [450, 600] },
 };
 
 export function GoalPanel() {
