@@ -44,7 +44,23 @@ export function Cook() {
 
   const toggleDone = (s: Step) => {
     haptic(cook.done[s.id] ? 6 : 14);
-    setCook((c) => { const cl = { ...c.clocks }; delete cl[s.id]; return { ...c, done: { ...c.done, [s.id]: !c.done[s.id] }, clocks: cl }; });
+    setCook((c) => {
+      const cl = { ...c.clocks }; delete cl[s.id];
+      const undo = !!c.done[s.id];
+      // Un-ticking a step also clears its row ticks, so it doesn't sit there fully ticked but open.
+      const sub = undo ? Object.fromEntries(Object.entries(c.sub).filter(([k]) => !k.startsWith(`${s.id}:`))) : c.sub;
+      return { ...c, done: { ...c.done, [s.id]: !undo }, clocks: cl, sub };
+    });
+  };
+  // Ticking the last row of a step ticks the step (which folds it); un-ticking a row reopens it.
+  const toggleSub = (s: Step, key: string) => {
+    haptic(cook.sub[key] ? 6 : 10);
+    setCook((c) => {
+      const sub = { ...c.sub, [key]: !c.sub[key] };
+      const all = (s.rows ?? []).every((r, i) => sub[rowKey(s, i, r)]);
+      const cl = { ...c.clocks }; if (all) delete cl[s.id];
+      return { ...c, sub, clocks: cl, done: { ...c.done, [s.id]: all } };
+    });
   };
 
   return (
@@ -63,7 +79,7 @@ export function Cook() {
             {perm !== 'na' && perm !== 'granted' && (
               <button className="underline" onClick={async () => setPerm(await Notification.requestPermission())} title={t.cook.notifyHint}>{t.cook.notify}</button>
             )}
-            <button className="underline" onClick={() => { haptic(); setCook((c) => ({ ...c, done: {}, clocks: {} })); }}>{t.cook.reset}</button>
+            <button className="underline" onClick={() => { haptic(); setCook((c) => ({ ...c, done: {}, clocks: {}, sub: {} })); }}>{t.cook.reset}</button>
           </div>
         </div>
         <div className="h-1 overflow-hidden rounded-full bg-line">
@@ -75,7 +91,8 @@ export function Cook() {
 
       <div className="flex flex-col">
         {steps.map((s) => (
-          <StepRow key={s.id} s={s} isNext={s.id === next?.id} done={!!cook.done[s.id]} c={cook.clocks[s.id]} now={now} onDone={() => toggleDone(s)} />
+          <StepRow key={s.id} s={s} isNext={s.id === next?.id} done={!!cook.done[s.id]} c={cook.clocks[s.id]} now={now} onDone={() => toggleDone(s)}
+            ticked={cook.sub} onTick={(k) => toggleSub(s, k)} />
         ))}
       </div>
 
@@ -85,18 +102,30 @@ export function Cook() {
   );
 }
 
-function StepRow({ s, isNext, done, c, now, onDone }: { s: Step; isNext: boolean; done: boolean; c?: Clock; now: number; onDone: () => void }) {
+const rowKey = (s: Step, i: number, r: StepLine) => `${s.id}:${i}:${r.name}`;
+
+function StepRow({ s, isNext, done, c, now, onDone, ticked, onTick }: {
+  s: Step; isNext: boolean; done: boolean; c?: Clock; now: number; onDone: () => void; ticked: Record<string, boolean>; onTick: (key: string) => void;
+}) {
   const timed = !!s.what && s.dur > 0;
+  // Done steps fold to their title so the list shrinks as you cook; tapping a folded step peeks inside.
+  const [peek, setPeek] = useState(false);
+  useEffect(() => { if (!done) setPeek(false); }, [done]);
+  const open = !done || peek;
+  const tap = () => (done ? setPeek((p) => !p) : onDone());
   return (
-    // Whole row toggles done; the timer controls stop the click.
+    // Open row: tap ticks it done. Folded row: tap opens/closes it. The checkbox always toggles done.
     <motion.div layout transition={spring} id={`step-${s.id}`}
-      role="checkbox" aria-checked={done} tabIndex={0} onClick={onDone}
-      onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onDone(); } }}
+      tabIndex={0} onClick={tap} aria-expanded={done ? open : undefined}
+      onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); tap(); } }}
       whileTap={{ scale: 0.99 }}
-      className="relative grid scroll-mt-40 cursor-pointer select-none grid-cols-[64px_28px_minmax(0,1fr)_auto] items-start gap-3 border-b border-line py-4 outline-none focus-visible:ring-2 focus-visible:ring-ink">
+      className={`relative grid scroll-mt-40 cursor-pointer select-none grid-cols-[64px_28px_minmax(0,1fr)_auto] items-start gap-3 border-b border-line outline-none transition-[padding] focus-visible:ring-2 focus-visible:ring-ink ${open ? 'py-4' : 'py-2.5'}`}>
       {isNext && <motion.span layoutId="next-glow" className="absolute -inset-x-3 inset-y-1 -z-10 rounded-2xl bg-surface ring-1 ring-line" transition={spring} />}
       <span className="pt-1 font-mono text-xs text-muted">{s.label ?? `${s.t} min`}</span>
-      <span className="pt-0.5"><Check on={done} /></span>
+      <button role="checkbox" aria-checked={done} aria-label={s.title} className="-m-2 p-2 pt-2.5"
+        onClick={(e) => { e.stopPropagation(); onDone(); }} onKeyDown={(e) => e.stopPropagation()}>
+        <Check on={done} />
+      </button>
       <span className={`flex flex-col gap-1 transition-opacity ${done ? 'opacity-45' : ''}`}>
         <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
           <span className="relative text-base font-semibold">
@@ -106,8 +135,14 @@ function StepRow({ s, isNext, done, c, now, onDone }: { s: Step; isNext: boolean
           <span className="rounded-full px-2 py-0.5 font-mono text-[10px] text-white" style={{ background: TRACK_COLOR[s.track] }}>{t.cook.tracks[s.track]}{s.temp ? ` · ${s.temp} °C` : ''}</span>
           {s.dur > 0 && <span className="font-mono text-[11px] text-muted">{fmtMin(s.dur)}</span>}
         </span>
-        {s.rows && <Lines rows={s.rows} />}
-        {s.details && <span className={`text-sm text-muted [text-wrap:pretty] ${s.rows ? 'mt-1.5' : ''}`}>{s.details}</span>}
+        <AnimatePresence initial={false}>
+          {open && (s.rows || s.details) && (
+            <motion.span key="body" className="flex flex-col gap-1 overflow-hidden" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring}>
+              {s.rows && <Lines rows={s.rows} keyOf={(i, r) => rowKey(s, i, r)} ticked={ticked} onTick={onTick} />}
+              {s.details && <span className={`text-sm text-muted [text-wrap:pretty] ${s.rows ? 'mt-1.5' : ''}`}>{s.details}</span>}
+            </motion.span>
+          )}
+        </AnimatePresence>
       </span>
       {timed && !done && !c ? (
         <motion.button whileTap={{ scale: 0.92 }} onClick={(e) => { e.stopPropagation(); clocks.start(s); }} onKeyDown={(e) => e.stopPropagation()}
@@ -128,22 +163,31 @@ function StepRow({ s, isNext, done, c, now, onDone }: { s: Step; isNext: boolean
   );
 }
 
-/** A step's list: ingredient amounts as a tight table, kits as blocks with twist and tip. */
-function Lines({ rows }: { rows: StepLine[] }) {
+/** A step's list, each row tickable: ingredient amounts as a tight table, kits as blocks with twist and tip. */
+function Lines({ rows, keyOf, ticked, onTick }: { rows: StepLine[]; keyOf: (i: number, r: StepLine) => string; ticked: Record<string, boolean>; onTick: (key: string) => void }) {
   const kits = rows.some((r) => r.sub || r.note);
   return (
-    <span className={`mt-1 flex flex-col ${kits ? 'gap-3' : 'gap-0.5'}`}>
-      {rows.map((r, i) => (
-        <span key={`${i}-${r.name}`} className="flex flex-col gap-0.5" style={r.hue !== undefined ? ({ '--hue': r.hue } as React.CSSProperties) : undefined}>
-          <span className="flex items-baseline gap-2 text-sm">
-            {r.hue !== undefined && <span className="kit-bg h-2 w-2 shrink-0 translate-y-[-1px] rounded-sm" />}
-            <span className={kits ? 'font-semibold' : ''}>{r.name}</span>
-            <span className="ml-auto whitespace-nowrap font-mono text-[12px] text-muted">{r.right}</span>
-          </span>
-          {r.sub && <span className={`text-sm text-muted ${r.hue !== undefined ? 'pl-4' : ''}`}>{r.sub}</span>}
-          {r.note && <span className={`text-[12px] text-muted opacity-80 [text-wrap:pretty] ${r.hue !== undefined ? 'pl-4' : ''}`}>{r.note}</span>}
-        </span>
-      ))}
+    <span className={`mt-1 flex flex-col ${kits ? 'gap-2' : 'gap-0'}`}>
+      {rows.map((r, i) => {
+        const k = keyOf(i, r);
+        const on = !!ticked[k];
+        return (
+          <button key={k} role="checkbox" aria-checked={on} onClick={(e) => { e.stopPropagation(); onTick(k); }} onKeyDown={(e) => e.stopPropagation()}
+            className="-mx-2 grid grid-cols-[20px_minmax(0,1fr)] gap-x-2.5 rounded-lg px-2 py-1 text-left hover:bg-bg"
+            style={r.hue !== undefined ? ({ '--hue': r.hue } as React.CSSProperties) : undefined}>
+            <span className="pt-0.5"><Check on={on} /></span>
+            <span className={`flex flex-col gap-0.5 transition-opacity ${on ? 'opacity-45' : ''}`}>
+              <span className="flex items-baseline gap-2 text-sm">
+                {r.hue !== undefined && <span className="kit-bg h-2 w-2 shrink-0 translate-y-[-1px] rounded-sm" />}
+                <span className={`${kits ? 'font-semibold' : ''} ${on ? 'line-through' : ''}`}>{r.name}</span>
+                <span className="ml-auto whitespace-nowrap font-mono text-[12px] text-muted">{r.right}</span>
+              </span>
+              {r.sub && <span className="text-sm text-muted">{r.sub}</span>}
+              {r.note && <span className="text-[12px] text-muted opacity-80 [text-wrap:pretty]">{r.note}</span>}
+            </span>
+          </button>
+        );
+      })}
     </span>
   );
 }
@@ -200,7 +244,7 @@ function Timeline({ steps, clocks: cl, done, now }: { steps: Step[]; clocks: Rec
         <span />
         <span className="relative h-3">
           <span className="absolute left-0">{t0} min</span>
-          {x(0) > 15 && x(0) < 85 && <span className="absolute -translate-x-1/2" style={{ left: `${x(0)}%` }}>0</span>}
+          {x(0) > 20 && x(0) < 80 && <span className="absolute hidden -translate-x-1/2 sm:inline" style={{ left: `${x(0)}%` }}>0</span>}
           <span className="absolute right-0">{t1} min</span>
         </span>
         <span />
