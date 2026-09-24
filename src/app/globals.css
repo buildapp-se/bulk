@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+/* Tokens: warm paper + ink, from the Claude Design file. Dark = espresso. */
+:root {
+  --bg: #f6f4f0;
+  --surface: #fdfcfa;
+  --sunken: #ebe7e0;
+  --ink: #23211d;
+  --muted: #6f6a62;
+  --line: #e6e2da;
+  --line-soft: #efece6;
+  --on-ink: #fdfcfa;
+  --p: oklch(0.62 0.1 155);
+  --c: oklch(0.7 0.11 80);
+  --f: oklch(0.64 0.12 30);
+  --warn: oklch(0.62 0.15 55);
+  --kit-l: 0.72;
+  --kit-c: 0.11;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161412;
+    --surface: #1f1c19;
+    --sunken: #2a2622;
+    --ink: #f2eee8;
+    --muted: #a39d93;
+    --line: #34302b;
+    --line-soft: #2a2622;
+    --on-ink: #161412;
+    --kit-l: 0.68;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-on-ink: var(--on-ink);
+  --color-p: var(--p);
+  --color-c: var(--c);
+  --color-f: var(--f);
+  --color-warn: var(--warn);
+  --font-sans: var(--font-hanken), system-ui, sans-serif;
+  --font-mono: var(--font-plex), ui-monospace, monospace;
+}
+
+html, body { background: var(--bg); color: var(--ink); }
+body { -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+.label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.kit-bg { background: oklch(var(--kit-l) var(--kit-c) var(--hue)); }
+.kit-soft { background: oklch(var(--kit-l) calc(var(--kit-c) * 0.5) var(--hue) / 0.18); }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* Route transitions: forward slides left, back slides right. */
+::view-transition-old(.nav-forward) { animation: 180ms ease-in both vt-out-left; }
+::view-transition-new(.nav-forward) { animation: 320ms cubic-bezier(.2,.8,.2,1) both vt-in-right; }
+::view-transition-old(.nav-back) { animation: 180ms ease-in both vt-out-right; }
+::view-transition-new(.nav-back) { animation: 320ms cubic-bezier(.2,.8,.2,1) both vt-in-left; }
+::view-transition-group(.morph) { animation-duration: 420ms; animation-timing-function: cubic-bezier(.2,.8,.2,1); }
+@keyframes vt-out-left { to { opacity: 0; transform: translateX(-40px); filter: blur(4px); } }
+@keyframes vt-in-right { from { opacity: 0; transform: translateX(60px); filter: blur(4px); } }
+@keyframes vt-out-right { to { opacity: 0; transform: translateX(40px); filter: blur(4px); } }
+@keyframes vt-in-left { from { opacity: 0; transform: translateX(-60px); filter: blur(4px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

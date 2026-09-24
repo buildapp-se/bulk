@@ -1,0 +1,39 @@
+# Bulk.
+
+Modulär mealprep-planerare: laga neutrala baser (protein, kolhydrat, grönt) i bulk och byt smak per låda med ett smakkit. Live: https://buildapp.se/bulk/
+
+Design från Claude Design-projektet "Mealprep" (ade1c1e3-d70f-4582-995b-bb751a52182b), filerna `Mealprep App.dc.html` och `Mealprep Översikt.dc.html`. Formen och tonen därifrån, logiken omskriven.
+
+## Stack
+
+- Next.js 16 (App Router), `output: 'export'`, `basePath: '/bulk'`, `trailingSlash: true`. Ingen server.
+- React 19 `<ViewTransition>` för riktade sidbyten, Motion 13 (`motion/react`) för springs, layout-animationer, drag.
+- Tailwind 4, tokens i `src/app/globals.css` (ljust + mörkt läge).
+- TypeScript strict. `src/lib/*.ts` importerar med `.ts`-ändelse så att `node scripts/check.ts` kör samma kod som appen.
+- PWA: `src/app/manifest.ts`, `public/sw.js` (network-first för sidor, cache-first för hashade assets), ikoner från `scripts/icons.mjs`.
+- Deploy: `.github/workflows/deploy.yml` bygger på Ubuntu och publicerar `out/` till GitHub Pages. Repot är publikt av det skälet (Pages från privat repo kräver Pro). buildapp-se-orgens user-site gör att repot hamnar på buildapp.se/bulk.
+
+## Filer
+
+- `src/lib/data.ts`: all matdata. Näring per 100 g **rå** vikt, förpackningsstorlekar, metoder, smakkit.
+- `src/lib/calc.ts`: ren motor. Plan in, lådor/näring/inköp/schema ut.
+- `src/lib/store.ts`: localStorage + `useSyncExternalStore`. Nyckeln bär schemaversion (`bulk:plan:v1`).
+- `src/i18n/sv.ts`: all UI-text. Matnamn ligger i data.ts.
+- `scripts/check.ts`: handräknade förväntade värden + drift mot grammats `nutrients.json` (bara lokalt, där `../recept` finns).
+
+## Beslut (grill 2026-09-24)
+
+- **Modulsystem med snabba defaults.** Proteiner och kit fördelas jämnt, lådor tar det protein kitet föredrar. Varje låda kan ändras (tryck) eller bytas (håll inne och dra). Ofullständiga lådor är tillåtna: banner visar vad som saknas, inköpslistan räknar bara fyllda lådor.
+- **Mjuka gränser.** Upp till 40 lådor. Fler än 3 kit eller proteiner, eller mer än ca 1,2 kg rått per plåt, ger varning, inte stopp.
+- **Tillagningsmetod per protein:** ugn, sous vide (kyckling 64 °C, fläskkarré 74 °C), långkok i form (fläskkarré 150 °C), gryta (röda linser). Lax har inte sous vide: 50 °C pastöriserar inte och lådorna ska hålla 3–4 dagar.
+- **Näring = rå vikt × Livsmedelsverket.** Värden från grammats `nutrients.json` (`gm`) eller LV:s API (`lv` = livsmedelsnummer). `src: 'est'` = etikett eller uppskattning. Olja ca 1 msk per 500 g rått på plåt räknas in. Utbytet används bara till "blir ca X g tillagat".
+- **Mål:** Av / Enkel (Bulka, Behåll, Deffa + vikt) / Avancerad (Mifflin-St Jeor, aktivitet, lådor per dag). En låda = min(35 %, 60 %/lådor per dag) av dagsbehovet. Protein-reglaget styr proteinets gram, kcal-reglaget styr kolhydratens gram (löses iterativt eftersom de påverkar varandra).
+- **Inköp avrundas till förpackningar**, minsta spill med högst två storlekar. Handskriven tabell i data.ts.
+- **Svenska först**, engelska senare (text redan samlad i `sv.ts`).
+- **Ingen inloggning ännu.** Firebase Auth kommer senare, samma mönster som familjehubben.
+
+## Källor för smakkit
+
+Kryddning kontrollerad mot högt betygsatta recept 2026-09-24: RecipeTin Eats (grekisk kyckling, chili, qeema, shepherd's pie, moussaka-pilaff, carnitas, teriyaki), ICA (köttfärssås, kålpudding, ugnslax soja/ingefära, pulled pork), Eating Thai Food (pad krapow), Anova/Serious Eats (sous vide carnitas och kyckling), Once Upon a Chef (rostade kikärtor). De krämiga kiten (curry mango, marry me, ajvar, kebab, philly, buffalo, svampsås, cheeseburger) är anpassade från "Mina favoriter" (FIH Creations), Patriks egen kokbok.
+
+Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
