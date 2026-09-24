@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { t } from '@/i18n/sv';
 import { CARBS, KITS, PROTEINS, VEGS } from '@/lib/data';
 import { fmtMin, nf, type BoxCalc, type Slot } from '@/lib/calc';
-import { resetBox, setKitCarb, setSlot, swapBoxes } from '@/lib/actions';
+import { clearAll, resetBox, setKitCarb, setKitProtein, setKitVeg, setSlot, swapBoxes } from '@/lib/actions';
 import { useBatch } from '@/lib/useBatch';
 import { haptic } from '@/lib/haptics';
 import { Num } from './Num';
@@ -18,13 +18,22 @@ export function BatchPanel() {
   const off = calcs.filter(offGoal);
   const kitRows = plan.kits.map((id) => {
     const mine = calcs.filter((c) => c.box.kit?.id === id && !c.missing.length);
-    return { id, kit: KITS.find((k) => k.id === id)!, n: calcs.filter((c) => c.box.kit?.id === id).length, kcal: mine.length ? mine.reduce((s, c) => s + c.m[0], 0) / mine.length : 0, carb: plan.kitCarb[id] };
+    const kit = KITS.find((k) => k.id === id)!;
+    const prots = [...new Set(calcs.filter((c) => c.box.kit?.id === id).map((c) => c.box.protein?.id ?? ''))];
+    return {
+      id, kit, n: calcs.filter((c) => c.box.kit?.id === id).length, kcal: mine.length ? mine.reduce((s, c) => s + c.m[0], 0) / mine.length : 0,
+      // '' = mixed or none: the select shows a placeholder.
+      protein: plan.kitProtein[id] ?? (prots.length === 1 ? prots[0] : ''), mixed: prots.length > 1,
+      carb: plan.kitCarb[id] ?? kit.carb, veg: plan.kitVeg[id] ?? kit.veg,
+    };
   });
+  const chosen = PROTEINS.filter((p) => plan.proteins.some((x) => x.id === p.id));
+  const others = PROTEINS.filter((p) => !chosen.includes(p));
 
   return (
     <aside className="flex flex-col gap-5 rounded-2xl border border-line bg-surface p-5 lg:sticky lg:top-24">
       <div className="flex items-baseline justify-between gap-3">
-        <div className="text-[17px] font-semibold">{t.batch}</div>
+        <div className="flex items-center gap-1.5"><span className="text-[17px] font-semibold">{t.batch}</span><ClearAll /></div>
         <div className="font-mono text-xs text-muted">{t.trays(sched.trays, fmtMin(sched.total))}</div>
       </div>
 
@@ -59,8 +68,18 @@ export function BatchPanel() {
               </div>
               <span className="font-mono text-xs"><Num v={r.kcal} /> kcal</span>
             </div>
-            <div className="no-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1">
-              {CARBS.map((cb) => <Pill key={cb.id} on={(r.carb ?? r.kit.carb) === cb.id} onClick={() => setKitCarb(r.id, cb.id)}>{cb.short ?? cb.name}</Pill>)}
+            <div className="grid grid-cols-3 gap-2">
+              <Field label={t.slots.protein} value={r.protein} onChange={(v) => setKitProtein(r.id, v)}>
+                {!r.protein && <option value="" disabled>{r.mixed ? t.box.mixed : t.box.pick}</option>}
+                {chosen.length > 0 && <optgroup label={t.box.chosen}>{chosen.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</optgroup>}
+                <optgroup label={chosen.length ? t.box.others : t.slots.protein}>{others.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</optgroup>
+              </Field>
+              <Field label={t.slots.carb} value={r.carb} onChange={(v) => setKitCarb(r.id, v)}>
+                {CARBS.map((cb) => <option key={cb.id} value={cb.id}>{cb.short ?? cb.name}</option>)}
+              </Field>
+              <Field label={t.slots.veg} value={r.veg} onChange={(v) => setKitVeg(r.id, v)}>
+                {VEGS.map((v) => <option key={v.id} value={v.id}>{v.name}{v.frozenOnly ? ` ${t.box.frozen}` : ''}</option>)}
+              </Field>
             </div>
           </motion.div>
         ))}
@@ -82,6 +101,44 @@ export function BatchPanel() {
 
       <AnimatePresence>{open !== null && calcs[open] && <BoxSheet c={calcs[open]} onClose={() => setOpen(null)} />}</AnimatePresence>
     </aside>
+  );
+}
+
+/** Native select dressed as a field: the phone's own picker, labelled, never wider than its column. */
+function Field({ label, value, onChange, children }: { label: string; value: string; onChange: (v: string) => void; children: React.ReactNode }) {
+  return (
+    <label className="flex min-w-0 flex-col gap-1">
+      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted">{label}</span>
+      <span className="relative">
+        {/* 16px on phones: iOS zooms into smaller selects on focus. */}
+        <select value={value} onChange={(e) => onChange(e.target.value)}
+          className="w-full cursor-pointer appearance-none truncate rounded-lg border border-line bg-bg py-2 pl-2 pr-5 text-base outline-none transition-colors hover:border-muted focus-visible:ring-2 focus-visible:ring-ink sm:text-[13px]">
+          {children}
+        </select>
+        <span aria-hidden className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] text-muted">▾</span>
+      </span>
+    </label>
+  );
+}
+
+/** Two taps to clear: the first arms it for 3 s, so a stray tap never wipes the batch. */
+function ClearAll() {
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (!armed) return;
+    const id = setTimeout(() => setArmed(false), 3000);
+    return () => clearTimeout(id);
+  }, [armed]);
+  return (
+    <motion.button layout transition={spring} onClick={() => { if (armed) { clearAll(); setArmed(false); } else { haptic(); setArmed(true); } }}
+      aria-label={t.box.clearAll} title={t.box.clearAll}
+      className={`flex h-8 items-center justify-center rounded-full text-[13px] transition-colors ${armed ? 'bg-warn px-3 font-semibold text-white' : 'w-8 text-muted hover:bg-sunken hover:text-ink'}`}>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span key={String(armed)} initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.6 }}>
+          {armed ? t.box.clearAsk : '↺'}
+        </motion.span>
+      </AnimatePresence>
+    </motion.button>
   );
 }
 

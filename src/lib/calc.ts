@@ -26,6 +26,7 @@ export interface Plan {
   boxes: number;
   proteins: { id: string; method: MethodId }[];
   kits: string[];
+  kitProtein: Record<string, string>; // protein for all boxes of a kit; any protein, not only the selected ones
   kitCarb: Record<string, string>;
   kitVeg: Record<string, string>;
   vegMode: 'rostade' | 'frysta';
@@ -38,6 +39,7 @@ export const DEFAULT_PLAN: Plan = {
   boxes: 8,
   proteins: [{ id: 'kyckling', method: 'ugn' }, { id: 'notfars', method: 'ugn' }],
   kits: ['teriyaki', 'grekisk', 'texmex'],
+  kitProtein: {},
   kitCarb: {},
   kitVeg: {},
   vegMode: 'rostade',
@@ -68,7 +70,12 @@ export function resolveBoxes(p: Plan): Box[] {
   // Proteins: even counts, then each box greedily takes the protein its kit prefers.
   const left = new Map<string, number>();
   split(p.boxes, Math.max(1, p.proteins.length)).forEach((c, i) => p.proteins[i] && left.set(p.proteins[i].id, c));
+  // Kits with a chosen protein take it first (and use up its share); the rest share what is left.
+  const fixed = (k?: Kit) => { const id = k && p.kitProtein[k.id]; return id && PROTEINS.some((x) => x.id === id) ? id : undefined; };
+  for (const k of kitOf) { const f = fixed(k); if (f && left.has(f)) left.set(f, left.get(f)! - 1); }
   const protOf: (string | undefined)[] = kitOf.map((k) => {
+    const f = fixed(k);
+    if (f) return f;
     const pref = (k?.protein ?? []).find((id) => (left.get(id) ?? 0) > 0);
     const pick = pref ?? [...left.entries()].sort((a, b) => b[1] - a[1]).find(([, c]) => c > 0)?.[0];
     if (pick) left.set(pick, (left.get(pick) ?? 0) - 1);

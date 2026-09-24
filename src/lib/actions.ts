@@ -25,7 +25,11 @@ export const setMethod = (id: string, method: MethodId) => {
   setPlan((p) => ({ ...p, proteins: p.proteins.map((x) => (x.id === id ? { ...x, method } : x)) }));
 };
 
-export const setKitCarb = (kit: string, carb: string) => { haptic(); setPlan((p) => ({ ...p, kitCarb: { ...p.kitCarb, [kit]: carb } })); };
+export const setKitProtein = (kit: string, protein: string) => { haptic(); setPlan((p) => ({ ...p, kitProtein: { ...p.kitProtein, [kit]: protein } })); };
+export const setKitVeg = (kit: string, veg: string) => { haptic(); setPlan((p) => ({ ...p, kitVeg: { ...p.kitVeg, [kit]: veg } })); };
+/** Empty the batch: kits, proteins, per-kit and per-box choices. Goal, box count and veg mode stay. */
+export const clearAll = () => { haptic(14); setPlan((p) => ({ ...p, kits: [], proteins: [], kitProtein: {}, kitCarb: {}, kitVeg: {}, overrides: {} })); };
+export const setKitCarb =(kit: string, carb: string) => { haptic(); setPlan((p) => ({ ...p, kitCarb: { ...p.kitCarb, [kit]: carb } })); };
 export const setVegMode = (vegMode: Plan['vegMode']) => { haptic(); setPlan((p) => ({ ...p, vegMode })); };
 export const setGoal = (g: Partial<Goal>) => setPlan((p) => ({ ...p, goal: { ...p.goal, ...g } }));
 

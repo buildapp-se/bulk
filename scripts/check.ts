@@ -16,6 +16,13 @@ const near = (name: string, got: number, want: number, tol = 0.5) => {
 // Distribution
 eq('split 8/3', split(8, 3), [3, 3, 2]);
 eq('default proteins', resolveBoxes(DEFAULT_PLAN).map((b) => b.protein?.id), ['kyckling', 'kyckling', 'kyckling', 'kyckling', 'notfars', 'notfars', 'notfars', 'notfars']);
+// Protein per kit. Default 8 boxes: teriyaki 3, grekisk 3, texmex 2; kyckling 4, nötfärs 4.
+// Teriyaki -> nötfärs uses 3 of nötfärs' 4; grekisk takes kyckling ×3, texmex the last nötfärs, then kyckling.
+const pid = (p: Plan) => resolveBoxes(p).map((b) => b.protein?.id[0]);
+eq('kit protein fixed', pid({ ...DEFAULT_PLAN, kitProtein: { teriyaki: 'notfars' } }), ['n', 'n', 'n', 'k', 'k', 'k', 'n', 'k']);
+// A protein not selected in step 2 (lax) works too; the others share 4/4 over the remaining 6 boxes.
+eq('kit protein unselected', pid({ ...DEFAULT_PLAN, kitProtein: { texmex: 'lax' } }), ['k', 'k', 'k', 'k', 'n', 'n', 'l', 'l']);
+eq('kit veg', resolveBoxes({ ...DEFAULT_PLAN, kitVeg: { teriyaki: 'haricots' } })[0].veg?.id, 'haricots');
 const cleared: Plan = { ...DEFAULT_PLAN, overrides: { 2: { protein: null } } };
 eq('override clears slot', resolveBoxes(cleared)[2].protein, undefined);
 

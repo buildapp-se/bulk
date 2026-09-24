@@ -26,7 +26,8 @@ export const sv = {
   avg: ['kcal', 'protein', 'kolhydr.', 'fett'],
   toIngredients: 'Visa ingredienser',
   toCook: 'Börja laga',
-  box: { title: (n: number) => `Låda ${n}`, clear: 'Töm', empty: 'Saknas', reset: 'Återställ lådan', drag: 'Håll inne och dra för att byta plats' },
+  box: { title: (n: number) => `Låda ${n}`, clear: 'Töm', empty: 'Saknas', reset: 'Återställ lådan', drag: 'Håll inne och dra för att byta plats',
+    mixed: 'Blandat', pick: 'Välj', chosen: 'Valda', others: 'Övriga', frozen: '(fryst)', clearAll: 'Rensa allt', clearAsk: 'Rensa?' },
   base: {
     own: 'Egen sås', ownHint: 'lagas var för sig', portion: '1 portion',
     tip: (n: number, name: string, pot: string) => `${n} kit på ${name.toLowerCase()} = 1 ${pot}`,
