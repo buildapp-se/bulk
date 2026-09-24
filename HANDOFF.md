@@ -13,6 +13,6 @@ reviewedAt: 2026-09-24
 
 **Sedan v1 (2026-09-24 kväll):** hela kort klickbara, kitens innehåll syns före val, standard Behåll, 8 egna lätta krämiga kit, 8 Filips-testkit, illustration per kit.
 
-**Väntar på Patrik:** förslaget om grundbaser (tomatbas, asiatisk bas, krämig bas, rökig rub) med kit som twist ovanpå, trädvy i Välj och gemensamt grytsteg i Tillagning.
+**Nästa (godkänt 2026-09-24):** BACKLOG P0, grundbaser och digitala klockor med larm i Tillagning. Specen står där. Sedan P1, test på riktig telefon.
 
-**Nästa:** BACKLOG P1.
+**Kitbilder:** 32 illustrationer i `public/kits/`, URL:erna versioneras med `?v=<commit>` (Cloudflare cachar även 404 i 4 h). Nytt kit: `node scripts/kit-art.ts <id>`.
