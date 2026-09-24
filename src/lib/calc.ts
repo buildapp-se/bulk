@@ -273,6 +273,7 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   const cut = [
     ovenProt.some((x) => x.pr.id === 'kyckling') && 'skär kycklingen i 2–3 cm bitar',
     ovenProt.some((x) => x.pr.id === 'kikartor') && 'låt kikärtorna rinna av och torka dem',
+    ovenProt.some((x) => x.pr.id === 'halloumi') && 'skär halloumin i tärningar',
     ovenCarbs.some((c) => c.id === 'potatis') && 'dela potatisen i klyftor',
     ovenVegs.length > 0 && 'skär grönsakerna i bitar',
   ].filter(Boolean) as string[];

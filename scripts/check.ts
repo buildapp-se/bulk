@@ -101,6 +101,15 @@ eq('+1 on a rung clock counts from now', nudge(ck, M, 30 * M), { end: 31 * M });
 eq('−1 never below zero', nudge(start(0.5, 0), -M, 0), { end: 0 });
 eq('clock format', [fmtClock(65_000), fmtClock(3_723_000), fmtClock(400)], ['1:05', '1:02:03', '0:01']);
 
+// Vegetarian proteins. Halloumi (22,3 g P, 21,9 g fat/100 g) reaches 41 g P and 740 kcal only by cutting
+// the potatoes to ~95 g: the box ends ~52 g fat, ~25 g carbs. Sojafärs lands on the plate like mince.
+const veg: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'halloumi', method: 'ugn' }, { id: 'sojafars', method: 'ugn' }], kits: ['grekisk', 'chili'] };
+const vegSch = schedule(resolveBoxes(veg).map((b) => calcBox(b, veg, null)), veg);
+eq('veg proteins go to kits that list them', resolveBoxes(veg).map((b) => b.protein?.id), ['halloumi', 'halloumi', 'halloumi', 'halloumi', 'sojafars', 'sojafars', 'sojafars', 'sojafars']);
+eq('halloumi and sojafärs in the oven', ['prot-halloumi', 'prot-sojafars'].map((id) => vegSch.steps.find((s) => s.id === id)?.temp), [200, 200]);
+const hal = calcBox(resolveBoxes(veg)[0], veg, { kcal: 740, protein: 41, dailyKcal: 0, dailyProtein: 0 });
+eq('halloumi: goal hit, carbs traded for fat', [Math.abs(hal.m[1] - 41) < 2, Math.abs(hal.m[0] - 740) < 15, hal.m[3] > 45, hal.m[2] < 30], [true, true, true, true]);
+
 // Data integrity: every kit/protein/carb/veg ingredient exists, every kit default resolves.
 for (const k of KITS) { byId(CARBS, k.carb); byId(VEGS, k.veg); k.protein.forEach((p) => byId(PROTEINS, p)); }
 
