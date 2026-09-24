@@ -18,6 +18,7 @@
 - Ta bort ugnsvyn med de randiga "virvlarna". Varje startad timer blir en stor animerad digital klocka (siffror som rullar, mm:ss eller h:mm:ss).
 - Under varje klocka en kort text om vad den gäller, t.ex. "Kyckling i ugnen · 200 °C".
 - Huvudtimers är protein-, kolhydrat- och grönsaksstegen som ska gå X minuter. Startade timers dyker upp i en snygg docka/rad högst upp (animerad in, sorterad på tid kvar) och går att nå medan man scrollar.
+- Varje timer går att pausa och starta igen, och man kan lägga till eller dra bort minuter med plus och minus (t.ex. ±1 min). Timerstate måste då bära paustid och justering, inte bara starttid (`Cook.timers` i `store.ts`).
 - Larm när en timer är klar: ljud (Web Audio, upprepas tills man kvitterar), vibration och avisering. Klockan pulserar och visar "Klar".
 
 - Testa på riktig telefon (iPhone + Android): installera som PWA, aviseringar i live-läget, haptik (iOS switch-tricket), Wake Lock.
