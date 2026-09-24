@@ -136,7 +136,12 @@ function KitCard({ k }: { k: Kit }) {
         </span>
       </span>
       <span className="text-[12px] leading-snug text-muted">
-        <span className="text-ink">{pr.name}, {byId(CARBS, k.carb).name.toLowerCase()}, {byId(VEGS, k.veg).name.toLowerCase()}.</span>{' '}
+        {/* Every protein the kit suits; the ones picked in step 2 stand out, so matching kits are easy to spot. */}
+        {k.protein.map((id, i) => {
+          const on = plan.proteins.some((x) => x.id === id);
+          return <span key={id}>{i > 0 && <span className="text-muted"> · </span>}<span className={on ? 'font-semibold text-ink' : ''}>{byId(PROTEINS, id).name}</span></span>;
+        })}
+        <span> · {byId(CARBS, k.carb).name.toLowerCase()}, {byId(VEGS, k.veg).name.toLowerCase()}.</span>{' '}
         {k.base && <>På {byId(BASES, k.base).name.toLowerCase()}. </>}
         {k.mix.length > 0 && <>{k.base ? 'Plus' : 'I såsen'}: {list(k.mix)}. </>}
         {k.top.length > 0 && <>Toppas: {list(k.top)}.</>}
