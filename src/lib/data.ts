@@ -115,13 +115,15 @@ export const INGR: Record<IngrId, Ingr> = INGR_;
 // ---------- Cooking ----------
 
 export type MethodId = 'ugn' | 'sousvide' | 'form' | 'gryta';
-export interface Method { temp: number; min: number; note: string; sear?: string; prep?: string } // prep = what to do before cooking
+// prep = what to do before cooking; hint = short caveat on the protein card
+export interface Method { temp: number; min: number; note: string; sear?: string; prep?: string; hint?: string }
 
 export interface Protein {
   id: string;
   name: string;
   ingr: IngrId;
   raw: number; // default raw grams per box
+  rub?: readonly KitItem[]; // seasoning per 1 kg raw, scaled to the whole piece in the cooking step
   methods: Partial<Record<MethodId, Method>>;
 }
 
@@ -139,12 +141,17 @@ export const PROTEINS: readonly Protein[] = [
   { id: 'flaskfars', name: 'Fläskfärs', ingr: 'flaskfars', raw: 175, methods: {
     ugn: { temp: 200, min: 15, note: 'Smula ut tunt på plåt, bryt isär efter 8 min. Minst 70 °C.' },
   } },
-  { id: 'flaskkarre', name: 'Pulled fläskkarré', ingr: 'flaskkarre', raw: 190, methods: {
-    form: { temp: 150, min: 210, note: 'Per kg: 1 tsk spiskummin, ½ msk oregano, 2 vitlöksklyftor, 1¼ tsk salt, 90 ml apelsinjuice. Form med folie 3 h, sedan 30 min utan. Dra isär med gafflar.' },
-    sousvide: { temp: 74, min: 1080, note: 'Kryddad karré i påse med apelsinjuicen, 74 °C i 12–24 h. Starta kvällen före.', sear: 'Dra isär och stek i het panna.' },
-  } },
+  { id: 'flaskkarre', name: 'Pulled fläskkarré', ingr: 'flaskkarre', raw: 190,
+    rub: [{ name: 'Spiskummin', q: 1, u: 'tsk' }, { name: 'Oregano', q: 1.5, u: 'tsk' }, { name: 'Vitlöksklyftor, pressade', q: 2, u: 'st' }, { name: 'Salt', q: 1.25, u: 'tsk' }, { name: 'Apelsinjuice', q: 90, u: 'ml' }],
+    methods: {
+      form: { temp: 150, min: 210, note: 'Gnid in kryddorna och vitlöken, lägg karrén i en form och häll juicen runt. Folie 3 h, sedan 30 min utan. Dra isär med gafflar.' },
+      sousvide: { temp: 74, min: 1080, note: 'Gnid in kryddorna och vitlöken, lägg karrén i påse med juicen. 74 °C i 12–24 h.', sear: 'Dra isär och stek i het panna.' },
+    } },
   { id: 'lax', name: 'Lax', ingr: 'lax', raw: 150, methods: {
     ugn: { temp: 200, min: 12, note: 'Bitar med skinnet nedåt, ca 12 min till 56 °C. Ät inom 2 dagar eller frys.', prep: 'Skär i portionsbitar' },
+    // Patrik 2026-09-24: 52 °C, not pasteurised, so the same 2-day rule as the oven salmon.
+    sousvide: { temp: 52, min: 45, note: 'Portionsbitar i påse med lite olja, 52 °C i 45 min. Saftig och ljusrosa. 52 °C pastöriserar inte: ät inom 2 dagar eller frys.',
+      prep: 'Skär i portionsbitar, salta och lägg i påse', hint: 'Ej pastöriserad: ät inom 2 dagar' },
   } },
   { id: 'kikartor', name: 'Rostade kikärtor', ingr: 'kikartor', raw: 180, methods: {
     ugn: { temp: 200, min: 25, note: 'Avrunna och torkade, 25 min. Skaka plåten halvvägs.', prep: 'Låt rinna av och torka ordentligt' },

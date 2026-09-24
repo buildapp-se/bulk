@@ -2,13 +2,13 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { t } from '@/i18n/sv';
-import { fmtMin, type Step, type StepLine } from '@/lib/calc';
-import { leftMs, ringing, running, type Clock } from '@/lib/clock';
+import { fmtMin, isLong, type Step, type StepLine } from '@/lib/calc';
+import { fmtAt, fmtAtStr, leftMs, MIN, ringing, running, zeroAt, type Clock } from '@/lib/clock';
 import { useBatch } from '@/lib/useBatch';
 import { setCook, useCook } from '@/lib/store';
 import { haptic } from '@/lib/haptics';
 import { Check } from './Pickers';
-import { spring } from './ui';
+import { Segmented, spring } from './ui';
 import { ClockPanel, Digits, clocks, useNow } from './Timers';
 
 const TRACK_COLOR: Record<string, string> = { prep: 'var(--muted)', ugn: 'var(--f)', spis: 'var(--c)', sousvide: 'oklch(0.62 0.1 240)', form: 'oklch(0.55 0.1 30)', klar: 'var(--p)' };
@@ -32,8 +32,7 @@ function useWakeLock(on: boolean) {
 export function Cook() {
   const { sched } = useBatch();
   const cook = useCook();
-  const anyClock = Object.keys(cook.clocks).length > 0;
-  const now = useNow(anyClock);
+  const now = useNow(true); // the clock at the top ticks whether or not a timer runs
   const awake = useWakeLock(true); // whole cooking view: phones must not lock mid-recipe, timer or not
   const [perm, setPerm] = useState<NotificationPermission | 'na'>('na');
   useEffect(() => { setPerm(typeof Notification === 'undefined' ? 'na' : Notification.permission); }, []);
@@ -41,6 +40,21 @@ export function Cook() {
   const steps = sched.steps;
   const doneN = steps.filter((s) => cook.done[s.id]).length;
   const next = steps.find((s) => !cook.done[s.id] && !cook.clocks[s.id]);
+
+  // Clock times. A running timer (least time left; rung ones may be stale) pins minute 0 live, so pause and ±1 move the
+  // schedule; after that the time stored when a timer started; before any timer, "start now" or "klart kl".
+  const first = Math.min(...steps.map((s) => s.t));
+  const last = Math.max(...steps.map((s) => s.t + s.dur));
+  const anchor = steps.filter((s) => cook.clocks[s.id] && running(cook.clocks[s.id]) && !ringing(cook.clocks[s.id], now))
+    .sort((a, b) => leftMs(cook.clocks[a.id], now) - leftMs(cook.clocks[b.id], now))[0];
+  const live = anchor ? now + leftMs(cook.clocks[anchor.id], now) - (anchor.t + anchor.dur) * MIN : null;
+  const pinned = live ?? cook.at;
+  const zero = zeroAt(first, last, now, pinned, cook.ready);
+  const at = (m: number) => zero + m * MIN;
+  const end = at(last);
+  const late = pinned === null && !!cook.ready && at(first) < now;
+  // Default "klart kl": the next half hour after the schedule would end if started now.
+  const suggest = () => fmtAt(Math.ceil((now + (last - first) * MIN) / (30 * MIN)) * 30 * MIN, now).time;
 
   const toggleDone = (s: Step) => {
     haptic(cook.done[s.id] ? 6 : 14);
@@ -71,6 +85,28 @@ export function Cook() {
         {sched.warnings.map((w) => <p key={w} className="text-[13px] text-warn">{w}</p>)}
       </div>
 
+      {now > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-surface p-4">
+          <div className="flex flex-col gap-1.5">
+            <span className="font-mono text-[34px] font-semibold leading-none tabular-nums" aria-label={t.cook.nowLabel}>{fmtAt(now, now).time}</span>
+            <span className={`text-[13px] ${late ? 'text-warn' : 'text-muted'}`}>
+              {late ? t.cook.late(fmtAtStr(now + (last - first) * MIN, now)) : t.cook.plan(fmtAtStr(at(first), now), fmtAtStr(end, now))}
+              {pinned !== null && ` · ${t.cook.follows}`}
+            </span>
+          </div>
+          {pinned === null && (
+            <div className="flex items-center gap-2">
+              <Segmented id="anchor" small value={cook.ready ? 'ready' : 'now'} onChange={(v) => setCook((c) => ({ ...c, ready: v === 'ready' ? suggest() : null }))}
+                options={[['now', <span key="n" className="whitespace-nowrap">{t.cook.startNow}</span>], ['ready', <span key="r" className="whitespace-nowrap">{t.cook.readyAt}</span>]] as const} />
+              {cook.ready && (
+                <input type="time" value={cook.ready} aria-label={t.cook.readyAt} onChange={(e) => { const v = e.target.value; if (v) setCook((c) => ({ ...c, ready: v })); }}
+                  className="h-9 rounded-lg border border-line bg-bg px-2 font-mono text-[14px]" />
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between text-[13px] text-muted">
           <span>{t.cook.progress(doneN, steps.length)}</span>
@@ -79,7 +115,7 @@ export function Cook() {
             {perm !== 'na' && perm !== 'granted' && (
               <button className="underline" onClick={async () => setPerm(await Notification.requestPermission())} title={t.cook.notifyHint}>{t.cook.notify}</button>
             )}
-            <button className="underline" onClick={() => { haptic(); setCook((c) => ({ ...c, done: {}, clocks: {}, sub: {} })); }}>{t.cook.reset}</button>
+            <button className="underline" onClick={() => { haptic(); setCook((c) => ({ ...c, done: {}, clocks: {}, sub: {}, at: null })); }}>{t.cook.reset}</button>
           </div>
         </div>
         <div className="h-1 overflow-hidden rounded-full bg-line">
@@ -87,11 +123,11 @@ export function Cook() {
         </div>
       </div>
 
-      <Timeline steps={steps} clocks={cook.clocks} done={cook.done} now={now} />
+      <Timeline steps={steps} clocks={cook.clocks} done={cook.done} now={now} nowT={live === null ? null : (now - live) / MIN} at={at} end={end} />
 
       <div className="flex flex-col">
         {steps.map((s) => (
-          <StepRow key={s.id} s={s} isNext={s.id === next?.id} done={!!cook.done[s.id]} c={cook.clocks[s.id]} now={now} onDone={() => toggleDone(s)}
+          <StepRow key={s.id} s={s} when={now > 0 ? fmtAt(at(s.t), now, end) : null} isNext={s.id === next?.id} done={!!cook.done[s.id]} c={cook.clocks[s.id]} now={now} onDone={() => toggleDone(s)}
             ticked={cook.sub} onTick={(k) => toggleSub(s, k)} />
         ))}
       </div>
@@ -104,8 +140,8 @@ export function Cook() {
 
 const rowKey = (s: Step, i: number, r: StepLine) => `${s.id}:${i}:${r.name}`;
 
-function StepRow({ s, isNext, done, c, now, onDone, ticked, onTick }: {
-  s: Step; isNext: boolean; done: boolean; c?: Clock; now: number; onDone: () => void; ticked: Record<string, boolean>; onTick: (key: string) => void;
+function StepRow({ s, when, isNext, done, c, now, onDone, ticked, onTick }: {
+  s: Step; when: { day: string; time: string } | null; isNext: boolean; done: boolean; c?: Clock; now: number; onDone: () => void; ticked: Record<string, boolean>; onTick: (key: string) => void;
 }) {
   const timed = !!s.what && s.dur > 0;
   // Done steps fold to their title so the list shrinks as you cook; tapping a folded step peeks inside.
@@ -121,7 +157,10 @@ function StepRow({ s, isNext, done, c, now, onDone, ticked, onTick }: {
       whileTap={{ scale: 0.99 }}
       className={`relative grid scroll-mt-40 cursor-pointer select-none grid-cols-[64px_28px_minmax(0,1fr)_auto] items-start gap-3 border-b border-line outline-none transition-[padding] focus-visible:ring-2 focus-visible:ring-ink ${open ? 'py-4' : 'py-2.5'}`}>
       {isNext && <motion.span layoutId="next-glow" className="absolute -inset-x-3 inset-y-1 -z-10 rounded-2xl bg-surface ring-1 ring-line" transition={spring} />}
-      <span className="pt-1 font-mono text-xs text-muted">{s.label ?? `${s.t} min`}</span>
+      <span className="flex flex-col pt-1 font-mono text-xs text-muted">
+        {when?.day && <span className="text-[10px]">{when.day}</span>}
+        <span>{when?.time}</span>
+      </span>
       <button role="checkbox" aria-checked={done} aria-label={s.title} className="-m-2 p-2 pt-2.5"
         onClick={(e) => { e.stopPropagation(); onDone(); }} onKeyDown={(e) => e.stopPropagation()}>
         <Check on={done} />
@@ -192,60 +231,84 @@ function Lines({ rows, keyOf, ticked, onTick }: { rows: StepLine[]; keyOf: (i: n
   );
 }
 
-function Timeline({ steps, clocks: cl, done, now }: { steps: Step[]; clocks: Record<string, Clock>; done: Record<string, boolean>; now: number }) {
+/** Start time over its day word, for the narrow right-hand column. */
+function When({ w }: { w: { day: string; time: string } }) {
+  return <span className="flex flex-col items-end font-mono font-normal leading-tight text-muted">{w.day && <span className="text-[9px]">{w.day}</span>}<span>{w.time}</span></span>;
+}
+
+function Timeline({ steps: all, clocks: cl, done, now, nowT, at, end }: {
+  steps: Step[]; clocks: Record<string, Clock>; done: Record<string, boolean>; now: number; nowT: number | null; at: (m: number) => number; end: number;
+}) {
+  // Long jobs get their own full-width rows on their own scale, so they don't squash the short steps' axis.
+  const long = all.filter(isLong);
+  const steps = all.filter((s) => !isLong(s));
   const t0 = Math.min(...steps.map((s) => s.t));
   const t1 = Math.max(...steps.map((s) => s.t + Math.max(s.dur, 5)));
   const span = Math.max(1, t1 - t0);
   const x = (v: number) => ((v - t0) / span) * 100;
-  // "Now" line: where the running clock with least time left is in its step. Rung clocks may be stale, so they don't count.
-  const anchor = steps.filter((s) => cl[s.id] && running(cl[s.id]) && !ringing(cl[s.id], now)).sort((a, b) => leftMs(cl[a.id], now) - leftMs(cl[b.id], now))[0];
-  const nowT = anchor ? anchor.t + anchor.dur - Math.max(0, leftMs(cl[anchor.id], now)) / 60000 : null;
   const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
   // Share of a step that has passed: its own clock if it has one, else the now line. Done = all of it.
   const passed = (s: Step) => {
     if (done[s.id]) return 1;
     const c = cl[s.id];
-    if (c && s.dur) return clamp01(1 - leftMs(c, now) / (s.dur * 60000));
+    if (c && s.dur) return clamp01(1 - leftMs(c, now) / (s.dur * MIN));
     if (nowT !== null) return s.dur ? clamp01((nowT - s.t) / s.dur) : nowT >= s.t ? 1 : 0;
     return 0;
   };
+  // Axis ticks on whole clock times, at most ~4 so they fit at 390 px.
+  const tickStep = [15, 30, 60, 120, 180].find((m) => span / m <= 4) ?? 240;
+  const ticks: number[] = [];
+  if (now > 0) for (let v = Math.ceil(at(t0) / (tickStep * MIN)) * tickStep * MIN; v <= at(t1); v += tickStep * MIN) ticks.push(v);
   const cols = 'grid-cols-[minmax(0,7.5rem)_1fr_3.25rem] sm:grid-cols-[minmax(0,12rem)_1fr_3.5rem]';
+  const jump = (s: Step) => document.getElementById(`step-${s.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const right = (s: Step) => {
+    const c = cl[s.id];
+    if (c && !done[s.id]) return ringing(c, now)
+      ? <motion.span className="font-mono" animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
+      : <Digits ms={leftMs(c, now)} className={running(c) ? '' : 'opacity-40'} />;
+    return now > 0 ? <When w={fmtAt(at(s.t), now, end)} /> : null;
+  };
+  const fade = (p: number) => (
+    // Time that has gone loses its colour; what is left stays full.
+    <motion.span className="absolute inset-y-0 left-0 bg-surface/70" initial={false} animate={{ width: `${p * 100}%` }} transition={{ type: 'tween', duration: 0.9, ease: 'linear' }} />
+  );
   return (
     <div className="flex flex-col gap-1 rounded-2xl border border-line bg-surface p-4">
       <div className="label mb-1">{t.cook.live}</div>
-      {steps.map((s, i) => {
-        const c = cl[s.id];
-        const p = passed(s);
-        return (
-          // Each row jumps to its step in the list below.
-          <button key={s.id} onClick={() => document.getElementById(`step-${s.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-            className={`grid ${cols} items-center gap-2 rounded-md text-left hover:bg-bg`}>
-            <span className={`truncate text-[12px] ${done[s.id] ? 'text-muted line-through' : ''}`}>{s.title}</span>
-            <span className="relative h-5 rounded-md bg-bg">
-              <motion.span className="absolute inset-y-0.5 overflow-hidden rounded" style={{ left: `${x(s.t)}%`, background: TRACK_COLOR[s.track] }}
-                initial={{ width: 0 }} animate={{ width: `${Math.max(1.5, (Math.max(s.dur, 2) / span) * 100)}%` }} transition={{ ...spring, delay: 0.03 * i }}>
-                {/* Time that has gone loses its colour; what is left stays full. */}
-                <motion.span className="absolute inset-y-0 left-0 bg-surface/70" initial={false} animate={{ width: `${p * 100}%` }}
-                  transition={{ type: 'tween', duration: 0.9, ease: 'linear' }} />
-              </motion.span>
-              {nowT !== null && nowT >= t0 && nowT <= t1 && (
-                <motion.span className="absolute -inset-y-0.5 w-0.5 rounded bg-ink" animate={{ left: `${x(nowT)}%` }} transition={{ type: 'tween', duration: 0.9, ease: 'linear' }} />
-              )}
-            </span>
-            <span className="text-right text-[12px] font-semibold">
-              {c && !done[s.id] && (ringing(c, now)
-                ? <motion.span className="font-mono" animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
-                : <Digits ms={leftMs(c, now)} className={running(c) ? '' : 'opacity-40'} />)}
-            </span>
-          </button>
-        );
-      })}
+      {long.map((s) => (
+        <button key={s.id} onClick={() => jump(s)} className={`grid ${cols} items-start gap-2 rounded-md pb-1 text-left hover:bg-bg`}>
+          <span className={`truncate pt-0.5 text-[12px] ${done[s.id] ? 'text-muted line-through' : ''}`}>{s.title}</span>
+          <span className="flex min-w-0 flex-col gap-0.5">
+            <span className="relative mt-0.5 h-4 overflow-hidden rounded" style={{ background: TRACK_COLOR[s.track] }}>{fade(passed(s))}</span>
+            {now > 0 && <span className="truncate font-mono text-[10px] text-muted">{fmtAtStr(at(s.t), now, end)} → {fmtAtStr(at(s.t + s.dur), now, end)} · {fmtMin(s.dur)}</span>}
+          </span>
+          <span className="text-right text-[12px] font-semibold">{right(s)}</span>
+        </button>
+      ))}
+      {long.length > 0 && <div className="my-1 h-px bg-line" />}
+      {steps.map((s, i) => (
+        // Each row jumps to its step in the list below.
+        <button key={s.id} onClick={() => jump(s)} className={`grid ${cols} items-center gap-2 rounded-md text-left hover:bg-bg`}>
+          <span className={`truncate text-[12px] ${done[s.id] ? 'text-muted line-through' : ''}`}>{s.title}</span>
+          <span className="relative h-5 rounded-md bg-bg">
+            <motion.span className="absolute inset-y-0.5 overflow-hidden rounded" style={{ left: `${x(s.t)}%`, background: TRACK_COLOR[s.track] }}
+              initial={{ width: 0 }} animate={{ width: `${Math.max(1.5, (Math.max(s.dur, 2) / span) * 100)}%` }} transition={{ ...spring, delay: 0.03 * i }}>
+              {fade(passed(s))}
+            </motion.span>
+            {nowT !== null && nowT >= t0 && nowT <= t1 && (
+              <motion.span className="absolute -inset-y-0.5 w-0.5 rounded bg-ink" animate={{ left: `${x(nowT)}%` }} transition={{ type: 'tween', duration: 0.9, ease: 'linear' }} />
+            )}
+          </span>
+          <span className="text-right text-[12px] font-semibold">{right(s)}</span>
+        </button>
+      ))}
       <div className={`grid ${cols} gap-2 font-mono text-[10px] text-muted`}>
         <span />
         <span className="relative h-3">
-          <span className="absolute left-0">{t0} min</span>
-          {x(0) > 20 && x(0) < 80 && <span className="absolute hidden -translate-x-1/2 sm:inline" style={{ left: `${x(0)}%` }}>0</span>}
-          <span className="absolute right-0">{t1} min</span>
+          {ticks.map((v) => {
+            const l = x(t0 + (v - at(t0)) / MIN);
+            return l > 4 && l < 96 && <span key={v} className="absolute -translate-x-1/2" style={{ left: `${l}%` }}>{fmtAt(v, now).time}</span>;
+          })}
         </span>
         <span />
       </div>

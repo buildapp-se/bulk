@@ -2,7 +2,7 @@
 // Expected numbers are hand-computed from the per-100 g values in data.ts (see comments).
 import { existsSync, readFileSync } from 'node:fs';
 import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
-import { fmtClock, leftMs, nudge, pause, resume, ringing, start } from '../src/lib/clock.ts';
+import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 
 const fails: string[] = [];
@@ -77,6 +77,36 @@ eq('oven out at', sch.steps.find((s) => s.id === 'out')?.t, 35);
 const sv: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'kyckling', method: 'sousvide' }, { id: 'notfars', method: 'ugn' }] };
 const svSch = schedule(resolveBoxes(sv).map((b) => calcBox(b, sv, null)), sv);
 eq('sous vide starts before oven', svSch.steps.find((s) => s.id === 'sv-kyckling')?.t, -120);
+// Karré rub scaled to the whole piece bought. 6 boxes of karré only -> one 1,5 kg pack.
+// Per kg 1 tsk spiskummin, 1,5 tsk oregano (2,25 -> 2,5), 2 vitlök, 1,25 tsk salt (1,875 -> 2), 90 ml juice (135 -> 1,4 dl).
+const k6: Plan = { ...DEFAULT_PLAN, boxes: 6, proteins: [{ id: 'flaskkarre', method: 'form' }] };
+eq('karré rub for 1,5 kg', schedule(resolveBoxes(k6).map((b) => calcBox(b, k6, null)), k6).steps.find((s) => s.id === 'form-flaskkarre')?.rows?.map((r) => r.right),
+  ['1,5 kg', '1,5 tsk', '2,5 tsk', '3 st', '2 tsk', '1,4 dl']);
+
+// Clock times (local time, as on the phone). Default batch + karré i form: form -225, prep -45, potatis 0, klart 60.
+// Klart 18:00 -> minute 0 = 17:00 -> form 17:00 - 3 h 45 = 13:15, prep 16:15.
+const kp: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'flaskkarre', method: 'form' }, ...DEFAULT_PLAN.proteins] };
+const ks = schedule(resolveBoxes(kp).map((b) => calcBox(b, kp, null)), kp).steps;
+const span = (st: typeof ks) => [Math.min(...st.map((s) => s.t)), Math.max(...st.map((s) => s.t + s.dur))] as const;
+const thu10 = new Date(2026, 8, 24, 10, 0).getTime(); // torsdag
+const hm = (st: typeof ks, zero: number, now: number, id: string) => fmtAtStr(zero + st.find((s) => s.id === id)!.t * MIN, now, zero + span(st)[1] * MIN);
+const kz = zeroAt(...span(ks), thu10, null, '18:00');
+eq('klart 18:00: times', ['form-flaskkarre', 'prep', 'form-up', 'carb-potatis', 'store'].map((id) => hm(ks, kz, thu10, id)), ['13:15', '16:15', '16:45', '17:00', '18:00']);
+// Start now: the first step (the form) starts at 10:00, klart 14:45 (285 min later).
+const nz = zeroAt(...span(ks), thu10, null, null);
+eq('start now: times', ['form-flaskkarre', 'store'].map((id) => hm(ks, nz, thu10, id)), ['10:00', '14:45']);
+// Karré sous vide at 20:00 Thursday, klart 18:00 -> Friday 18:00. Sous vide at -1080, klart at 60: 19 h before = Thursday 23:00.
+const svk: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'flaskkarre', method: 'sousvide' }, ...DEFAULT_PLAN.proteins] };
+const svs = schedule(resolveBoxes(svk).map((b) => calcBox(b, svk, null)), svk).steps;
+const thu20 = new Date(2026, 8, 24, 20, 0).getTime();
+const sz = zeroAt(...span(svs), thu20, null, '18:00');
+eq('sous vide the evening before', [hm(svs, sz, thu20, 'sv-flaskkarre'), hm(svs, sz, thu20, 'store')], ['i kväll 23:00', '18:00']);
+eq('passed klart time is tomorrow', new Date(readyAt('18:00', new Date(2026, 8, 24, 19, 0).getTime())).getDate(), 25);
+eq('day words', [new Date(2026, 8, 23, 23, 0), new Date(2026, 8, 25, 7, 0), new Date(2026, 8, 26, 7, 0)].map((d) => fmtAtStr(d.getTime(), thu20, 0)), ['i går 23:00', 'i morgon 07:00', 'lör 07:00']);
+// Lax sous vide (45 min) ends with the oven (35), so it starts at -10; the bath is heated in prep.
+const lx: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'lax', method: 'sousvide' }, ...DEFAULT_PLAN.proteins] };
+const lxs = schedule(resolveBoxes(lx).map((b) => calcBox(b, lx, null)), lx).steps;
+eq('lax sous vide timing', [lxs.find((s) => s.id === 'sv-lax')?.t, lxs.find((s) => s.id === 'prep')?.details.includes('badet på 52 °C')], [-10, true]);
 eq('shopping has kyckling', shopping(calcs).some((r) => r.key === 'kycklingfile' && r.packs.length > 0), true);
 
 // Bases. Mixed batch: 8 boxes over chili, keema (tomat) and teriyaki (asia) -> split 3/3/2.

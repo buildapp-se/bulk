@@ -20,3 +20,33 @@ export function fmtClock(ms: number): string {
   const p = (n: number) => String(n).padStart(2, '0');
   return h ? `${h}:${p(m)}:${p(sec)}` : `${m}:${p(sec)}`;
 }
+
+// ---------- Wall-clock times for the schedule (device local time, which is the kitchen clock) ----------
+export const MIN = 60000;
+
+/** "HH:MM" as the next such moment: today, or tomorrow if it has already passed. */
+export function readyAt(hhmm: string, now: number): number {
+  const [h, m] = hhmm.split(':').map(Number);
+  const d = new Date(now);
+  d.setHours(h, m, 0, 0);
+  if (d.getTime() < now) d.setDate(d.getDate() + 1);
+  return d.getTime();
+}
+
+/** Wall-clock ms of schedule minute 0. A started timer wins; else "klart kl" puts the last step there; else the first step starts now. */
+export const zeroAt = (first: number, last: number, now: number, timer: number | null, ready: string | null) =>
+  timer ?? (ready ? readyAt(ready, now) - last * MIN : now - first * MIN);
+
+// Local calendar day number, so "i går"/"i morgon" follow midnight, not 24 h.
+const dayNo = (ms: number) => { const d = new Date(ms); return Math.round(new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() / 86400000); };
+
+/** "14:30", with a day word only when `ms` falls on another day than `ref`: i dag / i kväll / i morgon / i går / tors. */
+export function fmtAt(ms: number, now: number, ref = now): { day: string; time: string } {
+  const d = new Date(ms);
+  const time = d.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+  if (dayNo(ms) === dayNo(ref)) return { day: '', time };
+  const rel = dayNo(ms) - dayNo(now);
+  const day = rel === 0 ? (d.getHours() >= 17 ? 'i kväll' : 'i dag') : rel === 1 ? 'i morgon' : rel === -1 ? 'i går' : d.toLocaleDateString('sv-SE', { weekday: 'short' });
+  return { day, time };
+}
+export const fmtAtStr = (ms: number, now: number, ref = now) => { const x = fmtAt(ms, now, ref); return x.day ? `${x.day} ${x.time}` : x.time; };

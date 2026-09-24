@@ -259,7 +259,10 @@ export function baseBatches(calcs: BoxCalc[]): BaseBatch[] {
 
 export type Track = 'prep' | 'ugn' | 'spis' | 'sousvide' | 'form' | 'klar';
 // `what` = short caption under a running clock ("Kyckling i ugnen"); only steps that have it get a timer.
-export interface Step { id: string; track: Track; t: number; dur: number; title: string; details: string; temp?: number; label?: string; what?: string; rows?: StepLine[] }
+export interface Step { id: string; track: Track; t: number; dur: number; title: string; details: string; temp?: number; what?: string; rows?: StepLine[] }
+/** Long jobs (overnight sous vide, the form) start hours ahead: own row in the live view, own prep in their step. */
+export const LONG_MIN = 120;
+export const isLong = (s: Step) => (s.track === 'sousvide' || s.track === 'form') && s.dur >= LONG_MIN;
 /** One line in a step's list: an ingredient with its amount, or a kit with its twist and tip. */
 export interface StepLine { name: string; right: string; sub?: string; note?: string; hue?: number }
 export interface Schedule { steps: Step[]; trays: number; total: number; warnings: string[] }
@@ -288,10 +291,12 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   if (p.kits.length > 3) warnings.push('Fler än 3 smakkit: fler kastruller samtidigt.');
 
   // Prep list: every ingredient that needs knife work before cooking, with the batch's raw amount.
+  // Sous vide and form proteins carry their own prep in their step, since the long ones start before this list.
   const batches = baseBatches(calcs);
+  const protRaw_ = (pr: Protein, m: MethodId) => raw((c, x) => x.role === 'protein' && c.box.protein?.id === pr.id && c.box.method === m);
   const prepRows: StepLine[] = [
-    ...protMethods.filter(({ pr, m }) => pr.methods[m]!.prep).map(({ pr, m }) =>
-      ({ name: pr.name, right: fmtG(raw((c, x) => x.role === 'protein' && c.box.protein?.id === pr.id && c.box.method === m)), note: pr.methods[m]!.prep })),
+    ...protMethods.filter(({ pr, m }) => pr.methods[m]!.prep && m !== 'sousvide' && m !== 'form').map(({ pr, m }) =>
+      ({ name: pr.name, right: fmtG(protRaw_(pr, m)), note: pr.methods[m]!.prep })),
     ...used((b) => (b.carb?.prep ? b.carb : undefined)).map((cb) =>
       ({ name: cb.name, right: fmtG(raw((c, x) => x.role === 'carb' && c.box.carb?.id === cb.id)), note: cb.prep })),
     ...ovenVegs.filter((v) => v.prep).map((v) =>
@@ -301,21 +306,32 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   ];
   const prepDur = clamp(prepRows.length * 5, 10, 30);
 
-  // Long jobs before the oven session.
+  // Sous vide and form. Long ones run before the oven session and end as it starts; short ones (lax) end with the oven.
   for (const { pr, m } of protMethods) {
     const md = pr.methods[m]!;
+    if (m !== 'sousvide' && m !== 'form') continue;
+    const need = protRaw_(pr, m);
+    // A whole piece (karré) goes in as bought, so its rub is scaled to the packs, not to what the boxes need.
+    const packs = INGR[pr.ingr].packs;
+    const w = pr.rub && packs ? pickPacks(need, packs).reduce((s, x) => s + x.n * x.size, 0) : need;
+    const rows: StepLine[] = [{ name: INGR[pr.ingr].name, right: fmtG(w), note: md.prep }, ...(pr.rub ?? []).map((x) => ({ name: x.name, right: fmtQty((x.q * w) / 1000, x.u) }))];
     if (m === 'sousvide') {
-      steps.push({ id: `sv-${pr.id}`, track: 'sousvide', t: -md.min, dur: md.min, temp: md.temp, title: `${pr.name} i sous vide`, what: `${pr.name} i sous vide`, details: md.note, label: md.min >= 600 ? 'Kvällen före' : undefined });
-      steps.push({ id: `sear-${pr.id}`, track: 'spis', t: E, dur: 5, title: `Bryn ${pr.name.toLowerCase()}`, details: md.sear ?? '' });
-    }
-    if (m === 'form') {
-      steps.push({ id: `form-${pr.id}`, track: 'form', t: -md.min - 15, dur: md.min, temp: md.temp, title: `${pr.name} i form`, what: `${pr.name} i formen`, details: md.note });
+      // A short bath (lax) is heated during prep, a long one when it starts.
+      const long = md.min >= LONG_MIN;
+      steps.push({ id: `sv-${pr.id}`, track: 'sousvide', t: long ? -md.min : E - md.min, dur: md.min, temp: md.temp, title: `${pr.name} i sous vide`, what: `${pr.name} i sous vide`,
+        details: long ? `Sätt badet på ${md.temp} °C. ${md.note}` : md.note, rows });
+      if (md.sear) steps.push({ id: `sear-${pr.id}`, track: 'spis', t: E, dur: 5, title: `Bryn ${pr.name.toLowerCase()}`, details: md.sear });
+    } else {
+      steps.push({ id: `form-${pr.id}`, track: 'form', t: -md.min - 15, dur: md.min, temp: md.temp, title: `${pr.name} i form`, what: `${pr.name} i formen`, details: `Sätt ugnen på ${md.temp} °C. ${md.note}`, rows });
       steps.push({ id: `form-up`, track: 'ugn', t: -15, dur: 15, temp: 200, title: 'Ta ut formen, höj ugnen till 200 °C', details: 'Låt köttet vila under folien medan ugnen blir varm.' });
     }
   }
-  const t0 = Math.min(0, ...steps.map((s) => s.t));
-  steps.unshift({ id: 'prep', track: 'prep', t: t0 - prepDur, dur: prepDur, title: 'Förbered allt', label: 'Före', rows: prepRows.length ? prepRows : undefined,
-    details: `Sätt ugnen på ${steps.some((s) => s.track === 'form') ? '150' : '200'} °C varmluft. Det som ska in i ugnen: blanda med olja, salt, peppar och vitlökspulver. Ingen smaksättning ännu.` });
+  if (steps.filter((s) => s.track === 'sousvide').length > 1) warnings.push('Flera proteiner i sous vide: ett bad per temperatur, eller kör dem efter varandra.');
+  // Prep sits right before the oven session, after the long jobs are already going.
+  const t0 = Math.min(0, ...steps.filter((s) => !isLong(s)).map((s) => s.t));
+  const form = steps.some((s) => s.track === 'form');
+  steps.unshift({ id: 'prep', track: 'prep', t: t0 - prepDur, dur: prepDur, title: 'Förbered allt', rows: prepRows.length ? prepRows : undefined,
+    details: `${form ? '' : 'Sätt ugnen på 200 °C varmluft. '}${steps.filter((s) => s.track === 'sousvide' && !isLong(s)).map((s) => `Sätt sous vide-badet på ${s.temp} °C. `).join('')}Det som ska in i ugnen: blanda med olja, salt, peppar och vitlökspulver. Ingen smaksättning ännu.` });
 
   for (const c of ovenCarbs) steps.push({ id: `carb-${c.id}`, track: 'ugn', t: E - c.oven!, dur: c.oven!, temp: 200, title: `${c.name} in`, what: `${c.name} i ugnen`, details: 'Ett lager på bakplåtspapper. Vänd halvvägs.' });
   for (const { pr } of ovenProt) { const md = pr.methods.ugn!; steps.push({ id: `prot-${pr.id}`, track: 'ugn', t: E - md.min, dur: md.min, temp: md.temp, title: `${pr.name} in`, what: `${pr.name} i ugnen`, details: md.note }); }
@@ -360,9 +376,9 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   steps.push({ id: 'portion', track: 'klar', t: T, dur: 15, title: 'Kyl ner och portionera', rows: portionRows,
     details: `Låt allt svalna först.${frozen.length ? ` ${frozen.map((v) => v.name).join(', ')} läggs frysta direkt i lådan.` : ''} Toppings i separata burkar.` });
   T += 15;
-  steps.push({ id: 'store', track: 'klar', t: T, dur: 0, label: 'Efter', title: 'Märk och kyl', details: 'Håller 3–4 dagar i kylen, lax 2 dagar. Ät de känsligaste först och frys resten.' });
+  steps.push({ id: 'store', track: 'klar', t: T, dur: 0, title: 'Märk och kyl', details: 'Håller 3–4 dagar i kylen, lax 2 dagar. Ät de känsligaste först och frys resten.' });
 
-  return { steps: steps.sort((a, b) => a.t - b.t), trays, total: T - (t0 - prepDur), warnings };
+  return { steps: steps.sort((a, b) => a.t - b.t), trays, total: T - Math.min(...steps.map((s) => s.t)), warnings };
 }
 
 // ---------- Formatting (sv-SE: decimal comma, space thousands) ----------

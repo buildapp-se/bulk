@@ -53,6 +53,9 @@ export const sv = {
     awake: 'Skärmen hålls vaken', tracks: { prep: 'Förberedelse', ugn: 'Ugn', spis: 'Spis', sousvide: 'Sous vide', form: 'Långkok', klar: 'Klart' } as Record<string, string>,
     labels: 'Etiketter', heat: 'Värm', disclaimer: 'Näringsvärden är beräknade på rå vikt. Kontrollera viktiga siffror mot förpackningen.',
     notifDone: (s: string) => `Klart: ${s}`,
+    nowLabel: 'Klockan nu', startNow: 'Börja nu', readyAt: 'Klart kl', follows: 'följer timern',
+    plan: (start: string, end: string) => `Start ${start} · klart ${end}`,
+    late: (end: string) => `Hinner inte: börjar du nu blir det klart ${end}`,
   },
 } as const;
 

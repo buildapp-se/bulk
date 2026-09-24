@@ -42,6 +42,7 @@ export function ProteinPicker() {
               )}
             </AnimatePresence>
             {sel && <span className="text-[11px] text-muted">{p.methods[sel.method]!.temp} °C · {fmtMin(p.methods[sel.method]!.min)}</span>}
+            {sel && p.methods[sel.method]!.hint && <span className="text-[11px] text-warn">{p.methods[sel.method]!.hint}</span>}
           </motion.div>
         );
       })}

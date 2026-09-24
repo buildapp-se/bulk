@@ -9,8 +9,10 @@ export interface Cook {
   clocks: Record<string, Clock>; // step id -> countdown (was `timers`: start times, ignored now)
   bought: Record<string, boolean>; // shopping row key -> ticked
   sub: Record<string, boolean>; // `stepId:row:name` -> ticked row inside a step
+  at: number | null; // wall-clock ms of schedule minute 0, set when a timer starts (schedule follows reality from then)
+  ready: string | null; // "klart kl" HH:MM; null = start now
 }
-const DEFAULT_COOK: Cook = { done: {}, clocks: {}, bought: {}, sub: {} };
+const DEFAULT_COOK: Cook = { done: {}, clocks: {}, bought: {}, sub: {}, at: null, ready: null };
 
 function createStore<T extends object>(key: string, initial: T) {
   let state = initial;
