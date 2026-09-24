@@ -47,11 +47,11 @@ export const sv = {
     title: 'Tillagning',
     summary: (trays: number, min: string) => `${trays} plåtar, ca ${min} från start till kylskåp.`,
     progress: (d: number, n: number) => `${d} av ${n} klart`,
-    reset: 'Nollställ', start: 'Starta', stop: 'Stoppa', done: 'Klar', left: 'kvar', over: 'klar!',
+    reset: 'Nollställ', start: 'Starta', stop: 'Stoppa', done: 'Klar', pause: 'Paus', resume: 'Fortsätt', paused: 'pausad', ack: 'Kvittera', plus: 'En minut till', minus: 'En minut mindre',
     live: 'Live-läge', notify: 'Aviseringar', notifyOn: 'Aviseringar på', notifyHint: 'På iPhone: lägg till på hemskärmen först.',
     awake: 'Skärmen hålls vaken', tracks: { prep: 'Förberedelse', ugn: 'Ugn', spis: 'Spis', sousvide: 'Sous vide', form: 'Långkok', klar: 'Klart' } as Record<string, string>,
-    trayView: 'Ugnen', labels: 'Etiketter', heat: 'Värm', disclaimer: 'Näringsvärden är beräknade på rå vikt. Kontrollera viktiga siffror mot förpackningen.',
-    notifTitle: (s: string) => `Dags: ${s}`, notifDone: (s: string) => `Klart: ${s}`,
+    labels: 'Etiketter', heat: 'Värm', disclaimer: 'Näringsvärden är beräknade på rå vikt. Kontrollera viktiga siffror mot förpackningen.',
+    notifDone: (s: string) => `Klart: ${s}`,
   },
 } as const;
 

@@ -2,13 +2,14 @@
 // Tiny persisted store: localStorage + useSyncExternalStore. Server snapshot = defaults, so hydration matches.
 import { useSyncExternalStore } from 'react';
 import { DEFAULT_PLAN, type Plan } from './calc.ts';
+import type { Clock } from './clock.ts';
 
 export interface Cook {
   done: Record<string, boolean>;
-  timers: Record<string, number>; // step id -> started at (ms)
+  clocks: Record<string, Clock>; // step id -> countdown (was `timers`: start times, ignored now)
   bought: Record<string, boolean>; // shopping row key -> ticked
 }
-const DEFAULT_COOK: Cook = { done: {}, timers: {}, bought: {} };
+const DEFAULT_COOK: Cook = { done: {}, clocks: {}, bought: {} };
 
 function createStore<T extends object>(key: string, initial: T) {
   let state = initial;

@@ -6,6 +6,7 @@ import { t } from '@/i18n/sv';
 import { useBatch } from '@/lib/useBatch';
 import { Num } from './Num';
 import { haptic } from '@/lib/haptics';
+import { TimerDock } from './Timers';
 
 export const ROUTES = ['/', '/ingredienser', '/tillagning'] as const;
 
@@ -46,6 +47,7 @@ export function Header() {
           })}
         </nav>
       </div>
+      <TimerDock />
     </header>
   );
 }

@@ -2,6 +2,7 @@
 // Expected numbers are hand-computed from the per-100 g values in data.ts (see comments).
 import { existsSync, readFileSync } from 'node:fs';
 import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
+import { fmtClock, leftMs, nudge, pause, resume, ringing, start } from '../src/lib/clock.ts';
 import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 
 const fails: string[] = [];
@@ -76,6 +77,19 @@ const noBase = calcBox({ ...chili.box, kit: { ...chili.box.kit!, base: undefined
 near('tomatbas kcal in box', chili.m[0] - noBase.m[0], 40.42, 0.01);
 near('tomatbas protein in box', chili.m[1] - noBase.m[1], 0.8 + 0.352 + 0.36, 0.01);
 eq('split step names kits', schedule(mixedCalcs, mixed).steps.find((s) => s.id === 'split-tomat')?.title, 'Dela tomatbas i 2');
+
+// Clocks: 20 min started at 0, paused at 5 min, resumed at 8 min, +1 min at 10 min -> ends at 20 + 3 + 1 = 24 min.
+const M = 60000;
+let ck = start(20, 0);
+ck = pause(ck, 5 * M);
+eq('paused keeps 15 min', leftMs(ck, 7 * M), 15 * M);
+ck = resume(ck, 8 * M);
+ck = nudge(ck, M, 10 * M);
+eq('pause + nudge end', 'end' in ck && ck.end, 24 * M);
+eq('rings at end', [ringing(ck, 24 * M - 1), ringing(ck, 24 * M)], [false, true]);
+eq('+1 on a rung clock counts from now', nudge(ck, M, 30 * M), { end: 31 * M });
+eq('−1 never below zero', nudge(start(0.5, 0), -M, 0), { end: 0 });
+eq('clock format', [fmtClock(65_000), fmtClock(3_723_000), fmtClock(400)], ['1:05', '1:02:03', '0:01']);
 
 // Data integrity: every kit/protein/carb/veg ingredient exists, every kit default resolves.
 for (const k of KITS) { byId(CARBS, k.carb); byId(VEGS, k.veg); k.protein.forEach((p) => byId(PROTEINS, p)); }

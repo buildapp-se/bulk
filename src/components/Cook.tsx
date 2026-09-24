@@ -1,25 +1,17 @@
 'use client';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { t } from '@/i18n/sv';
 import { fmtMin, type Step } from '@/lib/calc';
+import { leftMs, running, type Clock } from '@/lib/clock';
 import { useBatch } from '@/lib/useBatch';
 import { setCook, useCook } from '@/lib/store';
 import { haptic } from '@/lib/haptics';
 import { Check } from './Pickers';
 import { spring } from './ui';
+import { ClockPanel, clocks, useNow } from './Timers';
 
 const TRACK_COLOR: Record<string, string> = { prep: 'var(--muted)', ugn: 'var(--f)', spis: 'var(--c)', sousvide: 'oklch(0.62 0.1 240)', form: 'oklch(0.55 0.1 30)', klar: 'var(--p)' };
-
-function useNow(active: boolean) {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    if (!active) return;
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [active]);
-  return now;
-}
 
 /** Screen Wake Lock while any timer runs (re-acquired when the tab becomes visible again). */
 function useWakeLock(on: boolean) {
@@ -37,54 +29,22 @@ function useWakeLock(on: boolean) {
   return held;
 }
 
-async function notify(title: string, body: string) {
-  haptic(40);
-  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
-  try {
-    const reg = await navigator.serviceWorker?.getRegistration();
-    if (reg) await reg.showNotification(title, { body, icon: '/bulk/icon-192.png', tag: title });
-    else new Notification(title, { body });
-  } catch { /* notification blocked */ }
-}
-
-const clock = (ms: number) => {
-  const s = Math.max(0, Math.round(ms / 1000));
-  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
-  return h ? `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}` : `${m}:${String(sec).padStart(2, '0')}`;
-};
-
 export function Cook() {
-  const { sched, calcs } = useBatch();
+  const { sched } = useBatch();
   const cook = useCook();
-  const running = Object.keys(cook.timers).length > 0;
-  const now = useNow(running);
-  const awake = useWakeLock(running);
+  const anyClock = Object.keys(cook.clocks).length > 0;
+  const now = useNow(anyClock);
+  const awake = useWakeLock(Object.values(cook.clocks).some(running));
   const [perm, setPerm] = useState<NotificationPermission | 'na'>('na');
   useEffect(() => { setPerm(typeof Notification === 'undefined' ? 'na' : Notification.permission); }, []);
-  const notified = useRef(new Set<string>());
 
   const steps = sched.steps;
   const doneN = steps.filter((s) => cook.done[s.id]).length;
-  const next = steps.find((s) => !cook.done[s.id] && !cook.timers[s.id]);
+  const next = steps.find((s) => !cook.done[s.id] && !cook.clocks[s.id]);
 
-  // Fire a notification once when a running timer passes its duration (only if just now, not after a reload).
-  useEffect(() => {
-    for (const s of steps) {
-      const at = cook.timers[s.id];
-      if (!at || !s.dur) continue;
-      const over = now - at - s.dur * 60000;
-      if (over >= 0 && over < 60000 && !notified.current.has(s.id)) {
-        notified.current.add(s.id);
-        notify(t.cook.notifDone(s.title), next ? t.cook.notifTitle(next.title) : '');
-      }
-    }
-  }, [now, steps, cook.timers, next]);
-
-  const start = (s: Step) => { haptic(12); notified.current.delete(s.id); setCook((c) => ({ ...c, timers: { ...c.timers, [s.id]: Date.now() } })); };
-  const stop = (s: Step) => { haptic(); setCook((c) => { const tm = { ...c.timers }; delete tm[s.id]; return { ...c, timers: tm }; }); };
   const toggleDone = (s: Step) => {
     haptic(cook.done[s.id] ? 6 : 14);
-    setCook((c) => { const tm = { ...c.timers }; delete tm[s.id]; return { ...c, done: { ...c.done, [s.id]: !c.done[s.id] }, timers: tm }; });
+    setCook((c) => { const cl = { ...c.clocks }; delete cl[s.id]; return { ...c, done: { ...c.done, [s.id]: !c.done[s.id] }, clocks: cl }; });
   };
 
   return (
@@ -103,7 +63,7 @@ export function Cook() {
             {perm !== 'na' && perm !== 'granted' && (
               <button className="underline" onClick={async () => setPerm(await Notification.requestPermission())} title={t.cook.notifyHint}>{t.cook.notify}</button>
             )}
-            <button className="underline" onClick={() => { haptic(); setCook((c) => ({ ...c, done: {}, timers: {} })); }}>{t.cook.reset}</button>
+            <button className="underline" onClick={() => { haptic(); setCook((c) => ({ ...c, done: {}, clocks: {} })); }}>{t.cook.reset}</button>
           </div>
         </div>
         <div className="h-1 overflow-hidden rounded-full bg-line">
@@ -111,13 +71,11 @@ export function Cook() {
         </div>
       </div>
 
-      <Timeline steps={steps} timers={cook.timers} done={cook.done} now={now} />
-      <Oven steps={steps} timers={cook.timers} done={cook.done} now={now} calcsN={calcs.length} />
+      <Timeline steps={steps} clocks={cook.clocks} done={cook.done} now={now} />
 
       <div className="flex flex-col">
         {steps.map((s) => (
-          <StepRow key={s.id} s={s} isNext={s.id === next?.id} done={!!cook.done[s.id]} at={cook.timers[s.id]} now={now}
-            onStart={() => start(s)} onStop={() => stop(s)} onDone={() => toggleDone(s)} />
+          <StepRow key={s.id} s={s} isNext={s.id === next?.id} done={!!cook.done[s.id]} c={cook.clocks[s.id]} now={now} onDone={() => toggleDone(s)} />
         ))}
       </div>
 
@@ -127,20 +85,15 @@ export function Cook() {
   );
 }
 
-function StepRow({ s, isNext, done, at, now, onStart, onStop, onDone }: {
-  s: Step; isNext: boolean; done: boolean; at?: number; now: number; onStart: () => void; onStop: () => void; onDone: () => void;
-}) {
-  const ms = s.dur * 60000;
-  const left = at ? ms - (now - at) : ms;
-  const frac = at && ms ? Math.min(1, (now - at) / ms) : 0;
-  const over = !!at && left <= 0;
+function StepRow({ s, isNext, done, c, now, onDone }: { s: Step; isNext: boolean; done: boolean; c?: Clock; now: number; onDone: () => void }) {
+  const timed = !!s.what && s.dur > 0;
   return (
-    // Whole row toggles done; the timer button stops the click.
-    <motion.div layout transition={spring}
+    // Whole row toggles done; the timer controls stop the click.
+    <motion.div layout transition={spring} id={`step-${s.id}`}
       role="checkbox" aria-checked={done} tabIndex={0} onClick={onDone}
       onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onDone(); } }}
       whileTap={{ scale: 0.99 }}
-      className={`relative grid cursor-pointer select-none grid-cols-[64px_28px_minmax(0,1fr)_auto] items-start gap-3 border-b border-line py-4 outline-none focus-visible:ring-2 focus-visible:ring-ink`}>
+      className="relative grid scroll-mt-40 cursor-pointer select-none grid-cols-[64px_28px_minmax(0,1fr)_auto] items-start gap-3 border-b border-line py-4 outline-none focus-visible:ring-2 focus-visible:ring-ink">
       {isNext && <motion.span layoutId="next-glow" className="absolute -inset-x-3 inset-y-1 -z-10 rounded-2xl bg-surface ring-1 ring-line" transition={spring} />}
       <span className="pt-1 font-mono text-xs text-muted">{s.label ?? `${s.t} min`}</span>
       <span className="pt-0.5"><Check on={done} /></span>
@@ -155,31 +108,34 @@ function StepRow({ s, isNext, done, at, now, onStart, onStop, onDone }: {
         </span>
         <span className="text-sm text-muted [text-wrap:pretty]">{s.details}</span>
       </span>
-      {s.dur > 0 && !done ? (
-        <button onClick={(e) => { e.stopPropagation(); (at ? onStop : onStart)(); }} onKeyDown={(e) => e.stopPropagation()} className="relative flex h-14 w-14 items-center justify-center" aria-label={at ? t.cook.stop : t.cook.start}>
-          <svg viewBox="0 0 56 56" className="absolute inset-0 -rotate-90">
-            <circle cx="28" cy="28" r="25" fill="none" stroke="var(--line)" strokeWidth="3" />
-            <motion.circle cx="28" cy="28" r="25" fill="none" stroke={over ? 'var(--p)' : TRACK_COLOR[s.track]} strokeWidth="3" strokeLinecap="round"
-              style={{ pathLength: frac }} animate={over ? { opacity: [1, 0.4, 1] } : { opacity: 1 }} transition={over ? { repeat: Infinity, duration: 1.2 } : spring} />
-          </svg>
-          <span className="relative font-mono text-[10px] leading-tight">
-            {at ? (over ? t.cook.over : clock(left)) : <span className="text-[12px] font-semibold">{t.cook.start}</span>}
-          </span>
-        </button>
-      ) : <span className="w-14" />}
+      {timed && !done && !c ? (
+        <motion.button whileTap={{ scale: 0.92 }} onClick={(e) => { e.stopPropagation(); clocks.start(s); }} onKeyDown={(e) => e.stopPropagation()}
+          aria-label={`${t.cook.start}: ${s.what}`}
+          className="flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-full bg-ink text-[13px] font-semibold text-on-ink sm:px-4">
+          <span aria-hidden>▶</span><span className="hidden sm:inline">{t.cook.start}</span>
+        </motion.button>
+      ) : <span />}
+      <AnimatePresence initial={false}>
+        {c && !done && (
+          <motion.div key="clock" className="col-span-4 cursor-default overflow-hidden" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}
+            initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring}>
+            <ClockPanel s={s} c={c} now={now} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
 
-function Timeline({ steps, timers, done, now }: { steps: Step[]; timers: Record<string, number>; done: Record<string, boolean>; now: number }) {
+function Timeline({ steps, clocks: cl, done, now }: { steps: Step[]; clocks: Record<string, Clock>; done: Record<string, boolean>; now: number }) {
   const t0 = Math.min(...steps.map((s) => s.t));
   const t1 = Math.max(...steps.map((s) => s.t + Math.max(s.dur, 5)));
   const span = Math.max(1, t1 - t0);
   const x = (v: number) => ((v - t0) / span) * 100;
   const tracks = [...new Set(steps.map((s) => s.track))];
-  // "Now" line: anchored on the most recently started timer.
-  const anchor = Object.entries(timers).sort((a, b) => b[1] - a[1])[0];
-  const nowT = anchor ? (steps.find((s) => s.id === anchor[0])?.t ?? 0) + (now - anchor[1]) / 60000 : null;
+  // "Now" line: where the running clock with least time left is in its step.
+  const anchor = steps.filter((s) => cl[s.id] && running(cl[s.id])).sort((a, b) => leftMs(cl[a.id], now) - leftMs(cl[b.id], now))[0];
+  const nowT = anchor ? anchor.t + anchor.dur - Math.max(0, leftMs(cl[anchor.id], now)) / 60000 : null;
   return (
     <div className="flex flex-col gap-1.5 rounded-2xl border border-line bg-surface p-4">
       <div className="label mb-1">{t.cook.live}</div>
@@ -203,40 +159,6 @@ function Timeline({ steps, timers, done, now }: { steps: Step[]; timers: Record<
       <div className="grid grid-cols-[76px_1fr] gap-2 font-mono text-[10px] text-muted">
         <span />
         <span className="flex justify-between"><span>{t0} min</span><span>0</span><span>{t1} min</span></span>
-      </div>
-    </div>
-  );
-}
-
-function Oven({ steps, timers, done, now, calcsN }: { steps: Step[]; timers: Record<string, number>; done: Record<string, boolean>; now: number; calcsN: number }) {
-  const oven = steps.filter((s) => s.track === 'ugn' && s.dur > 0 && s.id !== 'out' && s.id !== 'form-up');
-  if (!oven.length || !calcsN) return null;
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="label">{t.cook.trayView}</div>
-      <div className="relative overflow-hidden rounded-2xl bg-[#1d1a17] p-3 shadow-inner">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,140,60,.28),transparent_70%)]" />
-        <div className="relative grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(3, oven.length)}, minmax(0,1fr))` }}>
-          {oven.map((s) => {
-            const at = timers[s.id];
-            const inOven = !!at && !done[s.id];
-            const frac = at ? Math.min(1, (now - at) / (s.dur * 60000)) : 0;
-            return (
-              <div key={s.id} className="relative flex h-24 flex-col justify-end overflow-hidden rounded-lg border border-white/10 bg-[#2a2622] p-2">
-                <AnimatePresence>
-                  {(inOven || done[s.id]) && (
-                    <motion.div className="absolute inset-1.5 rounded-md"
-                      initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: done[s.id] ? 0.35 : 1 }} exit={{ y: 80, opacity: 0 }} transition={spring}
-                      style={{ background: `repeating-radial-gradient(circle at 30% 40%, ${TRACK_COLOR.ugn} 0 5px, transparent 6px 12px)` }} />
-                  )}
-                </AnimatePresence>
-                {inOven && <motion.div className="absolute inset-x-0 bottom-0 h-1 origin-left bg-orange-400" animate={{ scaleX: frac }} transition={{ ease: 'linear', duration: 0.9 }} />}
-                <span className="relative text-[11px] font-semibold text-white/90">{s.title.replace(/ in$/, '')}</span>
-                <span className="relative font-mono text-[10px] text-white/60">{inOven ? clock(s.dur * 60000 - (now - at)) : `${s.temp} °C · ${fmtMin(s.dur)}`}</span>
-              </div>
-            );
-          })}
-        </div>
       </div>
     </div>
   );
