@@ -95,6 +95,15 @@ const INGR_ = {
   honung: { name: 'Honung', n: [332, 0.3, 81.5, 0], src: 'lv', gm: 'honung', cat: 'skafferi', packs: [350] },
   senap: { name: 'Senap', n: [173, 4.5, 23.1, 6.8], src: 'lv', lv: 1972, cat: 'skafferi', packs: [300] },
   majsstarkelse: { name: 'Majsstärkelse', n: [362, 0, 87.5, 0.7], src: 'lv', lv: 1945, cat: 'skafferi', packs: [400] },
+  // Trial: ingredients for Filips kits (FIH cookbook), label values.
+  philadelphia: { name: 'Philadelphia light', n: [145, 7.4, 4.9, 11], src: 'est', cat: 'mejeri', packs: [200, 300] },
+  minifraiche: { name: 'Mini fraiche', n: [70, 3.2, 3.8, 5], src: 'est', cat: 'mejeri', packs: [200, 500] },
+  mildamat: { name: 'Milda Mat Lätt', n: [62, 3, 4.5, 3.5], src: 'est', cat: 'mejeri', packs: [250, 500] },
+  lattmjolk: { name: 'Lättmjölk', n: [38, 3.5, 5, 0.5], src: 'est', cat: 'mejeri', packs: [1000] },
+  ajvar: { name: 'Ajvar', n: [70, 1.3, 8, 3.5], src: 'est', cat: 'skafferi', packs: [350] },
+  kebabsas: { name: 'Röd kebabsås', n: [120, 1, 25, 1.5], src: 'est', cat: 'skafferi', packs: [300] },
+  hotsauce: { name: "Frank's RedHot", n: [10, 0.5, 1, 0.5], src: 'est', cat: 'skafferi', packs: [148] },
+  ost: { name: 'Mager ost', n: [270, 30, 0, 17], src: 'est', cat: 'mejeri', packs: [150, 500] },
 } as const satisfies Record<string, Ingr>;
 
 export type IngrId = keyof typeof INGR_;
@@ -270,6 +279,31 @@ const KIT_LIST: readonly Omit<Kit, 'hue'>[] = [
   { id: 'tikka', name: 'Tikka', tagline: 'Garam masala, ingefära, yoghurt', protein: ['kyckling', 'kikartor', 'linser'], carb: 'ris', veg: 'spenat', sauce: true,
     mix: [g('Krossade tomater', 'krossade', 70), g('Yoghurt 3 %', 'yoghurt3', 50), g('Tomatpuré', 'tomatpure', 10), g('Majsstärkelse', 'majsstarkelse', 1.5), s('Garam masala', 0.5, 'tsk'), s('Spiskummin', 0.5, 'tsk'), s('Gurkmeja', 1, 'krm'), s('Riven ingefära', 0.5, 'tsk')],
     top: [s('Koriander'), s('Mynta')], tip: 'Rosta kryddorna 30 s i tomatpurén innan yoghurten går i.', heat: MICRO },
+  // TRIAL (Patrik 2026-09-24): FIH cookbook kits, near-verbatim. Keep or delete after testing.
+  { id: 'filips-currymango', name: 'Filips curry mango', tagline: 'Curry, Philadelphia, soja', protein: ['kyckling'], carb: 'ris', veg: 'paprika', sauce: true,
+    mix: [g('Philadelphia light', 'philadelphia', 50), g('Mini fraiche', 'minifraiche', 33), g('Lättmjölk', 'lattmjolk', 65, 'ml'), g('Tomatpuré', 'tomatpure', 10), s('Curry mango-krydda', 2, 'tsk'), s('Japansk soja', 1, 'tsk')],
+    top: [s('Chiliflakes')], tip: 'Fräs tomatpurén torrt 1–2 min innan mejeriet går i.', heat: MICRO },
+  { id: 'filips-marryme', name: 'Filips Marry me', tagline: 'Soltorkat, vitlök, parmesan', protein: ['kyckling'], carb: 'pasta', veg: 'spenat', sauce: true,
+    mix: [g('Philadelphia light vitlök & örter', 'philadelphia', 30), g('Milda Mat Lätt', 'mildamat', 80, 'ml'), g('Soltorkade tomater', 'soltorkade', 6), s('Paprikapulver', 1, 'krm'), s('Chiliflakes', 1, 'krm')],
+    top: [g('Parmesan', 'parmesan', 10)], tip: 'Stäng av värmen innan osten rörs ner så skär sig inte såsen.', heat: MICRO },
+  { id: 'filips-ajvar', name: 'Filips ajvar', tagline: 'Ajvar, vitlök, parmesan', protein: ['kyckling', 'notfars'], carb: 'pasta', veg: 'spenat', sauce: true,
+    mix: [g('Philadelphia light', 'philadelphia', 35), g('Ajvar', 'ajvar', 12), s('Vitlöksklyfta', 0.5, 'st'), s('Grillkrydda', 1, 'krm')],
+    top: [g('Parmesan', 'parmesan', 6), s('Persilja')], tip: 'Spara lite pastavatten och späd såsen med det.', heat: MICRO },
+  { id: 'filips-kebab', name: 'Filips Kebabgryta', tagline: 'Kebabkrydda, yoghurt, spenat', protein: ['kyckling'], carb: 'ris', veg: 'spenat', sauce: true,
+    mix: [g('Mini fraiche', 'minifraiche', 40), g('Grekisk yoghurt', 'grekisk', 20), g('Röd kebabsås', 'kebabsas', 10), s('Kebabkrydda', 2, 'krm'), s('Spiskummin', 1, 'krm')],
+    top: [s('Färsk spenat')], tip: 'Rör ner mejeriet på låg värme, sist.', heat: MICRO },
+  { id: 'filips-philly', name: 'Filips Philly cheese', tagline: 'Färs, paprika, krämig ost', protein: ['notfars'], carb: 'pasta', veg: 'paprika', sauce: true,
+    mix: [g('Philadelphia light', 'philadelphia', 30), g('Grekisk yoghurt', 'grekisk', 20), s('Pastavatten', 20, 'ml'), s('Vitlökspulver', 1, 'krm'), s('Paprikapulver', 1, 'krm')],
+    top: [g('Mager ost', 'ost', 6)], tip: 'Stek färsen först, fräs paprika och lök mjuka i samma panna.', heat: MICRO },
+  { id: 'filips-buffalo', name: 'Filips Buffalo', tagline: 'Hot sauce, ost, rödlök', protein: ['kyckling'], carb: 'sotpotatis', veg: 'broccoli',
+    mix: [g('Philadelphia light', 'philadelphia', 50), g("Frank's RedHot", 'hotsauce', 15), s('Hackad rödlök', 0.5, 'msk')],
+    top: [g('Mager ost', 'ost', 20), s('Honung, en skvätt')], tip: 'Riv kycklingen med två gafflar så fäster såsen.', heat: MICRO },
+  { id: 'filips-svampsas', name: 'Filips svampsås', tagline: 'Kalvfond, dijon, champinjoner', protein: ['flaskkarre', 'notfars', 'kyckling'], carb: 'mos', veg: 'champinjoner', sauce: true,
+    mix: [g('Philadelphia light', 'philadelphia', 25), g('Milda Mat Lätt', 'mildamat', 50, 'ml'), g('Lättmjölk', 'lattmjolk', 75, 'ml'), s('Kalvfond', 0.5, 'msk'), s('Japansk soja', 0.5, 'msk'), s('Dijonsenap', 0.25, 'tsk')],
+    top: [g('Parmesan', 'parmesan', 15), s('Persilja')], tip: 'Stek svampen hårt tills den fått färg innan vätskan går i.', heat: MICRO },
+  { id: 'filips-burger', name: 'Filips Cheeseburger', tagline: 'Ost, pickles, burgersås', protein: ['notfars'], carb: 'potatis', veg: 'broccoli',
+    mix: [s('Hamburgerost', 1, 'st'), s('Vitlökspulver', 1, 'krm')],
+    top: [g('Grekisk yoghurt', 'grekisk', 25), s('Senap', 0.5, 'tsk'), s('Pickles, hackad', 1, 'msk'), s('Rå gullök')], tip: 'Smält osten i den varma färsen. Såsen i egen burk.', heat: MICRO },
 ];
 
 // Golden-angle hues: neighbouring kits always get clearly different colours.
