@@ -34,6 +34,6 @@ Design från Claude Design-projektet "Mealprep" (ade1c1e3-d70f-4582-995b-bb751a5
 
 ## Källor för smakkit
 
-Kryddning kontrollerad mot högt betygsatta recept 2026-09-24: RecipeTin Eats (grekisk kyckling, chili, qeema, shepherd's pie, moussaka-pilaff, carnitas, teriyaki), ICA (köttfärssås, kålpudding, ugnslax soja/ingefära, pulled pork), Eating Thai Food (pad krapow), Anova/Serious Eats (sous vide carnitas och kyckling), Once Upon a Chef (rostade kikärtor). De krämiga kiten (curry mango, marry me, ajvar, kebab, philly, buffalo, svampsås, cheeseburger) är anpassade från "Mina favoriter" (FIH Creations), Patriks egen kokbok.
+Kryddning kontrollerad mot högt betygsatta recept 2026-09-24: RecipeTin Eats (grekisk kyckling, chili, qeema, shepherd's pie, moussaka-pilaff, carnitas, teriyaki), ICA (köttfärssås, kålpudding, ugnslax soja/ingefära, pulled pork), Eating Thai Food (pad krapow), Anova/Serious Eats (sous vide carnitas och kyckling), Once Upon a Chef (rostade kikärtor). De lätta krämiga kiten är egna versioner på kvarg-, yoghurt- och kesellabaser (Patrik 2026-09-24: FIH-kokbokens kit var för nära originalen och ersattes). Källor: WellPlated (toscansk), Recipe Runner (paprikash), Skinnytaste (jordnöt-lime, tikka), Just One Cookbook (gochujang), Love and Lemons (chipotle-crema), ICA (dill och citron), RecipeTin Eats (shawarma). Stabilisering: majsstärkelse i yoghurt/kvarg (Ricardo), kalla såser i egen burk. Mängder per låda är egna nedskalningar, inte provlagade.
 
 Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
