@@ -3,13 +3,13 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { t } from '@/i18n/sv';
 import { fmtMin, type Step, type StepLine } from '@/lib/calc';
-import { leftMs, running, type Clock } from '@/lib/clock';
+import { leftMs, ringing, running, type Clock } from '@/lib/clock';
 import { useBatch } from '@/lib/useBatch';
 import { setCook, useCook } from '@/lib/store';
 import { haptic } from '@/lib/haptics';
 import { Check } from './Pickers';
 import { spring } from './ui';
-import { ClockPanel, clocks, useNow } from './Timers';
+import { ClockPanel, Digits, clocks, useNow } from './Timers';
 
 const TRACK_COLOR: Record<string, string> = { prep: 'var(--muted)', ugn: 'var(--f)', spis: 'var(--c)', sousvide: 'oklch(0.62 0.1 240)', form: 'oklch(0.55 0.1 30)', klar: 'var(--p)' };
 
@@ -153,33 +153,57 @@ function Timeline({ steps, clocks: cl, done, now }: { steps: Step[]; clocks: Rec
   const t1 = Math.max(...steps.map((s) => s.t + Math.max(s.dur, 5)));
   const span = Math.max(1, t1 - t0);
   const x = (v: number) => ((v - t0) / span) * 100;
-  const tracks = [...new Set(steps.map((s) => s.track))];
-  // "Now" line: where the running clock with least time left is in its step.
-  const anchor = steps.filter((s) => cl[s.id] && running(cl[s.id])).sort((a, b) => leftMs(cl[a.id], now) - leftMs(cl[b.id], now))[0];
+  // "Now" line: where the running clock with least time left is in its step. Rung clocks may be stale, so they don't count.
+  const anchor = steps.filter((s) => cl[s.id] && running(cl[s.id]) && !ringing(cl[s.id], now)).sort((a, b) => leftMs(cl[a.id], now) - leftMs(cl[b.id], now))[0];
   const nowT = anchor ? anchor.t + anchor.dur - Math.max(0, leftMs(cl[anchor.id], now)) / 60000 : null;
+  const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+  // Share of a step that has passed: its own clock if it has one, else the now line. Done = all of it.
+  const passed = (s: Step) => {
+    if (done[s.id]) return 1;
+    const c = cl[s.id];
+    if (c && s.dur) return clamp01(1 - leftMs(c, now) / (s.dur * 60000));
+    if (nowT !== null) return s.dur ? clamp01((nowT - s.t) / s.dur) : nowT >= s.t ? 1 : 0;
+    return 0;
+  };
+  const cols = 'grid-cols-[minmax(0,7.5rem)_1fr_3.25rem] sm:grid-cols-[minmax(0,12rem)_1fr_3.5rem]';
   return (
-    <div className="flex flex-col gap-1.5 rounded-2xl border border-line bg-surface p-4">
+    <div className="flex flex-col gap-1 rounded-2xl border border-line bg-surface p-4">
       <div className="label mb-1">{t.cook.live}</div>
-      {tracks.map((tr) => (
-        <div key={tr} className="grid grid-cols-[76px_1fr] items-center gap-2">
-          <span className="text-[11px] text-muted">{t.cook.tracks[tr]}</span>
-          <div className="relative h-5 rounded-md bg-bg">
-            {steps.filter((s) => s.track === tr).map((s, i) => (
-              <motion.div key={s.id} title={s.title}
-                className="absolute inset-y-0.5 rounded"
-                style={{ left: `${x(s.t)}%`, background: TRACK_COLOR[tr], opacity: done[s.id] ? 0.35 : 1 }}
-                initial={{ width: 0 }} animate={{ width: `${Math.max(1.5, (Math.max(s.dur, 2) / span) * 100)}%` }}
-                transition={{ ...spring, delay: 0.05 * i }} />
-            ))}
-            {nowT !== null && nowT >= t0 && nowT <= t1 && (
-              <motion.div className="absolute -inset-y-1 w-0.5 rounded bg-ink" animate={{ left: `${x(nowT)}%` }} transition={{ type: 'tween', duration: 0.9, ease: 'linear' }} />
-            )}
-          </div>
-        </div>
-      ))}
-      <div className="grid grid-cols-[76px_1fr] gap-2 font-mono text-[10px] text-muted">
+      {steps.map((s, i) => {
+        const c = cl[s.id];
+        const p = passed(s);
+        return (
+          // Each row jumps to its step in the list below.
+          <button key={s.id} onClick={() => document.getElementById(`step-${s.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className={`grid ${cols} items-center gap-2 rounded-md text-left hover:bg-bg`}>
+            <span className={`truncate text-[12px] ${done[s.id] ? 'text-muted line-through' : ''}`}>{s.title}</span>
+            <span className="relative h-5 rounded-md bg-bg">
+              <motion.span className="absolute inset-y-0.5 overflow-hidden rounded" style={{ left: `${x(s.t)}%`, background: TRACK_COLOR[s.track] }}
+                initial={{ width: 0 }} animate={{ width: `${Math.max(1.5, (Math.max(s.dur, 2) / span) * 100)}%` }} transition={{ ...spring, delay: 0.03 * i }}>
+                {/* Time that has gone loses its colour; what is left stays full. */}
+                <motion.span className="absolute inset-y-0 left-0 bg-surface/70" initial={false} animate={{ width: `${p * 100}%` }}
+                  transition={{ type: 'tween', duration: 0.9, ease: 'linear' }} />
+              </motion.span>
+              {nowT !== null && nowT >= t0 && nowT <= t1 && (
+                <motion.span className="absolute -inset-y-0.5 w-0.5 rounded bg-ink" animate={{ left: `${x(nowT)}%` }} transition={{ type: 'tween', duration: 0.9, ease: 'linear' }} />
+              )}
+            </span>
+            <span className="text-right text-[12px] font-semibold">
+              {c && !done[s.id] && (ringing(c, now)
+                ? <motion.span className="font-mono" animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
+                : <Digits ms={leftMs(c, now)} className={running(c) ? '' : 'opacity-40'} />)}
+            </span>
+          </button>
+        );
+      })}
+      <div className={`grid ${cols} gap-2 font-mono text-[10px] text-muted`}>
         <span />
-        <span className="flex justify-between"><span>{t0} min</span><span>0</span><span>{t1} min</span></span>
+        <span className="relative h-3">
+          <span className="absolute left-0">{t0} min</span>
+          {x(0) > 15 && x(0) < 85 && <span className="absolute -translate-x-1/2" style={{ left: `${x(0)}%` }}>0</span>}
+          <span className="absolute right-0">{t1} min</span>
+        </span>
+        <span />
       </div>
     </div>
   );
