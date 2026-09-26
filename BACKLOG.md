@@ -1,6 +1,7 @@
 # Backlog
 
 ## P1
+- **Nästa batch (Patrik 2026-09-26): utforska på pris.** Vad är billigast att laga, per kit × protein och för ett markerat urval i Prepp. Bonus: aktuella priser och veckans rabatter via API (ICA/Willys/Coop, eller Matpriskollen och liknande) eller en AI-tjänst som söker (Gemini/Google Cloud-nyckel, samma sorts upplägg som i flaskor fast för priser). Kräver prisdata per ingrediens och förpackning i data.ts; nyckeln ska aldrig in i appen (statisk export), så sökningen går via ett skript eller en worker.
 - Testa på riktig telefon (iPhone + Android): installera som PWA, aviseringar, larmljud och vibration när en timer är klar (även med skärmen låst), haptik (iOS switch-tricket), Wake Lock.
 
 ## P2
