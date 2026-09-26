@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
+import { bestPath, LABEL, node, RECIPES } from '../src/lib/tree.ts';
 
 const fails: string[] = [];
 const eq = (name: string, got: unknown, want: unknown) => {
@@ -169,6 +170,13 @@ eq('portion cooked weights', portion.rows?.[0].sub?.startsWith('Kyckling ca 130 
 
 // Data integrity: every kit/protein/carb/veg ingredient exists, every kit default resolves.
 for (const k of KITS) { byId(CARBS, k.carb); byId(VEGS, k.veg); k.protein.forEach((p) => byId(PROTEINS, p)); }
+
+// Ingredient tree: 69 box types (kit × paired protein). Tomatbas on 9 kits with 23 pairings, 6 of them with nötfärs.
+eq('tree recipes', RECIPES.length, 69);
+eq('tree tomatbas', node(['bas:tomat']).recipes.length, 23);
+eq('tree tomatbas + nötfärs', node(['bas:tomat', 'notfars']).recipes.length, 6);
+eq('tree best start', bestPath([]).slice(0, 2).map((k) => LABEL.get(k)), ['Ris', 'Koriander']);
+eq('tree shared not a branch', node(bestPath([]).slice(0, 3)).shared.map((k) => LABEL.get(k)).includes('Tomatbas'), true); // Ris > Koriander > Spiskummin: all 12 left are on tomatbas
 
 // Drift vs grammat (only where the sibling repo exists, i.e. locally).
 const gpath = new URL('../../recept/nutrients.json', import.meta.url);

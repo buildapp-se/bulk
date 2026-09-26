@@ -1,9 +1,11 @@
 ---
-reviewedAt: 2026-09-24
+reviewedAt: 2026-09-26
 ---
 # Handoff
 
-**Läge:** live på https://buildapp.se/bulk/. Tre vyer (Välj, Ingredienser, Tillagning), 32 smakkit varav 24 på en grundbas (tomat, asiatisk, krämig, rökig rub), 10 proteiner (plus halloumi och sojafärs), mål med lösare, inköp i förpackningar, digitala timers med docka och larm.
+**2026-09-26:** fjärde fliken Träd, klickbart ingrediensträd (se CONTEXT). Verifierat med check (69 lådtyper, tomatbas 23, + nötfärs 6, bästa vägen), typecheck, build och playwright-cli på 390 och 1280 px, ingen horisontell scroll, inga konsolfel.
+
+**Läge:** live på https://buildapp.se/bulk/. Fyra vyer (Välj, Ingredienser, Tillagning, Träd), 32 smakkit varav 24 på en grundbas (tomat, asiatisk, krämig, rökig rub), 10 proteiner (plus halloumi och sojafärs), mål med lösare, inköp i förpackningar, digitala timers med docka och larm.
 
 **Kvällen 2026-09-24, efter P0 (alla live-kollade):** protein/kolhydrat/grönt per kit som dropdowns och Rensa allt i Din batch; valda proteiner fetade på kitkorten; live-läget en rad per steg med nedräkning och bleknande förfluten tid; förberedelselista och portionering per lådtyp i tillagad vikt; delbockar per listrad och hopfällning av klara steg; skärmen vaken i hela Tillagning. Senaste commit `511facf`.
 

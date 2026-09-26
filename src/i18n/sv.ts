@@ -1,6 +1,6 @@
 // All UI text. Food names live in lib/data.ts. English later: add en.ts with the same shape + next-intl.
 export const sv = {
-  tabs: ['Välj', 'Ingredienser', 'Tillagning'],
+  tabs: ['Välj', 'Ingredienser', 'Tillagning', 'Träd'],
   summary: (boxes: number, kits: number, kcal: string) => `${boxes} lådor · ${kits} smaker · ø ${kcal} kcal`,
   hero: { title: 'Laga en bas. Byt smak per låda.', sub: 'Välj protein, antal lådor och smakkit. Mängder, macros, inköp och ugnsschema räknas ut direkt.' },
   sec: { goal: 'Mål', protein: 'Protein', boxes: 'Antal lådor', kits: 'Smakkit', veg: 'Grönsaker' },
@@ -57,6 +57,14 @@ export const sv = {
     plan: (start: string, end: string) => `Start ${start} · klart ${end}`,
     stale: (when: string) => `Förra tillagningen: ${when}.`, restart: 'Börja om',
     late: (end: string) =>`Hinner inte: börjar du nu blir det klart ${end}`,
+  },
+  tree: {
+    title: 'Ingrediensträd',
+    sub: 'Varje steg lägger till en ingrediens. Siffran är hur många lådtyper (kit + protein) som har allt på vägen dit. Tryck för att gå ner en gren.',
+    all: 'Alla lådtyper', shared: 'Följer med', best: 'Följ bästa grenen', reset: 'Börja om',
+    branches: (n: number) => `${n} förgreningar härifrån`, forks: (n: number) => `${n} grenar`,
+    more: (n: number) => `Visa alla ${n}`, less: 'Visa färre', leaf: 'Inga fler förgreningar: alla lådtyper här har samma ingredienser.',
+    recipes: (n: number) => `${n} ${n === 1 ? 'lådtyp' : 'lådtyper'}`,
   },
 } as const;
 

@@ -8,7 +8,7 @@ import { Num } from './Num';
 import { haptic } from '@/lib/haptics';
 import { TimerDock } from './Timers';
 
-export const ROUTES = ['/', '/ingredienser', '/tillagning'] as const;
+export const ROUTES = ['/', '/ingredienser', '/tillagning', '/trad'] as const;
 
 export function Header() {
   const path = usePathname();
@@ -35,12 +35,13 @@ export function Header() {
                 onClick={() => haptic()}
                 transitionTypes={i > cur ? ['nav-forward'] : i < cur ? ['nav-back'] : undefined}
                 aria-current={active ? 'page' : undefined}
-                className={`relative flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors ${active ? 'text-ink' : 'text-muted hover:text-ink'}`}
+                className={`relative flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors sm:px-3.5 ${active ? 'text-ink' : 'text-muted hover:text-ink'}`}
               >
                 {active && (
                   <motion.span layoutId="tab-pill" className="absolute inset-0 rounded-lg bg-surface shadow-[0_1px_2px_rgba(35,33,29,.1)]" transition={{ type: 'spring', stiffness: 500, damping: 38 }} />
                 )}
-                <span className="relative font-mono text-[11px]">0{i + 1}</span>
+                {/* Four tabs don't fit 390 px with the numbers. */}
+                <span className="relative hidden font-mono text-[11px] sm:inline">0{i + 1}</span>
                 <span className="relative">{t.tabs[i]}</span>
               </Link>
             );
