@@ -54,8 +54,8 @@ export function Prep() {
         <Easy {...c} />
       </div>
 
-      {/* Week prices: left column on wide screens (own scroll), under everything on phones. */}
-      <aside className="min-w-0 [grid-area:prices] xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto xl:pr-1">
+      {/* Week prices: own column left of the page width on wide screens (own scroll), under the tree otherwise. */}
+      <aside className="min-w-0 [grid-area:prices] min-[1500px]:sticky min-[1500px]:top-24 min-[1500px]:max-h-[calc(100vh-7rem)] min-[1500px]:overflow-y-auto min-[1500px]:pr-1">
         <WeekPrices offers={pr.offers} />
       </aside>
 
