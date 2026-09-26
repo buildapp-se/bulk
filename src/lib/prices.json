@@ -1883,18 +1883,6 @@
    "until": "2026-09-28"
   },
   {
-   "ingr": "blandfars",
-   "chain": "Coop",
-   "store": "Stora Coop Avion",
-   "name": "Blandfärs",
-   "brand": "Nyhléns Hugosons",
-   "pack": "800 g",
-   "krKg": 99.88,
-   "label": "79.9 kr",
-   "member": true,
-   "until": "2026-09-27"
-  },
-  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Avion",
@@ -1903,6 +1891,18 @@
    "pack": "Ca 900 g.",
    "krKg": 110,
    "label": "99 kr",
+   "member": true,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Blandfärs",
+   "brand": "Nyhléns Hugosons",
+   "pack": "800 g",
+   "krKg": 99.88,
+   "label": "79.9 kr",
    "member": true,
    "until": "2026-09-27"
   },
@@ -1955,18 +1955,6 @@
    "until": "2026-09-27"
   },
   {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Ersboda",
-   "name": "Färsk kycklingfilé",
-   "brand": "Guldfågeln",
-   "pack": "Ca 900 g.",
-   "krKg": 110,
-   "label": "99 kr",
-   "member": true,
-   "until": "2026-09-27"
-  },
-  {
    "ingr": "blandfars",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
@@ -1979,6 +1967,18 @@
    "until": "2026-09-27"
   },
   {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Färsk kycklingfilé",
+   "brand": "Guldfågeln",
+   "pack": "Ca 900 g.",
+   "krKg": 110,
+   "label": "99 kr",
+   "member": true,
+   "until": "2026-09-27"
+  },
+  {
    "ingr": "broccoli",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
@@ -1987,6 +1987,18 @@
    "pack": "Ca 250 g.",
    "krKg": 50,
    "label": "2 för 25 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Kycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "2 kg.",
+   "krKg": 84.5,
+   "label": "169 kr",
    "member": false,
    "until": "2026-09-27"
   },
@@ -2015,18 +2027,6 @@
    "until": "2026-09-27"
   },
   {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Ersboda",
-   "name": "Kycklingfilé ",
-   "brand": "Guldfågeln",
-   "pack": "2 kg.",
-   "krKg": 84.5,
-   "label": "169 kr",
-   "member": false,
-   "until": "2026-09-27"
-  },
-  {
    "ingr": "blandfars",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
@@ -2051,18 +2051,6 @@
    "until": "2026-09-27"
   },
   {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Kycklingfilé ",
-   "brand": "Guldfågeln",
-   "pack": "2 kg.",
-   "krKg": 84.5,
-   "label": "169 kr",
-   "member": false,
-   "until": "2026-09-27"
-  },
-  {
    "ingr": "broccoli",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
@@ -2071,6 +2059,18 @@
    "pack": "Ca 250 g.",
    "krKg": 50,
    "label": "2 för 25 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Kycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "2 kg.",
+   "krKg": 84.5,
+   "label": "169 kr",
    "member": false,
    "until": "2026-09-27"
   },
