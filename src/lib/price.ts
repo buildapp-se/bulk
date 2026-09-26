@@ -55,17 +55,21 @@ export function boxCost(c: BoxCalc, P: Prices, offers: readonly Offer[]): BoxCos
   return { kr, deals: [...deals.values()], missing };
 }
 
-/** What the shopping list costs: `buy` = whole packs, `use` = only what the boxes eat. buy − use is the waste. */
-export function shopCost(rows: readonly ShopRow[], P: Prices, offers: readonly Offer[]): { buy: number; use: number } {
-  let buy = 0, use = 0;
+/**
+ * Cost is what the boxes consume (Patrik 2026-09-26: most jars are already at home). This is the "if you lack them" figure:
+ * pantry jars, sauces and oils (skafferi, not the protein or carb) in whole packs.
+ */
+export function pantryCost(rows: readonly ShopRow[], P: Prices, offers: readonly Offer[]): { kr: number; n: number } {
+  let kr = 0, n = 0;
   for (const r of rows) {
+    if (r.cat !== 'skafferi' || r.role === 'protein' || r.role === 'carb') continue;
     const u = r.key in INGR ? unit(P, r.key as IngrId, offers) : null;
     if (!u) continue;
     const g = r.packs.length ? r.packs.reduce((s, p) => s + p.n * p.size, 0) : r.need;
-    buy += (g / 1000) * u.krKg;
-    use += (r.need / 1000) * u.krKg;
+    kr += (g / 1000) * u.krKg;
+    n++;
   }
-  return { buy, use };
+  return { kr, n };
 }
 
 // ---------- Deals overview ----------

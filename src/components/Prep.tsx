@@ -76,7 +76,8 @@ export function Prep() {
                 <span className="opacity-75">{t.prep.ingr(now.ingr)}</span>
                 <span className="opacity-75">{t.prep.pots(now.pots)}</span>
                 <span>{t.price.avg(nf(avgBox))}</span>
-                {bill && <span className="opacity-75">{t.price.shop(bill.n, nf(bill.buy), nf(bill.buy - bill.use))}</span>}
+                {bill && <span>{t.price.shop(bill.n, nf(bill.use))}</span>}
+                {bill && bill.pantry.n > 0 && <span className="opacity-75">{t.price.pantry(bill.pantry.n, nf(bill.pantry.kr))}</span>}
               </div>
               <div className="flex items-center justify-end gap-2">
                 <button onClick={() => { haptic(); setSel({}); }} className="px-2 py-1.5 text-sm opacity-75 hover:opacity-100">{t.prep.clear}</button>

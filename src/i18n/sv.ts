@@ -85,7 +85,8 @@ export const sv = {
     stores: (n: number) => `${n} ${n === 1 ? 'butik' : 'butiker'}`, onlyOrd: 'Rea, men vanliga billigaste är billigare',
     cheapest: 'Billigast just nu', cheapestSub: 'Varje kit med varje protein det passar, per låda efter ditt mål, med veckans bästa erbjudanden. Kryddor och färskt garnityr ingår inte.',
     perBox: 'Pris per låda', excl: 'exkl. kryddor och garnityr', dealsUsed: 'Veckans erbjudanden i lådan',
-    shop: (n: number, buy: string, waste: string) => `${n} lådor: handla ${buy} kr (spill ${waste} kr)`,
+    shop: (n: number, kr: string) => `${n} lådor: ${kr} kr förbrukat`,
+    pantry: (n: number, kr: string) => `+${kr} kr om du saknar ${n} ${n === 1 ? 'skafferivara' : 'skafferivaror'}`,
     avg: (v: string) => `ø ${v} kr/låda`, missing: (s: string) => `saknar pris: ${s}`,
   },
 } as const;

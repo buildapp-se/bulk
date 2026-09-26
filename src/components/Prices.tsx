@@ -4,7 +4,7 @@ import { t } from '@/i18n/sv';
 import { BASES, byId, CARBS, INGR, KITS, PROTEINS, VEGS, type IngrId, type Kit, type Protein } from '@/lib/data';
 import { calcBox, nf, split, shopping, type BoxCalc } from '@/lib/calc';
 import { protPrep, type Pick } from '@/lib/prep';
-import { boxCost, deals, krPerProtein, live, PRICES, shopCost, unit, type BoxCost, type Deal, type Offer } from '@/lib/price';
+import { boxCost, deals, krPerProtein, live, pantryCost, PRICES, unit, type BoxCost, type Deal, type Offer } from '@/lib/price';
 import { useBatch } from '@/lib/useBatch';
 import { haptic } from '@/lib/haptics';
 
@@ -17,7 +17,7 @@ const pct = (f: number) => Math.round(f * 100);
 const GREEN = 0.05;
 
 export interface Priced { c: BoxCalc; cost: BoxCost }
-export interface Pricing { offers: Offer[]; box: (kit: Kit, p: Protein) => Priced; shop: (picks: readonly Pick[]) => { n: number; buy: number; use: number } }
+export interface Pricing { offers: Offer[]; box: (kit: Kit, p: Protein) => Priced; shop: (picks: readonly Pick[]) => { n: number; use: number; pantry: { kr: number; n: number } } }
 
 /** Prices for the prep explorer: every kit × protein as one box sized to the goal, with this week's live offers. */
 export function usePricing(): Pricing {
@@ -38,11 +38,12 @@ export function usePricing(): Pricing {
       }
       return x;
     };
-    // The batch's boxes spread over the marked kits, as Välj would split them.
+    // The batch's boxes spread over the marked kits, as Välj would split them. Cost = what they consume.
     const shop = (picks: readonly Pick[]) => {
       const counts = split(Math.max(plan.boxes, picks.length), picks.length);
       const calcs = picks.flatMap((x, i) => Array<BoxCalc>(counts[i]).fill(box(x.kit, x.protein).c));
-      return { n: calcs.length, ...shopCost(shopping(calcs), PRICES, offers) };
+      const use = picks.reduce((s, x, i) => s + counts[i] * box(x.kit, x.protein).cost.kr, 0);
+      return { n: calcs.length, use, pantry: pantryCost(shopping(calcs), PRICES, offers) };
     };
     return { offers, box, shop };
   }, [plan, goal, today]);

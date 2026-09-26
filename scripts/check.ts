@@ -5,7 +5,7 @@ import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
-import { boxCost, deals, krPerProtein, live, matches, PRICES, shopCost, type Prices } from '../src/lib/price.ts';
+import { boxCost, deals, krPerProtein, live, matches, pantryCost, PRICES, type Prices } from '../src/lib/price.ts';
 import type { ShopRow } from '../src/lib/calc.ts';
 
 const fails: string[] = [];
@@ -217,9 +217,15 @@ eq('expired offer dropped', fixLive.map((o) => o.ingr), ['kycklingfile']);
 near('box price shelf', boxCost(c, FIX, []).kr, 28.5738, 0.001);
 near('box price offer', boxCost(c, FIX, fixLive).kr, 25.0738, 0.001);
 eq('box deals', boxCost(c, FIX, fixLive).deals.map((o) => o.ingr), ['kycklingfile']);
-// Two boxes of kyckling: 350 g needed, one 500 g pack bought. At 80 kr/kg: buy 40, use 28. Olja has no packs: 10 g = 0,2 both.
-const rows = [{ key: 'kycklingfile', need: 350, packs: pickPacks(350, [500, 900, 1500]) }, { key: 'olja', need: 10, packs: [] }] as unknown as ShopRow[];
-eq('shop cost', shopCost(rows, FIX, fixLive), { buy: 40.2, use: 28.2 });
+// Pantry if you lack it: whole packs of skafferi kit items only. Teriyakisås 50 g -> one 250 g pack at 100 kr/kg = 25;
+// soja 16 g with no packs -> 16 g × 50 = 0,8. Ris (carb) and kyckling (kött) never count.
+const rows = [
+  { key: 'teriyaki', need: 50, cat: 'skafferi', role: 'kit', packs: pickPacks(50, [250, 500]) },
+  { key: 'soja', need: 16, cat: 'skafferi', role: 'bas', packs: [] },
+  { key: 'ris', need: 120, cat: 'skafferi', role: 'carb', packs: pickPacks(120, [1000]) },
+  { key: 'kycklingfile', need: 350, cat: 'kött', role: 'protein', packs: pickPacks(350, [500]) },
+] as unknown as ShopRow[];
+eq('pantry cost', pantryCost(rows, FIX, fixLive), { kr: 25.8, n: 2 });
 near('vs shelf', deals(FIX, fixLive)[0].vsShelf ?? 0, 0.2, 0.001);
 near('vs ordinary', deals(FIX, fixLive)[0].vsOrd ?? 0, 1 - 80 / 110, 0.001);
 // 100 kr/kg ÷ 231 g protein per kg × 100 g = 43,29 kr per 100 g protein.
