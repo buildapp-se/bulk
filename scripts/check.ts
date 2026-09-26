@@ -5,7 +5,7 @@ import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
-import { boxCost, deals, krPerProtein, live, matches, pantryCost, PRICES, type Prices } from '../src/lib/price.ts';
+import { basket, boxCost, deals, krPerProtein, live, matches, pantryCost, PRICES, type Prices } from '../src/lib/price.ts';
 import type { ShopRow } from '../src/lib/calc.ts';
 
 const fails: string[] = [];
@@ -202,39 +202,55 @@ eq('hel on trays', helSch.trays, schedule(resolveBoxes(DEFAULT_PLAN).map((b) => 
 
 // Prices, on a fixed table so the weekly fetch never moves the numbers. The same teriyaki box as above:
 // kyckling 175 g, olja 4,55 + 3,64 g, ris 60 g, broccoli 140 g, soja 8 g (base), teriyaki 25 g, edamame 40 g, sesam 3 g.
+// Two Willys stores (A has kyckling on offer at 80), one Coop, one ICA with a live broccoli offer but no ordinary prices.
+const shelfOf = (m: Record<string, number>) => Object.fromEntries(Object.entries(m).map(([id, krKg]) => [id, { krKg, kr: 0, pack: '', name: id, brand: '', code: '' }]));
+const offer = (ingr: string, chain: 'Willys' | 'ICA' | 'Coop', store: string, krKg: number, until: string, ordKrKg?: number) =>
+  ({ ingr, chain, store, name: ingr, brand: '', pack: '', krKg, ordKrKg, label: '', member: false, until }) as Prices['offers'][number];
 const FIX: Prices = {
   at: '2026-09-26',
-  shelf: Object.fromEntries(Object.entries({ kycklingfile: 100, ris: 20, broccoli: 30, teriyaki: 100, soja: 50, edamame: 60, sesam: 70, olja: 20 })
-    .map(([id, krKg]) => [id, { krKg, kr: 0, pack: '', name: id, brand: '', code: '' }])),
-  offers: [
-    { ingr: 'kycklingfile', chain: 'Willys', store: 'Test', name: 'Kycklingfilé', brand: '', pack: '', krKg: 80, ordKrKg: 110, label: '', member: false, until: '2026-09-27' },
-    { ingr: 'ris', chain: 'ICA', store: 'Gammal', name: 'Jasminris', brand: '', pack: '', krKg: 1, label: '', member: false, until: '2026-09-20' },
-  ],
+  stores: [{ chain: 'Willys', name: 'A' }, { chain: 'Willys', name: 'B' }, { chain: 'Coop', name: 'C' }, { chain: 'ICA', name: 'I' }],
+  shelf: {
+    Willys: shelfOf({ kycklingfile: 100, ris: 20, broccoli: 30, teriyaki: 100, soja: 50, edamame: 60, sesam: 70, olja: 20 }),
+    Coop: shelfOf({ kycklingfile: 90, ris: 25, broccoli: 30, teriyaki: 100, soja: 50, edamame: 60, sesam: 70, olja: 20, gochujang: 200 }),
+    ICA: {},
+  },
+  offers: [offer('kycklingfile', 'Willys', 'A', 80, '2026-09-27', 110), offer('broccoli', 'ICA', 'I', 5, '2026-09-27'), offer('ris', 'Willys', 'B', 1, '2026-09-20')],
 };
 const fixLive = live(FIX, '2026-09-26');
-eq('expired offer dropped', fixLive.map((o) => o.ingr), ['kycklingfile']);
-// Shelf: 17,5 + olja 8,19 g × 20 = 0,1638 + 1,2 + 4,2 + 0,4 + 2,5 + 2,4 + 0,21 = 28,5738. Kyckling on offer at 80: 14 instead of 17,5.
-near('box price shelf', boxCost(c, FIX, []).kr, 28.5738, 0.001);
-near('box price offer', boxCost(c, FIX, fixLive).kr, 25.0738, 0.001);
-eq('box deals', boxCost(c, FIX, fixLive).deals.map((o) => o.ingr), ['kycklingfile']);
-// Pantry if you lack it: whole packs of skafferi kit items only. Teriyakisås 50 g -> one 250 g pack at 100 kr/kg = 25;
-// soja 16 g with no packs -> 16 g × 50 = 0,8. Ris (carb) and kyckling (kött) never count.
+eq('expired offer dropped', fixLive.map((o) => o.ingr), ['broccoli', 'kycklingfile']);
+// Willys B: 17,5 + olja 8,19 g × 20 = 0,1638 + ris 1,2 + 4,2 + 0,4 + 2,5 + 2,4 + 0,21 = 28,5738.
+// Willys A: kyckling at 80 = 14 instead of 17,5 -> 25,0738. Coop: kyckling 15,75, ris 1,5 -> 27,1238.
+// ICA's 5 kr broccoli is not used: ICA has no ordinary prices, so it can't sell the whole box, and one store buys it all.
+const one = boxCost(c, FIX, fixLive)!;
+eq('box at one store', one.store.name, 'A');
+near('box price one store', one.kr, 25.0738, 0.001);
+eq('box deals', one.deals.map((o) => o.ingr), ['kycklingfile']);
+near('box price no offers', boxCost(c, FIX, [])!.kr, 27.1238, 0.001);
+// A store missing an ingredient loses to one that has everything: gochujang only at Coop. 100 g × 200 + 1 kg × 90 = 110.
+const g = basket([{ ingr: 'gochujang', g: 100 }, { ingr: 'kycklingfile', g: 1000 }], FIX, fixLive)!;
+eq('complete store wins', [g.store.name, g.elsewhere], ['C', []]);
+near('complete store price', g.kr, 110, 0.001);
+// Pantry if you lack it, at store A: whole packs of skafferi kit items only. Teriyakisås 50 g -> one 250 g pack at 100 = 25;
+// soja 16 g with no packs -> 0,8. Ris (carb) and kyckling (kött) never count.
 const rows = [
   { key: 'teriyaki', need: 50, cat: 'skafferi', role: 'kit', packs: pickPacks(50, [250, 500]) },
   { key: 'soja', need: 16, cat: 'skafferi', role: 'bas', packs: [] },
   { key: 'ris', need: 120, cat: 'skafferi', role: 'carb', packs: pickPacks(120, [1000]) },
   { key: 'kycklingfile', need: 350, cat: 'kött', role: 'protein', packs: pickPacks(350, [500]) },
 ] as unknown as ShopRow[];
-eq('pantry cost', pantryCost(rows, FIX, fixLive), { kr: 25.8, n: 2 });
-near('vs shelf', deals(FIX, fixLive)[0].vsShelf ?? 0, 0.2, 0.001);
-near('vs ordinary', deals(FIX, fixLive)[0].vsOrd ?? 0, 1 - 80 / 110, 0.001);
+eq('pantry cost', pantryCost(rows, FIX, fixLive, one.store), { kr: 25.8, n: 2 });
+// Green is measured against the usual cheapest across chains: kyckling 80 vs Coop's 90 = 11 %, vs its own 110 = 27 %.
+const dk = deals(FIX, fixLive).find((d) => d.id === 'kycklingfile')!;
+near('vs usual cheapest', dk.vsShelf ?? 0, 1 - 80 / 90, 0.001);
+near('vs ordinary', dk.vsOrd ?? 0, 1 - 80 / 110, 0.001);
 // 100 kr/kg ÷ 231 g protein per kg × 100 g = 43,29 kr per 100 g protein.
 near('kr per protein', krPerProtein('kycklingfile', 100), 43.29, 0.01);
 // Matching: pet food and flavoured tomatoes out, 18 % coconut milk in, "Färsk" prefix ignored.
 eq('match', [matches('notfars', 'Nötfärs Bitar i Gelé Kattmat Våt'), matches('notfars', 'Färsk nötfärs'), matches('krossade', 'Smaksatta krossade tomater'),
   matches('kokosmjolk', 'Kokosmjölk 18%'), matches('kokosmjolk', 'Kokosmjölk 7%')], [false, true, false, true, false]);
 // The fetched file has the shape the app reads (every shelf price positive, every offer on a known ingredient).
-for (const [id, s] of Object.entries(PRICES.shelf)) if (!(id in INGR) || !(s.krKg > 0)) fails.push(`prices.json: dålig hyllrad ${id}`);
+for (const [chain, rows] of Object.entries(PRICES.shelf)) for (const [id, r] of Object.entries(rows)) if (!(id in INGR) || !(r!.krKg >= 3)) fails.push(`prices.json: dålig hyllrad ${chain} ${id}`);
+for (const o of PRICES.offers) if (!PRICES.stores.some((st) => st.name === o.store)) fails.push(`prices.json: okänd butik ${o.store}`);
 for (const o of PRICES.offers) if (!(o.ingr in INGR) || !(o.krKg > 0) || !/^\d{4}-\d\d-\d\d$/.test(o.until)) fails.push(`prices.json: dåligt erbjudande ${o.store} ${o.name}`);
 
 // Drift vs grammat (only where the sibling repo exists, i.e. locally).

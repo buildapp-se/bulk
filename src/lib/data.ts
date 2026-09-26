@@ -147,7 +147,7 @@ export const BUY: Record<IngrId, readonly [q: string, re: string, not?: string]>
   edamame: ['edamame', '^edamame', 'snack|rostade'],
   majs: ['majskorn', '^majskorn'],
   olja: ['rapsolja', '^rapsolja', 'spray|kallpressad'],
-  olivolja: ['olivolja', '^olivolja', 'spray|smor'],
+  olivolja: ['olivolja', '^olivolja', 'spray|smor|topping'],
   svartabonor: ['svarta bönor', '^svarta bonor'],
   kidney: ['kidneybönor', '^kidneybonor'],
   salsa: ['salsa', '^salsa|^taco sauce|^tacosas', 'chips|dip|krydda|verde|pineapple|garlic|mango|cheese|bon'],

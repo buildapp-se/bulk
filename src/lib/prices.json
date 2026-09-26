@@ -1,645 +1,1156 @@
 {
  "at": "2026-09-26",
+ "stores": [
+  {
+   "chain": "Willys",
+   "name": "Willys Ersboda"
+  },
+  {
+   "chain": "Willys",
+   "name": "Willys Umeå Syd"
+  },
+  {
+   "chain": "Willys",
+   "name": "Willys Klockarbäcken"
+  },
+  {
+   "chain": "Willys",
+   "name": "Willys Hemma Rådhusesplanaden"
+  },
+  {
+   "chain": "ICA",
+   "name": "Maxi ICA Stormarknad"
+  },
+  {
+   "chain": "ICA",
+   "name": "ICA Kvantum Ersboda"
+  },
+  {
+   "chain": "ICA",
+   "name": "ICA Kvantum Kronoparken"
+  },
+  {
+   "chain": "ICA",
+   "name": "ICA Kvantum Mariehem"
+  },
+  {
+   "chain": "ICA",
+   "name": "ICA Supermarket Ålidhem"
+  },
+  {
+   "chain": "ICA",
+   "name": "ICA Supermarket Boleäng"
+  },
+  {
+   "chain": "ICA",
+   "name": "ICA Supermarket City"
+  },
+  {
+   "chain": "ICA",
+   "name": "ICA Supermarket Teg"
+  },
+  {
+   "chain": "Coop",
+   "name": "Stora Coop Avion"
+  },
+  {
+   "chain": "Coop",
+   "name": "Stora Coop Ersboda"
+  },
+  {
+   "chain": "Coop",
+   "name": "Stora Coop Tomtebo"
+  },
+  {
+   "chain": "Coop",
+   "name": "Coop City Umeå"
+  }
+ ],
  "shelf": {
-  "kycklingfile": {
-   "krKg": 69.5,
-   "kr": 139,
-   "pack": "2kg",
-   "name": "Kyckling Filé Fryst",
-   "brand": "Eldorado",
-   "code": "101266948_ST"
-  },
-  "notfars": {
-   "krKg": 119,
-   "kr": 119,
-   "pack": "ca: 1kg",
-   "name": "Nötfärs 20% Irland",
-   "brand": "",
-   "code": "101203622_KG"
-  },
-  "blandfars": {
-   "krKg": 92.9,
-   "kr": 92.9,
-   "pack": "ca: 1kg",
-   "name": "Blandfärs 20% Irland/danmark",
-   "brand": "",
-   "code": "101203649_KG"
-  },
-  "flaskfars": {
-   "krKg": 67.9,
-   "kr": 67.9,
-   "pack": "ca: 1kg",
-   "name": "Fläskfärs 20% Sverige",
-   "brand": "Garant",
-   "code": "101203624_KG"
-  },
-  "flaskkarre": {
-   "krKg": 89.9,
-   "kr": 89.9,
-   "pack": "ca: 2.7kg",
-   "name": "Fläskkarré Benfri",
-   "brand": "Westfleisch",
-   "code": "101300146_KG"
-  },
-  "lax": {
-   "krKg": 189.08,
-   "kr": 94.54,
-   "pack": "4x125g",
-   "name": "Laxfilé Fryst",
-   "brand": "Omega",
-   "code": "101804336_ST"
-  },
-  "kikartor": {
-   "krKg": 47.8,
-   "kr": 23.9,
-   "pack": "500g",
-   "name": "Kikärtor",
-   "brand": "Garant Eko",
-   "code": "101289460_ST"
-  },
-  "halloumi": {
-   "krKg": 134.5,
-   "kr": 26.9,
-   "pack": "200g",
-   "name": "Halloumi 26%",
-   "brand": "Garant",
-   "code": "101191889_ST"
-  },
-  "sojafars": {
-   "krKg": 69.89,
-   "kr": 62.9,
-   "pack": "900g",
-   "name": "Vegofärs Fryst",
-   "brand": "Garant",
-   "code": "101344201_ST"
-  },
-  "linser": {
-   "krKg": 29.88,
-   "kr": 23.9,
-   "pack": "800g",
-   "name": "Linser Hela Röda",
-   "brand": "Durra",
-   "code": "101803356_ST"
-  },
-  "ris": {
-   "krKg": 17.38,
-   "kr": 86.9,
-   "pack": "5kg",
-   "name": "Jasminris",
-   "brand": "",
-   "code": "101552555_ST"
-  },
-  "pasta": {
-   "krKg": 13.5,
-   "kr": 13.5,
-   "pack": "1kg",
-   "name": "Spaghetti Pasta",
-   "brand": "Monte Castello",
-   "code": "101240219_ST"
-  },
-  "bulgur": {
-   "krKg": 17.5,
-   "kr": 17.5,
-   "pack": "1kg",
-   "name": "Bulgur",
-   "brand": "Garant",
-   "code": "101822876_ST"
-  },
-  "matvete": {
-   "krKg": 24.4,
-   "kr": 12.2,
-   "pack": "500g",
-   "name": "Matvete",
-   "brand": "Frebaco Kvarn",
-   "code": "100627582_ST"
-  },
-  "couscous": {
-   "krKg": 28.29,
-   "kr": 28.29,
-   "pack": "1kg",
-   "name": "Couscous",
-   "brand": "Garant",
-   "code": "101547035_ST"
-  },
-  "potatis": {
-   "krKg": 9.98,
-   "kr": 49.9,
-   "pack": "5 kg",
-   "name": "Potatis Fast Klass 2",
-   "brand": "",
-   "code": "100225490_ST"
-  },
-  "sotpotatis": {
-   "krKg": 24.9,
-   "kr": 24.9,
-   "pack": "ca: 250g",
-   "name": "Sötpotatis Klass 1",
-   "brand": "",
-   "code": "100150827_KG"
-  },
-  "broccoli": {
-   "krKg": 26.4,
-   "kr": 26.4,
-   "pack": "1kg",
-   "name": "Broccoli Buketter Frysta",
-   "brand": "Eldorado",
-   "code": "101273514_ST"
-  },
-  "paprika": {
-   "krKg": 49.9,
-   "kr": 49.9,
-   "pack": "ca: 200g",
-   "name": "Paprika Röd Klass 1",
-   "brand": "",
-   "code": "100149359_KG"
-  },
-  "haricots": {
-   "krKg": 18.83,
-   "kr": 18.83,
-   "pack": "1kg",
-   "name": "Haricots Verts Frysta",
-   "brand": "Eldorado",
-   "code": "101193541_ST"
-  },
-  "vitkal": {
-   "krKg": 16.9,
-   "kr": 16.9,
-   "pack": "ca: 2kg",
-   "name": "Vitkål Sverige Klass 1",
-   "brand": "",
-   "code": "101281229_KG"
-  },
-  "aubergine": {
-   "krKg": 53,
-   "kr": 15.9,
-   "pack": "ca300g",
-   "name": "Aubergine Klass 1",
-   "brand": "",
-   "code": "100773272_ST"
-  },
-  "wokmix": {
-   "krKg": 55.18,
-   "kr": 46.9,
-   "pack": "850g",
-   "name": "Wok Classic Bigpack",
-   "brand": "Findus",
-   "code": "101520670_ST"
-  },
-  "artmorot": {
-   "krKg": 52.45,
-   "kr": 13.9,
-   "pack": "400/265g",
-   "name": "Morötter Ärter Hela",
-   "brand": "Eldorado",
-   "code": "100435138_ST"
-  },
-  "spenat": {
-   "krKg": 18.83,
-   "kr": 18.83,
-   "pack": "1kg",
-   "name": "Hackad Spenat Fryst",
-   "brand": "Eldorado",
-   "code": "100351361_ST"
-  },
-  "artor": {
-   "krKg": 18.83,
-   "kr": 18.83,
-   "pack": "1kg",
-   "name": "Ärter Frysta",
-   "brand": "Eldorado",
-   "code": "101433553_ST"
-  },
-  "edamame": {
-   "krKg": 56.58,
-   "kr": 28.29,
-   "pack": "500g",
-   "name": "Edamamebönor Frysta",
-   "brand": "Garant",
-   "code": "101328931_ST"
-  },
-  "majs": {
-   "krKg": 30.89,
-   "kr": 13.9,
-   "pack": "450g",
-   "name": "Majskorn Frysta",
-   "brand": "Eldorado",
-   "code": "100351539_ST"
-  },
-  "olja": {
-   "krKg": 23.45,
-   "kr": 46.9,
-   "pack": "2l",
-   "name": "Rapsolja",
-   "brand": "Eldorado",
-   "code": "101222838_ST"
-  },
-  "olivolja": {
-   "krKg": 64.9,
-   "kr": 64.9,
-   "pack": "1l",
-   "name": "Olivolja",
-   "brand": "Eldorado",
-   "code": "101851783_ST"
-  },
-  "svartabonor": {
-   "krKg": 33.63,
-   "kr": 26.9,
-   "pack": "800g",
-   "name": "Svarta Bönor",
-   "brand": "Eldorado",
-   "code": "101277659_ST"
-  },
-  "kidney": {
-   "krKg": 33.63,
-   "kr": 26.9,
-   "pack": "800g",
-   "name": "Kidneybönor Röda",
-   "brand": "Eldorado",
-   "code": "101353996_ST"
-  },
-  "salsa": {
-   "krKg": 40.67,
-   "kr": 12.2,
-   "pack": "300g",
-   "name": "Salsa Medium",
-   "brand": "Banderos",
-   "code": "101250647_ST"
-  },
-  "tacokrydda": {
-   "krKg": 286.52,
-   "kr": 65.9,
-   "pack": "230g",
-   "name": "Taco Spice Mix Krydda",
-   "brand": "Santa Maria",
-   "code": "101880025_ST"
-  },
-  "teriyaki": {
-   "krKg": 113.16,
-   "kr": 28.29,
-   "pack": "250ml",
-   "name": "Teriyaki Sauce",
-   "brand": "Garant",
-   "code": "101719432_ST"
-  },
-  "bbq": {
-   "krKg": 85.22,
-   "kr": 29.4,
-   "pack": "345g",
-   "name": "Smoky Hickory Bbq Sauce",
-   "brand": "Santa Maria",
-   "code": "101833319_ST"
-  },
-  "krossade": {
-   "krKg": 15.8,
-   "kr": 7.9,
-   "pack": "500g",
-   "name": "Tomater Krossade",
-   "brand": "Eldorado",
-   "code": "101414845_ST"
-  },
-  "passerade": {
-   "krKg": 15.8,
-   "kr": 7.9,
-   "pack": "500g",
-   "name": "Tomater Passerade",
-   "brand": "Eldorado",
-   "code": "101350968_ST"
-  },
-  "tomatpure": {
-   "krKg": 29.88,
-   "kr": 23.9,
-   "pack": "800g",
-   "name": "Tomatpuré",
-   "brand": "Durra",
-   "code": "101565032_ST"
-  },
-  "kokosmjolk": {
-   "krKg": 29.75,
-   "kr": 11.9,
-   "pack": "400ml",
-   "name": "Kokosmjölk 18%",
-   "brand": "Spicefield",
-   "code": "101552948_ST"
-  },
-  "grädde": {
-   "krKg": 51.6,
-   "kr": 12.9,
-   "pack": "2,5dl",
-   "name": "Matlagnings Grädde Lång Hållbarhet 15%",
-   "brand": "Kelda",
-   "code": "100986060_ST"
-  },
-  "graddfil": {
-   "krKg": 35,
-   "kr": 17.5,
-   "pack": "5dl",
-   "name": "Gräddfil 12%",
-   "brand": "Garant",
-   "code": "101173840_ST"
-  },
-  "rivenost": {
-   "krKg": 132.67,
-   "kr": 19.9,
-   "pack": "150g",
-   "name": "Gratängost Riven 27%",
-   "brand": "Garant",
-   "code": "101532473_ST"
-  },
-  "parmesan": {
-   "krKg": 332.67,
-   "kr": 49.9,
-   "pack": "150g",
-   "name": "Parmigiano Reggiano 12mån",
-   "brand": "Garant",
-   "code": "101328356_ST"
-  },
-  "feta": {
-   "krKg": 146,
-   "kr": 21.9,
-   "pack": "150g",
-   "name": "Fetaost Block 23%",
-   "brand": "Garant",
-   "code": "101533198_ST"
-  },
-  "tzatziki": {
-   "krKg": 59.8,
-   "kr": 29.9,
-   "pack": "500g",
-   "name": "Tzatziki",
-   "brand": "Salakis",
-   "code": "101465304_ST"
-  },
-  "yoghurt": {
-   "krKg": 29.9,
-   "kr": 29.9,
-   "pack": "1kg",
-   "name": "Turkisk Yoghurt 10%",
-   "brand": "Salakis",
-   "code": "100486886_ST"
-  },
-  "sesam": {
-   "krKg": 70.73,
-   "kr": 28.29,
-   "pack": "400g",
-   "name": "Sesamfrön Skalade",
-   "brand": "Garant Eko",
-   "code": "101543072_ST"
-  },
-  "soja": {
-   "krKg": 46.9,
-   "kr": 46.9,
-   "pack": "1l",
-   "name": "Soy Sauce Japansk",
-   "brand": "Spicefield",
-   "code": "101262880_ST"
-  },
-  "ostronsas": {
-   "krKg": 124.5,
-   "kr": 24.9,
-   "pack": "200ml",
-   "name": "Oyster Sauce",
-   "brand": "Santa Maria",
-   "code": "101386140_ST"
-  },
-  "sweetchili": {
-   "krKg": 45.8,
-   "kr": 22.9,
-   "pack": "500ml",
-   "name": "Sweet Chili Sauce Original",
-   "brand": "Santa Maria",
-   "code": "101240305_ST"
-  },
-  "pesto": {
-   "krKg": 69.21,
-   "kr": 13.15,
-   "pack": "190g",
-   "name": "Pesto Genovese",
-   "brand": "Monte Castello",
-   "code": "101134504_ST"
-  },
-  "soltorkade": {
-   "krKg": 77.21,
-   "kr": 74.9,
-   "pack": "970g",
-   "name": "Pomodori Secchi Soltorkade Tomater",
-   "brand": "Monte Castello",
-   "code": "101270577_ST"
-  },
-  "coleslaw": {
-   "krKg": 49.75,
-   "kr": 19.9,
-   "pack": "400g",
-   "name": "Coleslaw",
-   "brand": "Eldorado",
-   "code": "101303611_ST"
-  },
-  "sirap": {
-   "krKg": 19.87,
-   "kr": 14.9,
-   "pack": "750g",
-   "name": "Ljus Sirap",
-   "brand": "Garant",
-   "code": "101278213_ST"
-  },
-  "lingon": {
-   "krKg": 39.86,
-   "kr": 27.9,
-   "pack": "700g",
-   "name": "Lingonsylt 35% Refill",
-   "brand": "Eldorado",
-   "code": "101845615_ST"
-  },
-  "worcester": {
-   "krKg": 157.07,
-   "kr": 23.56,
-   "pack": "150ml",
-   "name": "Worcestershire Sauce",
-   "brand": "Lea&perrins",
-   "code": "100454232_ST"
-  },
-  "apelsin": {
-   "krKg": 21.25,
-   "kr": 42.49,
-   "pack": "2l",
-   "name": "Apelsinjuice",
-   "brand": "Bravo",
-   "code": "100972930_ST"
-  },
-  "gurka": {
-   "krKg": 62.59,
-   "kr": 16.9,
-   "pack": "270g",
-   "name": "Gurka Import Klass 1",
-   "brand": "",
-   "code": "100594956_ST"
-  },
-  "champinjoner": {
-   "krKg": 59.9,
-   "kr": 59.9,
-   "pack": "",
-   "name": "Champinjoner Klass 1",
-   "brand": "",
-   "code": "100152031_KG"
-  },
-  "gullok": {
-   "krKg": 9.9,
-   "kr": 9.9,
-   "pack": "1kg",
-   "name": "Lök Gul i Påse Klass 1",
-   "brand": "Garant",
-   "code": "100812738_ST"
-  },
-  "kvarg": {
-   "krKg": 27,
-   "kr": 13.5,
-   "pack": "500g",
-   "name": "Naturell Kvarg 0,3%",
-   "brand": "Eldorado",
-   "code": "101232098_ST"
-  },
-  "grekisk": {
-   "krKg": 36.9,
-   "kr": 36.9,
-   "pack": "1kg",
-   "name": "Naturell Grekisk Yoghurt 0%",
-   "brand": "Arla",
-   "code": "101340644_ST"
-  },
-  "yoghurt3": {
-   "krKg": 13.27,
-   "kr": 19.9,
-   "pack": "1,5kg",
-   "name": "Mild Naturell Yoghurt 3%",
-   "brand": "Garant",
-   "code": "101736407_ST"
-  },
-  "kesella": {
-   "krKg": 54,
-   "kr": 13.5,
-   "pack": "250g",
-   "name": "Naturell Kesella Kvarg 7%",
-   "brand": "Arla Köket",
-   "code": "101888502_ST"
-  },
-  "lattcreme": {
-   "krKg": 47.8,
-   "kr": 23.9,
-   "pack": "5dl",
-   "name": "Crème Fraiche Lätt 13%",
-   "brand": "Garant",
-   "code": "101245381_ST"
-  },
-  "kokoslatt": {
-   "krKg": 62,
-   "kr": 15.5,
-   "pack": "250ml",
-   "name": "Coconut Milk Light",
-   "brand": "Santa Maria",
-   "code": "101295624_ST"
-  },
-  "tahini": {
-   "krKg": 106.23,
-   "kr": 42.49,
-   "pack": "400g",
-   "name": "Tahini Sesampasta",
-   "brand": "Al-rabih",
-   "code": "101334033_ST"
-  },
-  "jordnotter": {
-   "krKg": 29.9,
-   "kr": 29.9,
-   "pack": "1kg",
-   "name": "Jordnötter Rostade & Saltade",
-   "brand": "Eldorado",
-   "code": "101263195_ST"
-  },
-  "gochujang": {
-   "krKg": 127.47,
-   "kr": 21.67,
-   "pack": "170g",
-   "name": "Gochujang",
-   "brand": "Wang",
-   "code": "101262307_ST"
-  },
-  "sriracha": {
-   "krKg": 80.28,
-   "kr": 34.92,
-   "pack": "435ml",
-   "name": "Sriracha Sauce",
-   "brand": "Spicefield",
-   "code": "101260362_ST"
-  },
-  "honung": {
-   "krKg": 49.86,
-   "kr": 34.9,
-   "pack": "700g",
-   "name": "Honung Fast",
-   "brand": "Eldorado",
-   "code": "101840986_ST"
-  },
-  "senap": {
-   "krKg": 27.11,
-   "kr": 12.2,
-   "pack": "450g",
-   "name": "Senap",
-   "brand": "Eldorado",
-   "code": "101253237_ST"
-  },
-  "majsstarkelse": {
-   "krKg": 34.75,
-   "kr": 13.9,
-   "pack": "400g",
-   "name": "Majsstärkelse",
-   "brand": "Garant",
-   "code": "101716059_ST"
-  },
-  "philadelphia": {
-   "krKg": 93,
-   "kr": 27.9,
-   "pack": "300g",
-   "name": "Light 11%",
-   "brand": "Philadelphia",
-   "code": "100173900_ST"
-  },
-  "lattmjolk": {
-   "krKg": 10.6,
-   "kr": 15.9,
-   "pack": "1,5l",
-   "name": "Lättmjölk Längre Hållbarhet 0,5%",
-   "brand": "Garant",
-   "code": "101353106_ST"
-  },
-  "ajvar": {
-   "krKg": 51.14,
-   "kr": 17.9,
-   "pack": "350g",
-   "name": "Ajvar Stark",
-   "brand": "Podravka",
-   "code": "100229478_ST"
-  },
-  "kebabsas": {
-   "krKg": 62.19,
-   "kr": 19.9,
-   "pack": "320ml",
-   "name": "Kebabsås",
-   "brand": "Eldorado",
-   "code": "101267518_ST"
-  },
-  "hotsauce": {
-   "krKg": 102.05,
-   "kr": 37.76,
-   "pack": "370ml",
-   "name": "Hot Sauce",
-   "brand": "Valentina",
-   "code": "101677048_ST"
-  },
-  "ost": {
-   "krKg": 108.9,
-   "kr": 108.9,
-   "pack": "ca: 2.2kg",
-   "name": "Hushållsost Mager 17%",
-   "brand": "Arla",
-   "code": "101197502_KG"
+  "Willys": {
+   "kycklingfile": {
+    "krKg": 69.5,
+    "kr": 139,
+    "pack": "2kg",
+    "name": "Kyckling Filé Fryst",
+    "brand": "Eldorado",
+    "code": "101266948_ST"
+   },
+   "notfars": {
+    "krKg": 119,
+    "kr": 119,
+    "pack": "ca: 1kg",
+    "name": "Nötfärs 20% Irland",
+    "brand": "",
+    "code": "101203622_KG"
+   },
+   "blandfars": {
+    "krKg": 92.9,
+    "kr": 92.9,
+    "pack": "ca: 1kg",
+    "name": "Blandfärs 20% Irland/danmark",
+    "brand": "",
+    "code": "101203649_KG"
+   },
+   "flaskfars": {
+    "krKg": 67.9,
+    "kr": 67.9,
+    "pack": "ca: 1kg",
+    "name": "Fläskfärs 20% Sverige",
+    "brand": "Garant",
+    "code": "101203624_KG"
+   },
+   "flaskkarre": {
+    "krKg": 89.9,
+    "kr": 89.9,
+    "pack": "ca: 2.7kg",
+    "name": "Fläskkarré Benfri",
+    "brand": "Westfleisch",
+    "code": "101300146_KG"
+   },
+   "lax": {
+    "krKg": 189.08,
+    "kr": 94.54,
+    "pack": "4x125g",
+    "name": "Laxfilé Fryst",
+    "brand": "Omega",
+    "code": "101804336_ST"
+   },
+   "kikartor": {
+    "krKg": 47.8,
+    "kr": 23.9,
+    "pack": "500g",
+    "name": "Kikärtor",
+    "brand": "Garant Eko",
+    "code": "101289460_ST"
+   },
+   "halloumi": {
+    "krKg": 134.5,
+    "kr": 26.9,
+    "pack": "200g",
+    "name": "Halloumi 26%",
+    "brand": "Garant",
+    "code": "101191889_ST"
+   },
+   "sojafars": {
+    "krKg": 69.89,
+    "kr": 62.9,
+    "pack": "900g",
+    "name": "Vegofärs Fryst",
+    "brand": "Garant",
+    "code": "101344201_ST"
+   },
+   "linser": {
+    "krKg": 29.88,
+    "kr": 23.9,
+    "pack": "800g",
+    "name": "Linser Hela Röda",
+    "brand": "Durra",
+    "code": "101803356_ST"
+   },
+   "ris": {
+    "krKg": 17.38,
+    "kr": 86.9,
+    "pack": "5kg",
+    "name": "Jasminris",
+    "brand": "",
+    "code": "101552555_ST"
+   },
+   "pasta": {
+    "krKg": 13.5,
+    "kr": 13.5,
+    "pack": "1kg",
+    "name": "Spaghetti Pasta",
+    "brand": "Monte Castello",
+    "code": "101240219_ST"
+   },
+   "bulgur": {
+    "krKg": 17.5,
+    "kr": 17.5,
+    "pack": "1kg",
+    "name": "Bulgur",
+    "brand": "Garant",
+    "code": "101822876_ST"
+   },
+   "matvete": {
+    "krKg": 24.4,
+    "kr": 12.2,
+    "pack": "500g",
+    "name": "Matvete",
+    "brand": "Frebaco Kvarn",
+    "code": "100627582_ST"
+   },
+   "couscous": {
+    "krKg": 28.29,
+    "kr": 28.29,
+    "pack": "1kg",
+    "name": "Couscous",
+    "brand": "Garant",
+    "code": "101547035_ST"
+   },
+   "potatis": {
+    "krKg": 9.98,
+    "kr": 49.9,
+    "pack": "5 kg",
+    "name": "Potatis Fast Klass 2",
+    "brand": "",
+    "code": "100225490_ST"
+   },
+   "sotpotatis": {
+    "krKg": 24.9,
+    "kr": 24.9,
+    "pack": "ca: 250g",
+    "name": "Sötpotatis Klass 1",
+    "brand": "",
+    "code": "100150827_KG"
+   },
+   "broccoli": {
+    "krKg": 26.4,
+    "kr": 26.4,
+    "pack": "1kg",
+    "name": "Broccoli Buketter Frysta",
+    "brand": "Eldorado",
+    "code": "101273514_ST"
+   },
+   "paprika": {
+    "krKg": 49.9,
+    "kr": 49.9,
+    "pack": "ca: 200g",
+    "name": "Paprika Röd Klass 1",
+    "brand": "",
+    "code": "100149359_KG"
+   },
+   "haricots": {
+    "krKg": 18.83,
+    "kr": 18.83,
+    "pack": "1kg",
+    "name": "Haricots Verts Frysta",
+    "brand": "Eldorado",
+    "code": "101193541_ST"
+   },
+   "vitkal": {
+    "krKg": 16.9,
+    "kr": 16.9,
+    "pack": "ca: 2kg",
+    "name": "Vitkål Sverige Klass 1",
+    "brand": "",
+    "code": "101281229_KG"
+   },
+   "aubergine": {
+    "krKg": 53,
+    "kr": 15.9,
+    "pack": "ca300g",
+    "name": "Aubergine Klass 1",
+    "brand": "",
+    "code": "100773272_ST"
+   },
+   "wokmix": {
+    "krKg": 55.18,
+    "kr": 46.9,
+    "pack": "850g",
+    "name": "Wok Classic Bigpack",
+    "brand": "Findus",
+    "code": "101520670_ST"
+   },
+   "artmorot": {
+    "krKg": 52.45,
+    "kr": 13.9,
+    "pack": "400/265g",
+    "name": "Morötter Ärter Hela",
+    "brand": "Eldorado",
+    "code": "100435138_ST"
+   },
+   "spenat": {
+    "krKg": 18.83,
+    "kr": 18.83,
+    "pack": "1kg",
+    "name": "Hackad Spenat Fryst",
+    "brand": "Eldorado",
+    "code": "100351361_ST"
+   },
+   "artor": {
+    "krKg": 18.83,
+    "kr": 18.83,
+    "pack": "1kg",
+    "name": "Ärter Frysta",
+    "brand": "Eldorado",
+    "code": "101433553_ST"
+   },
+   "edamame": {
+    "krKg": 56.58,
+    "kr": 28.29,
+    "pack": "500g",
+    "name": "Edamamebönor Frysta",
+    "brand": "Garant",
+    "code": "101328931_ST"
+   },
+   "majs": {
+    "krKg": 30.89,
+    "kr": 13.9,
+    "pack": "450g",
+    "name": "Majskorn Frysta",
+    "brand": "Eldorado",
+    "code": "100351539_ST"
+   },
+   "olja": {
+    "krKg": 23.45,
+    "kr": 46.9,
+    "pack": "2l",
+    "name": "Rapsolja",
+    "brand": "Eldorado",
+    "code": "101222838_ST"
+   },
+   "olivolja": {
+    "krKg": 64.9,
+    "kr": 64.9,
+    "pack": "1l",
+    "name": "Olivolja",
+    "brand": "Eldorado",
+    "code": "101851783_ST"
+   },
+   "svartabonor": {
+    "krKg": 33.63,
+    "kr": 26.9,
+    "pack": "800g",
+    "name": "Svarta Bönor",
+    "brand": "Eldorado",
+    "code": "101277659_ST"
+   },
+   "kidney": {
+    "krKg": 33.63,
+    "kr": 26.9,
+    "pack": "800g",
+    "name": "Kidneybönor Röda",
+    "brand": "Eldorado",
+    "code": "101353996_ST"
+   },
+   "salsa": {
+    "krKg": 40.67,
+    "kr": 12.2,
+    "pack": "300g",
+    "name": "Salsa Medium",
+    "brand": "Banderos",
+    "code": "101250647_ST"
+   },
+   "tacokrydda": {
+    "krKg": 286.52,
+    "kr": 65.9,
+    "pack": "230g",
+    "name": "Taco Spice Mix Krydda",
+    "brand": "Santa Maria",
+    "code": "101880025_ST"
+   },
+   "teriyaki": {
+    "krKg": 113.16,
+    "kr": 28.29,
+    "pack": "250ml",
+    "name": "Teriyaki Sauce",
+    "brand": "Garant",
+    "code": "101719432_ST"
+   },
+   "bbq": {
+    "krKg": 85.22,
+    "kr": 29.4,
+    "pack": "345g",
+    "name": "Smoky Hickory Bbq Sauce",
+    "brand": "Santa Maria",
+    "code": "101833319_ST"
+   },
+   "krossade": {
+    "krKg": 15.8,
+    "kr": 7.9,
+    "pack": "500g",
+    "name": "Tomater Krossade",
+    "brand": "Eldorado",
+    "code": "101414845_ST"
+   },
+   "passerade": {
+    "krKg": 15.8,
+    "kr": 7.9,
+    "pack": "500g",
+    "name": "Tomater Passerade",
+    "brand": "Eldorado",
+    "code": "101350968_ST"
+   },
+   "tomatpure": {
+    "krKg": 29.88,
+    "kr": 23.9,
+    "pack": "800g",
+    "name": "Tomatpuré",
+    "brand": "Durra",
+    "code": "101565032_ST"
+   },
+   "kokosmjolk": {
+    "krKg": 29.75,
+    "kr": 11.9,
+    "pack": "400ml",
+    "name": "Kokosmjölk 18%",
+    "brand": "Spicefield",
+    "code": "101552948_ST"
+   },
+   "grädde": {
+    "krKg": 51.6,
+    "kr": 12.9,
+    "pack": "2,5dl",
+    "name": "Matlagnings Grädde Lång Hållbarhet 15%",
+    "brand": "Kelda",
+    "code": "100986060_ST"
+   },
+   "graddfil": {
+    "krKg": 35,
+    "kr": 17.5,
+    "pack": "5dl",
+    "name": "Gräddfil 12%",
+    "brand": "Garant",
+    "code": "101173840_ST"
+   },
+   "rivenost": {
+    "krKg": 132.67,
+    "kr": 19.9,
+    "pack": "150g",
+    "name": "Gratängost Riven 27%",
+    "brand": "Garant",
+    "code": "101532473_ST"
+   },
+   "parmesan": {
+    "krKg": 332.67,
+    "kr": 49.9,
+    "pack": "150g",
+    "name": "Parmigiano Reggiano 12mån",
+    "brand": "Garant",
+    "code": "101328356_ST"
+   },
+   "feta": {
+    "krKg": 146,
+    "kr": 21.9,
+    "pack": "150g",
+    "name": "Fetaost Block 23%",
+    "brand": "Garant",
+    "code": "101533198_ST"
+   },
+   "tzatziki": {
+    "krKg": 59.8,
+    "kr": 29.9,
+    "pack": "500g",
+    "name": "Tzatziki",
+    "brand": "Salakis",
+    "code": "101465304_ST"
+   },
+   "yoghurt": {
+    "krKg": 29.9,
+    "kr": 29.9,
+    "pack": "1kg",
+    "name": "Turkisk Yoghurt 10%",
+    "brand": "Salakis",
+    "code": "100486886_ST"
+   },
+   "sesam": {
+    "krKg": 70.73,
+    "kr": 28.29,
+    "pack": "400g",
+    "name": "Sesamfrön Skalade",
+    "brand": "Garant Eko",
+    "code": "101543072_ST"
+   },
+   "soja": {
+    "krKg": 46.9,
+    "kr": 46.9,
+    "pack": "1l",
+    "name": "Soy Sauce Japansk",
+    "brand": "Spicefield",
+    "code": "101262880_ST"
+   },
+   "ostronsas": {
+    "krKg": 124.5,
+    "kr": 24.9,
+    "pack": "200ml",
+    "name": "Oyster Sauce",
+    "brand": "Santa Maria",
+    "code": "101386140_ST"
+   },
+   "sweetchili": {
+    "krKg": 45.8,
+    "kr": 22.9,
+    "pack": "500ml",
+    "name": "Sweet Chili Sauce Original",
+    "brand": "Santa Maria",
+    "code": "101240305_ST"
+   },
+   "pesto": {
+    "krKg": 69.21,
+    "kr": 13.15,
+    "pack": "190g",
+    "name": "Pesto Genovese",
+    "brand": "Monte Castello",
+    "code": "101134504_ST"
+   },
+   "soltorkade": {
+    "krKg": 77.21,
+    "kr": 74.9,
+    "pack": "970g",
+    "name": "Pomodori Secchi Soltorkade Tomater",
+    "brand": "Monte Castello",
+    "code": "101270577_ST"
+   },
+   "coleslaw": {
+    "krKg": 49.75,
+    "kr": 19.9,
+    "pack": "400g",
+    "name": "Coleslaw",
+    "brand": "Eldorado",
+    "code": "101303611_ST"
+   },
+   "sirap": {
+    "krKg": 19.87,
+    "kr": 14.9,
+    "pack": "750g",
+    "name": "Ljus Sirap",
+    "brand": "Garant",
+    "code": "101278213_ST"
+   },
+   "lingon": {
+    "krKg": 39.86,
+    "kr": 27.9,
+    "pack": "700g",
+    "name": "Lingonsylt 35% Refill",
+    "brand": "Eldorado",
+    "code": "101845615_ST"
+   },
+   "worcester": {
+    "krKg": 157.07,
+    "kr": 23.56,
+    "pack": "150ml",
+    "name": "Worcestershire Sauce",
+    "brand": "Lea&perrins",
+    "code": "100454232_ST"
+   },
+   "apelsin": {
+    "krKg": 21.25,
+    "kr": 42.49,
+    "pack": "2l",
+    "name": "Apelsinjuice",
+    "brand": "Bravo",
+    "code": "100972930_ST"
+   },
+   "gurka": {
+    "krKg": 62.59,
+    "kr": 16.9,
+    "pack": "270g",
+    "name": "Gurka Import Klass 1",
+    "brand": "",
+    "code": "100594956_ST"
+   },
+   "champinjoner": {
+    "krKg": 59.9,
+    "kr": 59.9,
+    "pack": "",
+    "name": "Champinjoner Klass 1",
+    "brand": "",
+    "code": "100152031_KG"
+   },
+   "gullok": {
+    "krKg": 9.9,
+    "kr": 9.9,
+    "pack": "1kg",
+    "name": "Lök Gul i Påse Klass 1",
+    "brand": "Garant",
+    "code": "100812738_ST"
+   },
+   "kvarg": {
+    "krKg": 27,
+    "kr": 13.5,
+    "pack": "500g",
+    "name": "Naturell Kvarg 0,3%",
+    "brand": "Eldorado",
+    "code": "101232098_ST"
+   },
+   "grekisk": {
+    "krKg": 36.9,
+    "kr": 36.9,
+    "pack": "1kg",
+    "name": "Naturell Grekisk Yoghurt 0%",
+    "brand": "Arla",
+    "code": "101340644_ST"
+   },
+   "yoghurt3": {
+    "krKg": 13.27,
+    "kr": 19.9,
+    "pack": "1,5kg",
+    "name": "Mild Naturell Yoghurt 3%",
+    "brand": "Garant",
+    "code": "101736407_ST"
+   },
+   "kesella": {
+    "krKg": 54,
+    "kr": 13.5,
+    "pack": "250g",
+    "name": "Naturell Kesella Kvarg 7%",
+    "brand": "Arla Köket",
+    "code": "101888502_ST"
+   },
+   "lattcreme": {
+    "krKg": 47.8,
+    "kr": 23.9,
+    "pack": "5dl",
+    "name": "Crème Fraiche Lätt 13%",
+    "brand": "Garant",
+    "code": "101245381_ST"
+   },
+   "kokoslatt": {
+    "krKg": 62,
+    "kr": 15.5,
+    "pack": "250ml",
+    "name": "Coconut Milk Light",
+    "brand": "Santa Maria",
+    "code": "101295624_ST"
+   },
+   "tahini": {
+    "krKg": 106.23,
+    "kr": 42.49,
+    "pack": "400g",
+    "name": "Tahini Sesampasta",
+    "brand": "Al-rabih",
+    "code": "101334033_ST"
+   },
+   "jordnotter": {
+    "krKg": 29.9,
+    "kr": 29.9,
+    "pack": "1kg",
+    "name": "Jordnötter Rostade & Saltade",
+    "brand": "Eldorado",
+    "code": "101263195_ST"
+   },
+   "gochujang": {
+    "krKg": 127.47,
+    "kr": 21.67,
+    "pack": "170g",
+    "name": "Gochujang",
+    "brand": "Wang",
+    "code": "101262307_ST"
+   },
+   "sriracha": {
+    "krKg": 80.28,
+    "kr": 34.92,
+    "pack": "435ml",
+    "name": "Sriracha Sauce",
+    "brand": "Spicefield",
+    "code": "101260362_ST"
+   },
+   "honung": {
+    "krKg": 49.86,
+    "kr": 34.9,
+    "pack": "700g",
+    "name": "Honung Fast",
+    "brand": "Eldorado",
+    "code": "101840986_ST"
+   },
+   "senap": {
+    "krKg": 27.11,
+    "kr": 12.2,
+    "pack": "450g",
+    "name": "Senap",
+    "brand": "Eldorado",
+    "code": "101253237_ST"
+   },
+   "majsstarkelse": {
+    "krKg": 34.75,
+    "kr": 13.9,
+    "pack": "400g",
+    "name": "Majsstärkelse",
+    "brand": "Garant",
+    "code": "101716059_ST"
+   },
+   "philadelphia": {
+    "krKg": 93,
+    "kr": 27.9,
+    "pack": "300g",
+    "name": "Light 11%",
+    "brand": "Philadelphia",
+    "code": "100173900_ST"
+   },
+   "lattmjolk": {
+    "krKg": 10.6,
+    "kr": 15.9,
+    "pack": "1,5l",
+    "name": "Lättmjölk Längre Hållbarhet 0,5%",
+    "brand": "Garant",
+    "code": "101353106_ST"
+   },
+   "ajvar": {
+    "krKg": 51.14,
+    "kr": 17.9,
+    "pack": "350g",
+    "name": "Ajvar Stark",
+    "brand": "Podravka",
+    "code": "100229478_ST"
+   },
+   "kebabsas": {
+    "krKg": 62.19,
+    "kr": 19.9,
+    "pack": "320ml",
+    "name": "Kebabsås",
+    "brand": "Eldorado",
+    "code": "101267518_ST"
+   },
+   "hotsauce": {
+    "krKg": 102.05,
+    "kr": 37.76,
+    "pack": "370ml",
+    "name": "Hot Sauce",
+    "brand": "Valentina",
+    "code": "101677048_ST"
+   },
+   "ost": {
+    "krKg": 108.9,
+    "kr": 108.9,
+    "pack": "ca: 2.2kg",
+    "name": "Hushållsost Mager 17%",
+    "brand": "Arla",
+    "code": "101197502_KG"
+   }
+  },
+  "ICA": {},
+  "Coop": {
+   "kycklingfile": {
+    "krKg": 70,
+    "kr": 140,
+    "pack": "2 kg",
+    "name": "Kycklingbröstfilé mörad",
+    "brand": "Xtra",
+    "code": "7340191130128"
+   },
+   "notfars": {
+    "krKg": 135,
+    "kr": 67.5,
+    "pack": "500g",
+    "name": "Nötfärs 20%",
+    "brand": "John's",
+    "code": "7392055078800"
+   },
+   "blandfars": {
+    "krKg": 101,
+    "kr": 101,
+    "pack": "2000 gram ungefärlig vikt",
+    "name": "Blandfärs",
+    "brand": "Scan",
+    "code": "2320698900009"
+   },
+   "flaskfars": {
+    "krKg": 67.9,
+    "kr": 33.95,
+    "pack": "500 g",
+    "name": "Fläskfärs",
+    "brand": "Coop",
+    "code": "7300156577269"
+   },
+   "flaskkarre": {
+    "krKg": 97,
+    "kr": 97,
+    "pack": "1200 gram ungefärlig vikt",
+    "name": "Fläskkarre",
+    "brand": "Scan",
+    "code": "2320051600003"
+   },
+   "lax": {
+    "krKg": 238,
+    "kr": 119,
+    "pack": "500 G",
+    "name": "Laxfilé 4-pack",
+    "brand": "Coop",
+    "code": "7340191161726"
+   },
+   "kikartor": {
+    "krKg": 42.01,
+    "kr": 37.81,
+    "pack": "900g",
+    "name": "Kikärtor",
+    "brand": "Ceren",
+    "code": "8697420690083"
+   },
+   "halloumi": {
+    "krKg": 141.75,
+    "kr": 28.35,
+    "pack": "200 g",
+    "name": "Halloumi Cypriot Block",
+    "brand": "Coop",
+    "code": "7340191149090"
+   },
+   "sojafars": {
+    "krKg": 70.93,
+    "kr": 70.93,
+    "pack": "750g",
+    "name": "Vegofärs",
+    "brand": "Coop",
+    "code": "7340191132405"
+   },
+   "linser": {
+    "krKg": 32.54,
+    "kr": 29.29,
+    "pack": "900g",
+    "name": "Röda linser Hela",
+    "brand": "Sevan",
+    "code": "7331217016854"
+   },
+   "ris": {
+    "krKg": 23.95,
+    "kr": 23.95,
+    "pack": "1000 g",
+    "name": "Jasminris och långkornigt ris",
+    "brand": "Xtra",
+    "code": "7340191185517"
+   },
+   "pasta": {
+    "krKg": 13.95,
+    "kr": 13.95,
+    "pack": "1000 g",
+    "name": "Spaghetti",
+    "brand": "Xtra",
+    "code": "7340191156159"
+   },
+   "bulgur": {
+    "krKg": 19.9,
+    "kr": 19.9,
+    "pack": "1kg",
+    "name": "Bulgur Grov",
+    "brand": "Sevan",
+    "code": "7331217010050"
+   },
+   "couscous": {
+    "krKg": 39.14,
+    "kr": 19.57,
+    "pack": "500 G",
+    "name": "Couscous",
+    "brand": "Coop",
+    "code": "7340011321767"
+   },
+   "potatis": {
+    "krKg": 11.35,
+    "kr": 56.74,
+    "pack": "5 kg",
+    "name": "Potatis Fast ",
+    "brand": "Andreas Uppgård",
+    "code": "7315802052038"
+   },
+   "sotpotatis": {
+    "krKg": 24.9,
+    "kr": 24.9,
+    "pack": "300 gram ungefärlig vikt",
+    "name": "Sötpotatis",
+    "brand": "",
+    "code": "2317409100001"
+   },
+   "broccoli": {
+    "krKg": 27.4,
+    "kr": 27.4,
+    "pack": "1000 G",
+    "name": "Broccoli",
+    "brand": "Xtra",
+    "code": "7340191174573"
+   },
+   "paprika": {
+    "krKg": 59.9,
+    "kr": 59.9,
+    "pack": "200 gram ungefärlig vikt",
+    "name": "Paprika Röd",
+    "brand": "",
+    "code": "2317468800003"
+   },
+   "haricots": {
+    "krKg": 39.66,
+    "kr": 19.83,
+    "pack": "500 G",
+    "name": "Haricots Verts",
+    "brand": "Coop",
+    "code": "7340191151376"
+   },
+   "vitkal": {
+    "krKg": 15.9,
+    "kr": 15.9,
+    "pack": "1350 gram ungefärlig vikt",
+    "name": "Vitkål",
+    "brand": "",
+    "code": "2317305000009"
+   },
+   "aubergine": {
+    "krKg": 73.48,
+    "kr": 16.9,
+    "pack": "300 gram ungefärlig vikt",
+    "name": "Aubergine",
+    "brand": "",
+    "code": "7340007921629"
+   },
+   "spenat": {
+    "krKg": 41.02,
+    "kr": 18.46,
+    "pack": "450 G",
+    "name": "Bladspenat",
+    "brand": "Coop",
+    "code": "7340011361572"
+   },
+   "edamame": {
+    "krKg": 56.7,
+    "kr": 28.35,
+    "pack": "500 g",
+    "name": "Edamamebönor",
+    "brand": "Coop",
+    "code": "7340191184022"
+   },
+   "majs": {
+    "krKg": 43.78,
+    "kr": 17.51,
+    "pack": "400 G",
+    "name": "Majskorn Eko",
+    "brand": "Änglamark",
+    "code": "7340011315858"
+   },
+   "svartabonor": {
+    "krKg": 70.88,
+    "kr": 28.35,
+    "pack": "400g",
+    "name": "Svarta Bönor",
+    "brand": "GoGreen",
+    "code": "7310130009464"
+   },
+   "kidney": {
+    "krKg": 25.51,
+    "kr": 9.95,
+    "pack": "390 G",
+    "name": "Kidneybönor chili",
+    "brand": "Coop",
+    "code": "7340191144484"
+   },
+   "salsa": {
+    "krKg": 43.79,
+    "kr": 12.26,
+    "pack": "280 G",
+    "name": "Tacosås Medium",
+    "brand": "Xtra",
+    "code": "7340191142794"
+   },
+   "tacokrydda": {
+    "krKg": 178.57,
+    "kr": 95,
+    "pack": "95 PORT",
+    "name": "Taco Spice Mix Storpack",
+    "brand": "Santa Maria",
+    "code": "7311311012549"
+   },
+   "teriyaki": {
+    "krKg": 119.43,
+    "kr": 43.95,
+    "pack": "368g",
+    "name": "Glutenfri Teriyakisås",
+    "brand": "Lee Kum Kee",
+    "code": "78895155884"
+   },
+   "krossade": {
+    "krKg": 20.1,
+    "kr": 7.84,
+    "pack": "390 G",
+    "name": "Tomater Krossade",
+    "brand": "Xtra",
+    "code": "7340191170407"
+   },
+   "passerade": {
+    "krKg": 29.34,
+    "kr": 14.67,
+    "pack": "500 G",
+    "name": "Passerade tomater",
+    "brand": "Coop",
+    "code": "7340191170896"
+   },
+   "tomatpure": {
+    "krKg": 53.53,
+    "kr": 44.43,
+    "pack": "830g",
+    "name": "Tomatpuré",
+    "brand": "TAT",
+    "code": "8690635030873"
+   },
+   "rivenost": {
+    "krKg": 70.95,
+    "kr": 70.95,
+    "pack": "1 kg",
+    "name": "Riven Ost",
+    "brand": "Xtra",
+    "code": "7340011460046"
+   },
+   "parmesan": {
+    "krKg": 320.73,
+    "kr": 320.73,
+    "pack": "500 gram ungefärlig vikt",
+    "name": "Parmigiano Reggiano",
+    "brand": "Coop",
+    "code": "2317236800006"
+   },
+   "feta": {
+    "krKg": 139.67,
+    "kr": 20.95,
+    "pack": "150 G",
+    "name": "Fetaost grekisk",
+    "brand": "Coop",
+    "code": "7340191150775"
+   },
+   "tzatziki": {
+    "krKg": 96.1,
+    "kr": 19.22,
+    "pack": "200 g",
+    "name": "Tzatziki",
+    "brand": "Coop",
+    "code": "7300156577801"
+   },
+   "yoghurt": {
+    "krKg": 31.64,
+    "kr": 31.64,
+    "pack": "1000 g",
+    "name": "Turkisk yoghurt 10%",
+    "brand": "Arla Köket®",
+    "code": "7310865078353"
+   },
+   "sesam": {
+    "krKg": 66.25,
+    "kr": 26.5,
+    "pack": "400 g",
+    "name": "Sesamfrön Eko",
+    "brand": "Änglamark",
+    "code": "7340191163089"
+   },
+   "pesto": {
+    "krKg": 155.26,
+    "kr": 29.5,
+    "pack": "190 g",
+    "name": "Pesto Genovese",
+    "brand": "Zeta",
+    "code": "7350027796091"
+   },
+   "soltorkade": {
+    "krKg": 175.61,
+    "kr": 49.17,
+    "pack": "280 g",
+    "name": "Soltorkade Tomater",
+    "brand": "Saclá",
+    "code": "8001060003880"
+   },
+   "coleslaw": {
+    "krKg": 78.75,
+    "kr": 31.5,
+    "pack": "400 g",
+    "name": "Coleslaw",
+    "brand": "Coop",
+    "code": "7300156492067"
+   },
+   "lingon": {
+    "krKg": 47.26,
+    "kr": 33.08,
+    "pack": "700 G",
+    "name": "Lingonsylt Refill",
+    "brand": "Coop",
+    "code": "7340191165861"
+   },
+   "champinjoner": {
+    "krKg": 59.9,
+    "kr": 59.9,
+    "pack": "",
+    "name": "Champinjoner",
+    "brand": "",
+    "code": "2317408500000"
+   },
+   "gullok": {
+    "krKg": 12.9,
+    "kr": 12.9,
+    "pack": "1000 g",
+    "name": "Lök Gul",
+    "brand": "COOP",
+    "code": "7300156596734"
+   },
+   "kvarg": {
+    "krKg": 45.56,
+    "kr": 20.5,
+    "pack": "450 g",
+    "name": "Kvarg Naturell",
+    "brand": "Ehrmann",
+    "code": "4002971196009"
+   },
+   "grekisk": {
+    "krKg": 39.28,
+    "kr": 39.28,
+    "pack": "1000g",
+    "name": "Grekisk Yoghurt 0%",
+    "brand": "Larsa Foods",
+    "code": "7350056793177"
+   },
+   "kesella": {
+    "krKg": 62,
+    "kr": 15.5,
+    "pack": "250 g",
+    "name": "Kesella Kvarg Naturell 7%",
+    "brand": "Arla Köket®",
+    "code": "4016241051103"
+   },
+   "tahini": {
+    "krKg": 153.78,
+    "kr": 55.36,
+    "pack": "360 g",
+    "name": "Tahini Eko",
+    "brand": "Kung Markatta",
+    "code": "7391835920322"
+   },
+   "jordnotter": {
+    "krKg": 33.22,
+    "kr": 16.61,
+    "pack": "500 G",
+    "name": "Jordnötter Rostade & saltade",
+    "brand": "Xtra",
+    "code": "7340191130272"
+   },
+   "sriracha": {
+    "krKg": 80.26,
+    "kr": 18.46,
+    "pack": "230g",
+    "name": "Dressing Sriracha",
+    "brand": "Kavli",
+    "code": "7311442162755"
+   },
+   "honung": {
+    "krKg": 53.08,
+    "kr": 34.5,
+    "pack": "650 g",
+    "name": "Honung",
+    "brand": "Xtra",
+    "code": "7340191188112"
+   },
+   "senap": {
+    "krKg": 31.24,
+    "kr": 15.62,
+    "pack": "500 g",
+    "name": "Senap Sötstark ",
+    "brand": "Coop",
+    "code": "7300156598196"
+   },
+   "majsstarkelse": {
+    "krKg": 34.3,
+    "kr": 13.72,
+    "pack": "400 g",
+    "name": "Majsstärkelse",
+    "brand": "Coop",
+    "code": "7340191177659"
+   },
+   "philadelphia": {
+    "krKg": 99.75,
+    "kr": 19.95,
+    "pack": "200g",
+    "name": "Philadelphia Light",
+    "brand": "Philadelphia",
+    "code": "5700419083360"
+   },
+   "ajvar": {
+    "krKg": 54.8,
+    "kr": 37.81,
+    "pack": "690 gr",
+    "name": "Ajvar Mild",
+    "brand": "Podravka",
+    "code": "3850104051012"
+   }
   }
  },
  "offers": [
@@ -1370,6 +1881,270 @@
    "label": "2 för 29,95 kr",
    "member": false,
    "until": "2026-09-28"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Blandfärs",
+   "brand": "Nyhléns Hugosons",
+   "pack": "800 g",
+   "krKg": 99.88,
+   "label": "79.9 kr",
+   "member": true,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Färsk kycklingfilé",
+   "brand": "Guldfågeln",
+   "pack": "Ca 900 g.",
+   "krKg": 110,
+   "label": "99 kr",
+   "member": true,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "broccoli",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Broccoli",
+   "brand": "Coop",
+   "pack": "Ca 250 g.",
+   "krKg": 50,
+   "label": "2 för 25 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "sojafars",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Vegofärs",
+   "brand": "Coop",
+   "pack": "1 kg.",
+   "krKg": 59.9,
+   "label": "59.9 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Kycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "2 kg.",
+   "krKg": 84.5,
+   "label": "169 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "vitkal",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Vitkål",
+   "brand": "Sverige",
+   "pack": "1 kg.",
+   "krKg": 9,
+   "label": "9 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Färsk kycklingfilé",
+   "brand": "Guldfågeln",
+   "pack": "Ca 900 g.",
+   "krKg": 110,
+   "label": "99 kr",
+   "member": true,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Blandfärs",
+   "brand": "Nyhléns Hugosons",
+   "pack": "800 g",
+   "krKg": 99.88,
+   "label": "79.9 kr",
+   "member": true,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "broccoli",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Broccoli",
+   "brand": "Coop",
+   "pack": "Ca 250 g.",
+   "krKg": 50,
+   "label": "2 för 25 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "vitkal",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Vitkål",
+   "brand": "Sverige",
+   "pack": "1 kg.",
+   "krKg": 9,
+   "label": "9 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "sojafars",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Vegofärs",
+   "brand": "Coop",
+   "pack": "1 kg.",
+   "krKg": 59.9,
+   "label": "59.9 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Kycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "2 kg.",
+   "krKg": 84.5,
+   "label": "169 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Blandfärs",
+   "brand": "Nyhléns Hugosons",
+   "pack": "800 g",
+   "krKg": 99.88,
+   "label": "79.9 kr",
+   "member": true,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Färsk kycklingfilé",
+   "brand": "Guldfågeln",
+   "pack": "Ca 900 g.",
+   "krKg": 110,
+   "label": "99 kr",
+   "member": true,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Kycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "2 kg.",
+   "krKg": 84.5,
+   "label": "169 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "broccoli",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Broccoli",
+   "brand": "Coop",
+   "pack": "Ca 250 g.",
+   "krKg": 50,
+   "label": "2 för 25 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "vitkal",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Vitkål",
+   "brand": "Sverige",
+   "pack": "1 kg.",
+   "krKg": 9,
+   "label": "9 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "sojafars",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Vegofärs",
+   "brand": "Coop",
+   "pack": "1 kg.",
+   "krKg": 59.9,
+   "label": "59.9 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Coop City Umeå",
+   "name": "Färsk kycklingfilé",
+   "brand": "Guldfågeln",
+   "pack": "Ca 900 g.",
+   "krKg": 110,
+   "label": "99 kr",
+   "member": true,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "notfars",
+   "chain": "Coop",
+   "store": "Coop City Umeå",
+   "name": "Nötfärs",
+   "brand": "John’s Selection",
+   "pack": "500g",
+   "krKg": 99.8,
+   "label": "49.9 kr",
+   "member": true,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "vitkal",
+   "chain": "Coop",
+   "store": "Coop City Umeå",
+   "name": "Vitkål",
+   "brand": "Sverige",
+   "pack": "1 kg.",
+   "krKg": 9,
+   "label": "9 kr",
+   "member": false,
+   "until": "2026-09-27"
+  },
+  {
+   "ingr": "parmesan",
+   "chain": "Coop",
+   "store": "Coop City Umeå",
+   "name": "Parmigiano Reggiano",
+   "brand": "Zeta",
+   "pack": "150 g.",
+   "krKg": 330,
+   "label": "2 för 99 kr",
+   "member": false,
+   "until": "2026-09-27"
   }
  ]
 }

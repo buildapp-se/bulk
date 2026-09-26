@@ -10,8 +10,8 @@ import { sendPrep } from '@/lib/actions';
 import { useBatch } from '@/lib/useBatch';
 import { haptic } from '@/lib/haptics';
 import { KitArt } from './KitArt';
-import { DealTag, fmtBox, fmtKr, useCombos, usePricing, WeekPrices, type Pricing } from './Prices';
-import { PRICES, unit } from '@/lib/price';
+import { boxRange, DealTag, fmtBox, fmtKr, useCombos, usePricing, WeekPrices, type Pricing } from './Prices';
+import { atStore, PRICES, regular, unit } from '@/lib/price';
 import { spring } from './ui';
 
 const num = (n: number) => String(n).replace('.', ',');
@@ -27,7 +27,6 @@ export function Prep() {
   const now = useMemo(() => cost(picks), [picks]);
   const pr = usePricing();
   const bill = useMemo(() => (picks.length ? pr.shop(picks) : null), [pr, picks]);
-  const avgBox = picks.length ? picks.reduce((s, x) => s + pr.box(x.kit, x.protein).cost.kr, 0) / picks.length : 0;
   const mark = (kit: Kit, p: Protein) => {
     haptic();
     setSel((s) => { const n = { ...s }; if (n[kit.id] === p.id) delete n[kit.id]; else n[kit.id] = p.id; return n; });
@@ -42,13 +41,12 @@ export function Prep() {
   const shown = view && { kit: byId(KITS, view.kit), p: byId(PROTEINS, view.protein) };
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-7 pb-28 lg:grid-cols-[minmax(0,1fr)_380px]">
-      <div className="flex min-w-0 flex-col gap-7">
+    <div className="prepp-grid items-start gap-7 pb-28">
+      <div className="flex min-w-0 flex-col gap-7 [grid-area:main]">
         <div className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-bold tracking-tight">{t.prep.title}</h1>
           <p className="max-w-[62ch] text-muted [text-wrap:pretty]">{t.prep.sub}</p>
         </div>
-        <WeekPrices offers={pr.offers} />
         <div className="flex flex-col gap-3">
           {PROTEINS.map((p) => <ProteinTree key={p.id} p={p} {...c} />)}
         </div>
@@ -56,8 +54,13 @@ export function Prep() {
         <Easy {...c} />
       </div>
 
+      {/* Week prices: left column on wide screens (own scroll), under everything on phones. */}
+      <aside className="min-w-0 [grid-area:prices] xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto xl:pr-1">
+        <WeekPrices offers={pr.offers} />
+      </aside>
+
       {/* Wide screens: the open recipe sits to the right. Phones open it in place under the row instead. */}
-      <aside className="hidden lg:sticky lg:top-24 lg:block">
+      <aside className="hidden [grid-area:recipe] lg:sticky lg:top-24 lg:block">
         {shown ? (
           <Recipe key={`${shown.kit.id}:${shown.p.id}`} kit={shown.kit} p={shown.p} {...c} onClose={() => setView(null)} />
         ) : (
@@ -75,8 +78,8 @@ export function Prep() {
                 <span>✂ {t.prep.knife(now.knife)}</span>
                 <span className="opacity-75">{t.prep.ingr(now.ingr)}</span>
                 <span className="opacity-75">{t.prep.pots(now.pots)}</span>
-                <span>{t.price.avg(nf(avgBox))}</span>
-                {bill && <span>{t.price.shop(bill.n, nf(bill.use))}</span>}
+                {bill && <span>{t.price.avg(nf(bill.cost.kr / bill.n))}</span>}
+                {bill && <span>{t.price.shop(bill.n, nf(bill.cost.kr), bill.cost.store.name)}</span>}
                 {bill && bill.pantry.n > 0 && <span className="opacity-75">{t.price.pantry(bill.pantry.n, nf(bill.pantry.kr))}</span>}
               </div>
               <div className="flex items-center justify-end gap-2">
@@ -115,6 +118,7 @@ function ProteinTree(c: PCtx) {
   const pp = protPrep(c.p);
   const on = holds(root, c.p, c.sel);
   const u = unit(PRICES, c.p.ingr, c.pr.offers);
+  const range = boxRange(c.pr, c.p);
   return (
     <section className="flex flex-col">
       <button onClick={() => { haptic(); setOpen(!open); }} aria-expanded={open}
@@ -126,6 +130,7 @@ function ProteinTree(c: PCtx) {
         {u && (
           <span className="flex flex-wrap items-center gap-1.5 font-mono text-[12px]">
             {t.price.perKg(fmtKr(u.krKg))}{u.offer && <><span className="text-muted">· {u.offer.store}</span><DealTag o={u.offer} /></>}
+            {range && <span className="text-muted">· {t.price.range(nf(range[0]), nf(range[1]))}</span>}
           </span>
         )}
         <Jobs jobs={root.jobs} />
@@ -191,7 +196,7 @@ function Leaf({ kit, ...c }: PCtx & { kit: Kit }) {
           <KitArt kit={kit} size={34} spin={on || viewing} />
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-medium">{kit.name}</span>
-            <span className="block truncate text-[12px] text-muted">{kit.base ? byId(BASES, kit.base).name : kit.tagline} · <span className="font-mono text-ink">{fmtBox(c.pr.box(kit, c.p).cost.kr)}</span></span>
+            <span className="block truncate text-[12px] text-muted">{kit.base ? byId(BASES, kit.base).name : kit.tagline} · <span className="font-mono text-ink">{fmtBox(c.pr.box(kit, c.p).cost?.kr ?? 0)}</span></span>
           </span>
           {add && <span className={`shrink-0 font-mono text-[11px] ${add.k > 0 ? 'text-[color:var(--warn)]' : 'text-muted'}`}>{t.prep.plus(num(add.k), add.i)}</span>}
         </button>
@@ -217,7 +222,12 @@ function Recipe({ kit, p, onClose, ...c }: Ctx & { kit: Kit; p: Protein; onClose
   const m = protPrep(p).m;
   const box = calcBox({ i: 0, kit, protein: p, method: m, carb: byId(CARBS, kit.carb), veg: byId(VEGS, kit.veg) }, plan, goal);
   const bc = c.pr.box(kit, p).cost;
-  const krOf = (x: Part) => { const u = x.ingr && (x.u === 'g' || x.u === 'ml') ? unit(PRICES, x.ingr, c.pr.offers) : null; return u ? (x.q / 1000) * u.krKg : null; };
+  // Each row at the store the whole box is cheapest at, so the rows add up to the total.
+  const krOf = (x: Part) => {
+    if (!bc || !x.ingr || (x.u !== 'g' && x.u !== 'ml')) return null;
+    const u = atStore(PRICES, bc.store, x.ingr, c.pr.offers) ?? regular(PRICES, x.ingr);
+    return u ? (x.q / 1000) * u.krKg : null;
+  };
   const jobs = cost([{ kit, protein: p }]).jobs;
   const on = c.sel[kit.id] === p.id;
   return (
@@ -234,10 +244,11 @@ function Recipe({ kit, p, onClose, ...c }: Ctx & { kit: Kit; p: Protein; onClose
         {onClose && <button onClick={onClose} aria-label={t.prep.close} className="self-start px-1 text-lg leading-none text-muted hover:text-ink">×</button>}
       </div>
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-        <span className="text-lg font-semibold">{fmtBox(bc.kr)}</span>
-        <span className="text-[12px] text-muted">{t.price.excl}{bc.missing.length > 0 && ` · ${t.price.missing(bc.missing.join(', '))}`}</span>
+        <span className="text-lg font-semibold">{fmtBox(bc?.kr ?? 0)}</span>
+        {bc && <span className="text-[13px]">{t.price.at(bc.store.name)}</span>}
+        <span className="w-full text-[12px] text-muted">{t.price.excl}{bc && bc.missing.length > 0 && ` · ${t.price.missing(bc.missing.join(', '))}`}{bc && bc.elsewhere.length > 0 && ` · ${t.price.elsewhere(bc.elsewhere.join(', '))}`}</span>
       </div>
-      {bc.deals.length > 0 && (
+      {bc && bc.deals.length > 0 && (
         <div className="flex flex-col gap-1 rounded-lg bg-deal-bg/60 px-3 py-2 text-[12px]">
           <div className="label !text-deal">{t.price.dealsUsed}</div>
           {bc.deals.map((o) => <span key={o.ingr} className="flex flex-wrap items-center gap-1.5">{o.name} · {o.store} <DealTag o={o} small /></span>)}
@@ -298,7 +309,7 @@ function Easy(c: Ctx) {
                       <span className="min-w-0">
                         <span className="block truncate text-sm font-medium">{e.kit.name}</span>
                         <span className="block truncate text-[12px] text-muted">
-                          <span className="font-mono text-ink">{fmtBox(c.pr.box(e.kit, e.protein).cost.kr)}</span> · {e.protein.name} · {t.method[e.m].toLowerCase()}{e.jobs.length > 0 && ` · ✂ ${e.jobs.map((j) => j.label).join(', ')}`}
+                          <span className="font-mono text-ink">{fmtBox(c.pr.box(e.kit, e.protein).cost?.kr ?? 0)}</span> · {e.protein.name} · {t.method[e.m].toLowerCase()}{e.jobs.length > 0 && ` · ✂ ${e.jobs.map((j) => j.label).join(', ')}`}
                         </span>
                       </span>
                     </button>
@@ -338,11 +349,11 @@ function Cheapest(c: Ctx) {
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-medium">{e.kit.name} <span className="font-normal text-muted">· {e.protein.name}</span></span>
                     <span className="flex flex-wrap items-center gap-1 text-[12px] text-muted">
-                      {e.deals.length ? e.deals.map((o) => <DealTag key={o.ingr} o={o} small />) : null}
-                      <span className="truncate">{e.deals.map((o) => o.name.toLowerCase()).join(', ')}</span>
+                      <span className="truncate">{e.cost.store.name}</span>
+                      {e.cost.deals.map((o) => <DealTag key={o.ingr} o={o} small />)}
                     </span>
                   </span>
-                  <span className="shrink-0 font-mono text-[13px]">{fmtBox(e.kr)}</span>
+                  <span className="shrink-0 font-mono text-[13px]">{fmtBox(e.cost.kr)}</span>
                 </button>
                 <MarkButton on={on} label={t.prep.markOne(e.kit.name)} onClick={() => c.mark(e.kit, e.protein)} />
               </div>

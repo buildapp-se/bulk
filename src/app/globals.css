@@ -61,6 +61,10 @@ body { -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transpa
 button { cursor: pointer; }
 .num { font-variant-numeric: tabular-nums; }
 .label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+/* Prepp: main, then week prices under it; recipe to the right from lg; prices to the left from xl. */
+.prepp-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: 'main' 'prices'; }
+@media (min-width: 64rem) { .prepp-grid { grid-template-columns: minmax(0, 1fr) 360px; grid-template-areas: 'main recipe' 'prices recipe'; } }
+@media (min-width: 80rem) { .prepp-grid { grid-template-columns: 300px minmax(0, 1fr) 340px; grid-template-areas: 'prices main recipe'; } }
 .kit-bg { background: oklch(var(--kit-l) var(--kit-c) var(--hue)); }
 .kit-soft { background: oklch(var(--kit-l) calc(var(--kit-c) * 0.5) var(--hue) / 0.18); }
 .no-scrollbar::-webkit-scrollbar { display: none; }

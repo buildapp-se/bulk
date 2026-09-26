@@ -1,7 +1,7 @@
 # Backlog
 
 ## P1
-- Priser, nästa steg: Coop-erbjudanden i Umeå (Stora Coop Avion 232400, Ersboda 231400, Tomtebo 235660) kräver Coops publika frontendnyckel i anropet (`external.api.coop.se/dke/offers/sorting-groups/<butik>?api-version=v3`), väntar på Patriks ja. Lidl (nationella erbjudanden i veckosidornas `data-grid-data`, sid-id byts varje vecka). Hyllpris saknas för jordnötspulver, chipotle i adobo, Mini fraiche, Milda.
+- Priser, nästa steg: Lidl (nationella erbjudanden i veckosidornas `data-grid-data`, sid-id byts varje vecka; hyllpriser saknas oftast). ICA:s vanliga priser om det finns en öppen väg utan bot-spärr. Pris saknas för jordnötspulver, chipotle i adobo och Milda.
 - Testa på riktig telefon (iPhone + Android): installera som PWA, aviseringar, larmljud och vibration när en timer är klar (även med skärmen låst), haptik (iOS switch-tricket), Wake Lock.
 
 ## P2
