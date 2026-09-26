@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
-import { bestPath, LABEL, node, RECIPES } from '../src/lib/tree.ts';
+import { best, combo, kitJobs, protPrep } from '../src/lib/prep.ts';
 
 const fails: string[] = [];
 const eq = (name: string, got: unknown, want: unknown) => {
@@ -171,12 +171,22 @@ eq('portion cooked weights', portion.rows?.[0].sub?.startsWith('Kyckling ca 130 
 // Data integrity: every kit/protein/carb/veg ingredient exists, every kit default resolves.
 for (const k of KITS) { byId(CARBS, k.carb); byId(VEGS, k.veg); k.protein.forEach((p) => byId(PROTEINS, p)); }
 
-// Ingredient tree: 69 box types (kit × paired protein). Tomatbas on 9 kits with 23 pairings, 6 of them with nötfärs.
-eq('tree recipes', RECIPES.length, 69);
-eq('tree tomatbas', node(['bas:tomat']).recipes.length, 23);
-eq('tree tomatbas + nötfärs', node(['bas:tomat', 'notfars']).recipes.length, 6);
-eq('tree best start', bestPath([]).slice(0, 2).map((k) => LABEL.get(k)), ['Ris', 'Koriander']);
-eq('tree shared not a branch', node(bestPath([]).slice(0, 3)).shared.map((k) => LABEL.get(k)).includes('Tomatbas'), true); // Ris > Koriander > Spiskummin: all 12 left are on tomatbas
+// Prep tree: knife jobs count once. Kyckling whole in the oven = ½ job (slice at portioning), färs = 0, lax in bitar = 1.
+eq('prep kyckling', [protPrep(byId(PROTEINS, 'kyckling')).m, protPrep(byId(PROTEINS, 'kyckling')).job?.w], ['hel', 0.5]);
+eq('prep nötfärs', protPrep(byId(PROTEINS, 'notfars')).job, undefined);
+eq('prep lax', protPrep(byId(PROTEINS, 'lax')).job?.w, 1);
+// Keema: base gul lök + vitlök, own riven ingefära + koriander.
+eq('prep keema jobs', kitJobs(byId(KITS, 'keema')).map((j) => j.key), ['gul lök', 'vitlök', 'ingefära', 'koriander']);
+// Teriyaki + sweet chili share the asia base (ingefära, vitlök) and salladslök; sweet chili's ingefära is the base's: 3 + ½.
+const tc = combo([byId(KITS, 'teriyaki'), byId(KITS, 'sweetchili')], [byId(PROTEINS, 'kyckling')]);
+eq('prep shared jobs', [tc.cost, tc.variants, tc.pots], [3.5, 2, 1]);
+const b4 = best([byId(PROTEINS, 'kyckling'), byId(PROTEINS, 'notfars')], 4)[0];
+eq('prep best 4 kits: only the kyckling slice', [b4.cost, b4.kits.length], [0.5, 4]);
+// Whole fillets go in the oven session with their own step and count on the trays.
+const hel: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'kyckling', method: 'hel' }, { id: 'notfars', method: 'ugn' }] };
+const helSch = schedule(resolveBoxes(hel).map((b) => calcBox(b, hel, null)), hel);
+eq('hel step', helSch.steps.find((s) => s.id === 'prot-kyckling-hel')?.dur, 25);
+eq('hel on trays', helSch.trays, schedule(resolveBoxes(DEFAULT_PLAN).map((b) => calcBox(b, DEFAULT_PLAN, null)), DEFAULT_PLAN).trays);
 
 // Drift vs grammat (only where the sibling repo exists, i.e. locally).
 const gpath = new URL('../../recept/nutrients.json', import.meta.url);

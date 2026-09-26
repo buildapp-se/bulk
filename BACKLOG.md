@@ -11,6 +11,8 @@
 - Engelska (`en.ts` + next-intl). Matnamnen i data.ts behöver också översättas.
 - Per-låda-ändringar försvinner när antal lådor, kit eller proteiner ändras (index flyttas). Stabila låd-id om det stör.
 
+- "Förbered allt" i Tillagning listar bara basernas knivjobb, inte kitens (färsk chili, rödlök, koriander …). Taggarna finns nu på kitraderna (`KitItem.prep`), så listan kan ta med dem.
+
 ## P3
 - Kalla lådor (yoghurtbaserade pastasallader ur FIH-boken) som eget spår.
 - Airfryer som metod.

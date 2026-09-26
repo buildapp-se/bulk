@@ -1,6 +1,6 @@
 // Pure calculation engine: plan in, boxes/nutrition/shopping/schedule out. No React, no DOM.
 import {
-  BASES, byId, CARBS, DEFAULT_METHOD, INGR, KITS, OIL_G_PER_RAW_G, PROTEINS, TRAY_CAPACITY_G, VEGS,
+  BASES, byId, CARBS, DEFAULT_METHOD, INGR, isOven, KITS, OIL_G_PER_RAW_G, PROTEINS, TRAY_CAPACITY_G, VEGS,
   type Base, type Carb, type IngrId, type Kit, type Macro, type MethodId, type Protein, type Unit, type Veg,
 } from './data.ts';
 
@@ -151,7 +151,7 @@ const sumParts = (parts: Part[]): Macro =>
 /** The one rule for veg: roasted if it can be and the mode says so, or if it is never bought frozen. */
 export const vegRoasted = (v: Veg, mode: Plan['vegMode']) => !!v.oven && !v.frozenOnly && (mode === 'rostade' || !!v.freshOnly);
 const roasted = (b: Box, role: 'protein' | 'carb' | 'veg', vegMode: Plan['vegMode']) =>
-  role === 'protein' ? b.method === 'ugn' : role === 'carb' ? !!b.carb?.oven : !!b.veg && vegRoasted(b.veg, vegMode);
+  role === 'protein' ? isOven(b.method) : role === 'carb' ? !!b.carb?.oven : !!b.veg && vegRoasted(b.veg, vegMode);
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const r5 = (v: number) => Math.round(v / 5) * 5;
@@ -272,17 +272,17 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   const used = <T extends { id: string }>(get: (b: Box) => T | undefined) => [...new Map(calcs.map((c) => get(c.box)).filter((x): x is T => !!x).map((x) => [x.id, x])).values()];
 
   const protMethods = [...new Map(calcs.filter((c) => c.box.protein && c.box.method).map((c) => [`${c.box.protein!.id}:${c.box.method}`, { pr: c.box.protein!, m: c.box.method! }])).values()];
-  const ovenProt = protMethods.filter((x) => x.m === 'ugn');
+  const ovenProt = protMethods.filter((x) => isOven(x.m));
   const ovenCarbs = used((b) => (b.carb?.oven ? b.carb : undefined));
   const stoveCarbs = used((b) => (b.carb?.stove ? b.carb : undefined));
   const ovenVegs = used((b) => (b.veg && vegRoasted(b.veg, p.vegMode) ? b.veg : undefined));
   const frozen = used((b) => (b.veg && !vegRoasted(b.veg, p.vegMode) ? b.veg : undefined));
 
-  const E = Math.max(0, ...ovenProt.map((x) => x.pr.methods.ugn!.min), ...ovenCarbs.map((c) => c.oven!), ...ovenVegs.map((v) => v.oven!));
+  const E = Math.max(0, ...ovenProt.map((x) => x.pr.methods[x.m]!.min), ...ovenCarbs.map((c) => c.oven!), ...ovenVegs.map((v) => v.oven!));
   const steps: Step[] = [];
   const warnings: string[] = [];
 
-  const protRaw = raw((c, x) => x.role === 'protein' && c.box.method === 'ugn');
+  const protRaw = raw((c, x) => x.role === 'protein' && isOven(c.box.method));
   const carbRaw = raw((c, x) => x.role === 'carb' && !!c.box.carb?.oven);
   const vegRaw = raw((c, x) => x.role === 'veg' && roasted(c.box, 'veg', p.vegMode));
   const trays = [protRaw, carbRaw, vegRaw].reduce((s, g) => s + Math.ceil(g / TRAY_CAPACITY_G), 0);
@@ -334,7 +334,8 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
     details: `${form ? '' : 'Sätt ugnen på 200 °C varmluft. '}${steps.filter((s) => s.track === 'sousvide' && !isLong(s)).map((s) => `Sätt sous vide-badet på ${s.temp} °C. `).join('')}Det som ska in i ugnen: blanda med olja, salt, peppar och vitlökspulver. Ingen smaksättning ännu.` });
 
   for (const c of ovenCarbs) steps.push({ id: `carb-${c.id}`, track: 'ugn', t: E - c.oven!, dur: c.oven!, temp: 200, title: `${c.name} in`, what: `${c.name} i ugnen`, details: 'Ett lager på bakplåtspapper. Vänd halvvägs.' });
-  for (const { pr } of ovenProt) { const md = pr.methods.ugn!; steps.push({ id: `prot-${pr.id}`, track: 'ugn', t: E - md.min, dur: md.min, temp: md.temp, title: `${pr.name} in`, what: `${pr.name} i ugnen`, details: md.note }); }
+  // Whole fillets get their own id, so kyckling in bitar and hel can share one oven session.
+  for (const { pr, m } of ovenProt) { const md = pr.methods[m]!; const nm = m === 'hel' ? `${pr.name}, hela filéer` : pr.name; steps.push({ id: m === 'ugn' ? `prot-${pr.id}` : `prot-${pr.id}-${m}`, track: 'ugn', t: E - md.min, dur: md.min, temp: md.temp, title: `${nm} in`, what: `${nm} i ugnen`, details: md.note }); }
   if (ovenVegs.length) steps.push({ id: 'veg', track: 'ugn', t: E - Math.max(...ovenVegs.map((v) => v.oven!)), dur: Math.max(...ovenVegs.map((v) => v.oven!)), temp: 200, title: 'Grönsaker in', what: 'Grönsaker i ugnen', details: ovenVegs.map((v) => v.name).join(' och ') + ' på egen plåt.' });
   for (const { pr } of protMethods.filter((x) => x.m === 'gryta')) { const md = pr.methods.gryta!; steps.push({ id: `gryta-${pr.id}`, track: 'spis', t: Math.max(0, E - md.min), dur: md.min, title: `Koka ${pr.name.toLowerCase()}`, what: `${pr.name} kokar`, details: md.note }); }
   if (stoveCarbs.length) {

@@ -3,7 +3,7 @@ reviewedAt: 2026-09-26
 ---
 # Handoff
 
-**2026-09-26:** fjärde fliken Träd, klickbart ingrediensträd (se CONTEXT). Verifierat med check (69 lådtyper, tomatbas 23, + nötfärs 6, bästa vägen), typecheck, build och playwright-cli på 390 och 1280 px, ingen horisontell scroll, inga konsolfel.
+**2026-09-26:** fjärde fliken Prepp, preppträd som ger flest varianter på minst knivarbete, och kycklingmetoden Hel (hela filéer i ugn). Knivjobb taggade på kitens rader. Verifierat med check (protein-kostnad, delade jobb, bästa 4-kit, hel-steget i schemat och på plåtarna), typecheck, build och playwright-cli på 390 och 1280 px: "Använd i batchen" sätter planen och Tillagning visar "Kyckling, hela filéer in"; ingen horisontell scroll, inga konsolfel.
 
 **Läge:** live på https://buildapp.se/bulk/. Fyra vyer (Välj, Ingredienser, Tillagning, Träd), 32 smakkit varav 24 på en grundbas (tomat, asiatisk, krämig, rökig rub), 10 proteiner (plus halloumi och sojafärs), mål med lösare, inköp i förpackningar, digitala timers med docka och larm.
 

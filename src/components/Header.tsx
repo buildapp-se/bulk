@@ -8,7 +8,7 @@ import { Num } from './Num';
 import { haptic } from '@/lib/haptics';
 import { TimerDock } from './Timers';
 
-export const ROUTES = ['/', '/ingredienser', '/tillagning', '/trad'] as const;
+export const ROUTES = ['/', '/ingredienser', '/tillagning', '/prepp'] as const;
 
 export function Header() {
   const path = usePathname();

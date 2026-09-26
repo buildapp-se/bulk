@@ -114,7 +114,9 @@ export const INGR: Record<IngrId, Ingr> = INGR_;
 
 // ---------- Cooking ----------
 
-export type MethodId = 'ugn' | 'sousvide' | 'form' | 'gryta';
+export type MethodId = 'ugn' | 'hel' | 'sousvide' | 'form' | 'gryta';
+/** Both go on a tray in the oven session; 'hel' = whole fillets, no knife before, sliced when portioning. */
+export const isOven = (m: MethodId | undefined) => m === 'ugn' || m === 'hel';
 // prep = what to do before cooking; hint = short caveat on the protein card
 export interface Method { temp: number; min: number; note: string; sear?: string; prep?: string; hint?: string }
 
@@ -130,6 +132,7 @@ export interface Protein {
 export const PROTEINS: readonly Protein[] = [
   { id: 'kyckling', name: 'Kyckling', ingr: 'kycklingfile', raw: 175, methods: {
     ugn: { temp: 200, min: 20, note: 'Filé i 2–3 cm bitar, ca 18–20 min. Ska vara genomstekt.', prep: 'Skär i 2–3 cm bitar' },
+    hel: { temp: 200, min: 25, note: 'Hela filéer på plåt, ca 22–25 min till 72 °C i mitten. Låt vila 5 min och skiva när du portionerar.' },
     sousvide: { temp: 64, min: 120, note: 'Hela filéer i påse med salt, 64 °C i 1,5–4 h (+1 h direkt ur kylen).', sear: 'Bryn 1 min per sida i het panna.', prep: 'Salta hela filéerna och lägg i påse' },
   } },
   { id: 'notfars', name: 'Nötfärs', ingr: 'notfars', raw: 175, methods: {
@@ -220,6 +223,8 @@ export interface Kit {
 
 const g = (name: string, ingr: IngrId, q: number, u: Unit = 'g'): KitItem => ({ name, ingr, q, u });
 const s = (name: string, q = 0, u: Unit = ''): KitItem => ({ name, q, u });
+// Knife work on a kit item (chop, grate, slice): what the prep tree counts. Spices and jars are free.
+const cut = (it: KitItem, prep: string): KitItem => ({ ...it, prep });
 const MICRO = 'Mikro 800 W 2,5–3 min, rör om halvvägs.';
 
 // ---------- Bases ----------
@@ -241,22 +246,22 @@ const KIT_LIST: readonly Omit<Kit, 'hue'>[] = [
   // Sources per kit in CONTEXT.md (RecipeTin Eats, ICA, Eating Thai Food, Anova/Serious Eats).
   { id: 'texmex', name: 'Tex-mex', tagline: 'Salsa, bönor, majs', protein: ['notfars', 'kyckling', 'blandfars', 'sojafars'], carb: 'ris', veg: 'paprika',
     mix: [g('Salsa', 'salsa', 50), g('Svarta bönor', 'svartabonor', 60), g('Majs', 'majs', 40), g('Tacokrydda', 'tacokrydda', 7)],
-    top: [g('Gräddfil', 'graddfil', 30), s('Lime', 0.25, 'st'), s('Koriander')], tip: 'Fräs tacokryddan 30 s i lite olja och en skvätt vatten innan den blandas i.', heat: MICRO },
+    top: [g('Gräddfil', 'graddfil', 30), cut(s('Lime', 0.25, 'st'), 'Skär i klyftor'), cut(s('Koriander'), 'Hacka')], tip: 'Fräs tacokryddan 30 s i lite olja och en skvätt vatten innan den blandas i.', heat: MICRO },
   { id: 'teriyaki', name: 'Teriyaki', tagline: 'Sött, salt, ingefära', protein: ['kyckling', 'lax'], carb: 'ris', veg: 'broccoli', base: 'asia',
     mix: [g('Teriyakisås', 'teriyaki', 25), g('Edamame', 'edamame', 40)],
-    top: [g('Sesamfrön', 'sesam', 3), s('Salladslök', 1, 'st')], tip: 'Värm teriyakisåsen i basen 1 min så tjocknar den och fastnar.', heat: MICRO },
+    top: [g('Sesamfrön', 'sesam', 3), cut(s('Salladslök', 1, 'st'), 'Strimla')], tip: 'Värm teriyakisåsen i basen 1 min så tjocknar den och fastnar.', heat: MICRO },
   { id: 'grekisk', name: 'Grekisk citron', tagline: 'Citron, oregano, feta', protein: ['kyckling', 'kikartor', 'halloumi'], carb: 'potatis', veg: 'haricots',
-    mix: [s('Citronsaft', 1, 'msk'), g('Olivolja', 'olivolja', 5), s('Torkad oregano', 0.5, 'tsk'), s('Vitlöksklyfta', 0.5, 'st')],
-    top: [g('Fetaost', 'feta', 30), g('Tzatziki', 'tzatziki', 40), g('Gurka', 'gurka', 50), s('Rödlök')], tip: 'Citron och oregano på medan kycklingen är varm. Pressa färsk citron över efter uppvärmning.', heat: MICRO },
+    mix: [s('Citronsaft', 1, 'msk'), g('Olivolja', 'olivolja', 5), s('Torkad oregano', 0.5, 'tsk'), cut(s('Vitlöksklyfta', 0.5, 'st'), 'Hacka')],
+    top: [g('Fetaost', 'feta', 30), g('Tzatziki', 'tzatziki', 40), cut(g('Gurka', 'gurka', 50), 'Tärna'), cut(s('Rödlök'), 'Hacka')], tip: 'Citron och oregano på medan kycklingen är varm. Pressa färsk citron över efter uppvärmning.', heat: MICRO },
   { id: 'kottfarssas', name: 'Köttfärssås', tagline: 'Tomat, timjan, balsamico', protein: ['notfars', 'blandfars', 'sojafars'], carb: 'pasta', veg: 'broccoli', sauce: true, base: 'tomat',
     mix: [s('Buljongtärning', 0.25, 'st'), s('Timjan', 0.5, 'tsk'), s('Balsamvinäger', 1, 'tsk')],
-    top: [g('Riven ost', 'rivenost', 15), s('Basilika')], tip: 'Låt din del av basen puttra 5 min med färsen och kryddorna.', heat: MICRO },
+    top: [g('Riven ost', 'rivenost', 15), cut(s('Basilika'), 'Plocka')], tip: 'Låt din del av basen puttra 5 min med färsen och kryddorna.', heat: MICRO },
   { id: 'chili', name: 'Chili con carne', tagline: 'Spiskummin, bönor, värme', protein: ['notfars', 'blandfars', 'sojafars'], carb: 'ris', veg: 'paprika', sauce: true, base: 'tomat',
     mix: [g('Kidneybönor', 'kidney', 50), s('Paprikapulver', 0.75, 'tsk'), s('Spiskummin', 0.5, 'tsk'), s('Oregano', 0.25, 'tsk'), s('Cayennepeppar', 1, 'krm'), s('Buljongtärning', 0.33, 'st')],
-    top: [g('Gräddfil', 'graddfil', 30), s('Koriander')], tip: 'Rosta kryddorna 30 s i lite olja innan din del av basen går i.', heat: MICRO },
+    top: [g('Gräddfil', 'graddfil', 30), cut(s('Koriander'), 'Hacka')], tip: 'Rosta kryddorna 30 s i lite olja innan din del av basen går i.', heat: MICRO },
   { id: 'krapow', name: 'Pad krapow', tagline: 'Ostronsås, vitlök, chili', protein: ['flaskfars', 'notfars', 'kyckling'], carb: 'ris', veg: 'edamame', base: 'asia',
-    mix: [g('Ostronsås', 'ostronsas', 9), s('Socker', 0.5, 'tsk'), s('Vitlöksklyftor', 1.5, 'st'), s('Färsk chili', 1, 'st')],
-    top: [s('Basilika, en näve')], tip: 'Fräs vitlök och chili hett 20 s, basilikan allra sist.', heat: MICRO },
+    mix: [g('Ostronsås', 'ostronsas', 9), s('Socker', 0.5, 'tsk'), cut(s('Vitlöksklyftor', 1.5, 'st'), 'Hacka'), cut(s('Färsk chili', 1, 'st'), 'Hacka')],
+    top: [cut(s('Basilika, en näve'), 'Plocka')], tip: 'Fräs vitlök och chili hett 20 s, basilikan allra sist.', heat: MICRO },
   { id: 'kalpudding', name: 'Fuskkålpudding', tagline: 'Sirap, kalvfond, lingon', protein: ['blandfars', 'notfars'], carb: 'potatis', veg: 'vitkal',
     mix: [g('Ljus sirap', 'sirap', 10), g('Japansk soja', 'soja', 8), s('Kalvfond', 0.75, 'tsk'), s('Vitpeppar', 1, 'krm')],
     top: [g('Lingonsylt', 'lingon', 20)], tip: 'Bryn kålen hårt i omgångar och karamellisera sirapen på kålen.', heat: MICRO },
@@ -267,51 +272,51 @@ const KIT_LIST: readonly Omit<Kit, 'hue'>[] = [
     mix: [s('Torkad oregano', 1, 'tsk'), s('Kanel', 1, 'krm')],
     top: [g('Fetaost', 'feta', 20)], tip: 'Kanelen ska anas, inte smakas. Rosta auberginen hett så den får färg.', heat: MICRO },
   { id: 'keema', name: 'Keema matar', tagline: 'Garam masala, grädde, ärtor', protein: ['notfars', 'kyckling', 'sojafars'], carb: 'ris', veg: 'artor', sauce: true, base: 'tomat',
-    mix: [g('Matlagningsgrädde', 'grädde', 40, 'ml'), s('Garam masala', 0.5, 'tsk'), s('Spiskummin', 0.25, 'tsk'), s('Gurkmeja', 1, 'krm'), s('Riven ingefära', 0.5, 'tsk')],
-    top: [g('Turkisk yoghurt', 'yoghurt', 30), s('Koriander')], tip: 'Fräs ingefära och kryddorna 30 s, sedan basen och sist grädden.', heat: MICRO },
+    mix: [g('Matlagningsgrädde', 'grädde', 40, 'ml'), s('Garam masala', 0.5, 'tsk'), s('Spiskummin', 0.25, 'tsk'), s('Gurkmeja', 1, 'krm'), cut(s('Riven ingefära', 0.5, 'tsk'), 'Riv')],
+    top: [g('Turkisk yoghurt', 'yoghurt', 30), cut(s('Koriander'), 'Hacka')], tip: 'Fräs ingefära och kryddorna 30 s, sedan basen och sist grädden.', heat: MICRO },
   { id: 'bbq', name: 'BBQ', tagline: 'Rökigt, sött, coleslaw', protein: ['kyckling', 'flaskkarre'], carb: 'potatis', veg: 'broccoli', base: 'rub',
     mix: [g('BBQ-sås', 'bbq', 30)],
     top: [g('Vitkålssallad', 'coleslaw', 50), s('Inlagd rödlök')], tip: 'Blanda såsen med det varma proteinet, inte kallt.', heat: MICRO },
   { id: 'carnitas', name: 'Carnitas', tagline: 'Apelsin, spiskummin, lime', protein: ['flaskkarre', 'kyckling'], carb: 'ris', veg: 'majs',
     mix: [g('Svarta bönor', 'svartabonor', 60), g('Salsa', 'salsa', 25), s('Sky från karrén', 1, 'msk')],
-    top: [s('Lime', 0.25, 'st'), s('Rödlök'), s('Koriander')], tip: 'Stek strimlorna i het panna och ringla över skyn, bättre än grill.', heat: MICRO },
+    top: [cut(s('Lime', 0.25, 'st'), 'Skär i klyftor'), cut(s('Rödlök'), 'Hacka'), cut(s('Koriander'), 'Hacka')], tip: 'Stek strimlorna i het panna och ringla över skyn, bättre än grill.', heat: MICRO },
   { id: 'pesto', name: 'Pesto', tagline: 'Basilika, soltorkat, parmesan', protein: ['kyckling', 'lax', 'halloumi'], carb: 'pasta', veg: 'artor',
     mix: [g('Soltorkade tomater', 'soltorkade', 15)],
     top: [g('Grön pesto', 'pesto', 25), g('Parmesan', 'parmesan', 10), s('Rucola')], tip: 'Peston efter uppvärmning, värme gör basilikan brun och bitter.', heat: MICRO },
   { id: 'sweetchili', name: 'Sweet chili', tagline: 'Sött, starkt, ingefära', protein: ['lax', 'kyckling'], carb: 'ris', veg: 'edamame', base: 'asia',
-    mix: [g('Sweet chilisås', 'sweetchili', 15), g('Japansk soja', 'soja', 4), s('Riven ingefära', 0.25, 'tsk')],
-    top: [g('Sesamfrön', 'sesam', 4), s('Salladslök', 1, 'st')], tip: 'Halva glasyren före ugnen, resten efter.', heat: MICRO },
+    mix: [g('Sweet chilisås', 'sweetchili', 15), g('Japansk soja', 'soja', 4), cut(s('Riven ingefära', 0.25, 'tsk'), 'Riv')],
+    top: [g('Sesamfrön', 'sesam', 4), cut(s('Salladslök', 1, 'st'), 'Strimla')], tip: 'Halva glasyren före ugnen, resten efter.', heat: MICRO },
   { id: 'dahl', name: 'Röd linsdahl', tagline: 'Kokos, curry, spenat', protein: ['linser'], carb: 'ris', veg: 'spenat', sauce: true, base: 'tomat',
-    mix: [g('Kokosmjölk', 'kokosmjolk', 100, 'ml'), s('Curry', 1, 'tsk'), s('Buljong', 125, 'ml'), s('Riven ingefära', 0.25, 'tsk')],
-    top: [g('Turkisk yoghurt', 'yoghurt', 30), s('Citron')], tip: 'Rosta curryn i olja 30 s innan linserna läggs i. Lätt kokosmjölk halverar fettet.', heat: MICRO },
+    mix: [g('Kokosmjölk', 'kokosmjolk', 100, 'ml'), s('Curry', 1, 'tsk'), s('Buljong', 125, 'ml'), cut(s('Riven ingefära', 0.25, 'tsk'), 'Riv')],
+    top: [g('Turkisk yoghurt', 'yoghurt', 30), cut(s('Citron'), 'Skär i klyftor')], tip: 'Rosta curryn i olja 30 s innan linserna läggs i. Lätt kokosmjölk halverar fettet.', heat: MICRO },
   { id: 'kryddbonor', name: 'Rökiga kikärtor', tagline: 'Spiskummin, rökt paprika', protein: ['kikartor'], carb: 'matvete', veg: 'broccoli', base: 'rub',
     mix: [],
-    top: [g('Turkisk yoghurt', 'yoghurt', 30), s('Citron')], tip: 'Torka kikärtorna ordentligt och krydda efter rostningen. Egen burk om du vill ha dem krispiga.', heat: MICRO },
+    top: [g('Turkisk yoghurt', 'yoghurt', 30), cut(s('Citron'), 'Skär i klyftor')], tip: 'Torka kikärtorna ordentligt och krydda efter rostningen. Egen burk om du vill ha dem krispiga.', heat: MICRO },
   // Light creamy kits: own versions (kvarg/yoghurt/kesella bases), sources in CONTEXT.md.
   { id: 'toscansk', name: 'Toscansk kvarg', tagline: 'Soltorkat, vitlök, parmesan', protein: ['kyckling'], carb: 'pasta', veg: 'spenat', base: 'kram',
     mix: [g('Kvarg', 'kvarg', 40), g('Soltorkade tomater', 'soltorkade', 15), g('Tomatpuré', 'tomatpure', 10), g('Parmesan', 'parmesan', 8), g('Majsstärkelse', 'majsstarkelse', 1), s('Italienska örter', 0.5, 'tsk'), s('Vitlökspulver', 1, 'krm'), s('Chiliflakes', 1, 'krm')],
-    top: [s('Färsk basilika')], tip: 'Rör ut kvargen med majsstärkelsen först, då skär den sig inte i mikron. Rör om halvvägs.', heat: MICRO },
+    top: [cut(s('Färsk basilika'), 'Plocka')], tip: 'Rör ut kvargen med majsstärkelsen först, då skär den sig inte i mikron. Rör om halvvägs.', heat: MICRO },
   { id: 'paprikash', name: 'Paprikash', tagline: 'Rökig paprika, tomat, yoghurt', protein: ['kyckling', 'flaskkarre'], carb: 'potatis', veg: 'paprika', sauce: true, base: 'tomat',
     mix: [g('Grekisk yoghurt', 'grekisk', 50), g('Majsstärkelse', 'majsstarkelse', 1.5), s('Sött paprikapulver', 1.5, 'tsk'), s('Rökt paprikapulver', 0.5, 'tsk'), s('Vitlökspulver', 1, 'krm')],
-    top: [s('Persilja')], tip: 'Fräs paprikapulvret 30 s i lite olja innan basen går i. Yoghurten i sist, från värmen.', heat: MICRO },
+    top: [cut(s('Persilja'), 'Hacka')], tip: 'Fräs paprikapulvret 30 s i lite olja innan basen går i. Yoghurten i sist, från värmen.', heat: MICRO },
   { id: 'jordnot', name: 'Thai jordnöt-lime', tagline: 'Jordnöt, lime, ingefära, sting', protein: ['kyckling', 'kikartor'], carb: 'ris', veg: 'broccoli', base: 'asia',
-    mix: [g('Jordnötspulver', 'pbpulver', 12), g('Lätt kokosmjölk', 'kokoslatt', 40, 'ml'), g('Japansk soja', 'soja', 2), g('Honung', 'honung', 4), g('Sriracha', 'sriracha', 5), s('Limejuice', 2, 'tsk'), s('Riven ingefära', 0.5, 'tsk')],
-    top: [g('Rostade jordnötter', 'jordnotter', 5), s('Koriander'), s('Lime', 0.25, 'st')], tip: 'Rör pulvret med lime och soja till slät pasta innan kokosmjölken. Späd med en skvätt vatten efter uppvärmning.', heat: MICRO },
+    mix: [g('Jordnötspulver', 'pbpulver', 12), g('Lätt kokosmjölk', 'kokoslatt', 40, 'ml'), g('Japansk soja', 'soja', 2), g('Honung', 'honung', 4), g('Sriracha', 'sriracha', 5), s('Limejuice', 2, 'tsk'), cut(s('Riven ingefära', 0.5, 'tsk'), 'Riv')],
+    top: [g('Rostade jordnötter', 'jordnotter', 5), cut(s('Koriander'), 'Hacka'), cut(s('Lime', 0.25, 'st'), 'Skär i klyftor')], tip: 'Rör pulvret med lime och soja till slät pasta innan kokosmjölken. Späd med en skvätt vatten efter uppvärmning.', heat: MICRO },
   { id: 'gochujang', name: 'Gochujang', tagline: 'Söt hetta, sesam, kall yoghurt', protein: ['kyckling', 'notfars', 'flaskfars'], carb: 'ris', veg: 'broccoli', base: 'asia',
     mix: [g('Gochujang', 'gochujang', 15), g('Honung', 'honung', 5), g('Majsstärkelse', 'majsstarkelse', 1), s('Risvinäger', 1, 'tsk'), s('Sesamolja', 0.5, 'tsk')],
-    top: [g('Grekisk yoghurt', 'grekisk', 20), g('Sesamfrön', 'sesam', 2), s('Salladslök', 1, 'st'), s('Snabbpicklad gurka')], tip: 'Kall gochujang-yoghurt på den varma glaseringen är hela poängen. Egen burk.', heat: MICRO },
+    top: [g('Grekisk yoghurt', 'grekisk', 20), g('Sesamfrön', 'sesam', 2), cut(s('Salladslök', 1, 'st'), 'Strimla'), cut(s('Snabbpicklad gurka'), 'Skiva och lägg i ättika')], tip: 'Kall gochujang-yoghurt på den varma glaseringen är hela poängen. Egen burk.', heat: MICRO },
   { id: 'chipotle', name: 'Chipotle-lime', tagline: 'Rökig chili, lime, crema', protein: ['kyckling', 'notfars', 'kikartor'], carb: 'ris', veg: 'paprika', sauce: true, base: 'tomat',
     mix: [g('Chipotle i adobo', 'chipotle', 8), s('Limejuice', 2, 'tsk'), s('Spiskummin', 0.5, 'tsk'), s('Rökt paprikapulver', 0.5, 'tsk'), s('Oregano', 1, 'krm')],
-    top: [g('Grekisk yoghurt', 'grekisk', 40), g('Majs', 'majs', 15), s('Limezest'), s('Koriander'), s('Rödlök')], tip: 'Limezest i cremat, inte bara juice: limesmak utan att yoghurten blir vattnig.', heat: MICRO },
+    top: [g('Grekisk yoghurt', 'grekisk', 40), g('Majs', 'majs', 15), cut(s('Limezest'), 'Riv'), cut(s('Koriander'), 'Hacka'), cut(s('Rödlök'), 'Hacka')], tip: 'Limezest i cremat, inte bara juice: limesmak utan att yoghurten blir vattnig.', heat: MICRO },
   { id: 'dill', name: 'Dill och citron', tagline: 'Dill, citron, senap, kall sås', protein: ['lax', 'kyckling'], carb: 'potatis', veg: 'haricots',
     mix: [],
-    top: [g('Lättkesella', 'kesella', 50), g('Lätt crème fraiche', 'lattcreme', 20), g('Senap', 'senap', 5), s('Citron, saft och zest', 0.5, 'st'), s('Färsk dill', 1, 'msk'), s('Riven pepparrot', 1, 'tsk'), s('Rödlök')], tip: 'Såsen värms aldrig: kall sås på varm lax och potatis, så kan den inte skära sig.', heat: MICRO },
+    top: [g('Lättkesella', 'kesella', 50), g('Lätt crème fraiche', 'lattcreme', 20), g('Senap', 'senap', 5), cut(s('Citron, saft och zest', 0.5, 'st'), 'Riv skalet och pressa'), cut(s('Färsk dill', 1, 'msk'), 'Hacka'), s('Riven pepparrot', 1, 'tsk'), cut(s('Rödlök'), 'Hacka')], tip: 'Såsen värms aldrig: kall sås på varm lax och potatis, så kan den inte skära sig.', heat: MICRO },
   { id: 'shawarma', name: 'Shawarma', tagline: 'Kardemumma, spiskummin, tahini', protein: ['kyckling', 'kikartor', 'halloumi'], carb: 'bulgur', veg: 'paprika', base: 'rub',
     mix: [s('Citronsaft', 2, 'tsk'), g('Olivolja', 'olivolja', 3), s('Mald koriander', 0.5, 'tsk'), s('Kardemumma', 1, 'krm'), s('Cayennepeppar', 0.5, 'krm')],
-    top: [g('Grekisk yoghurt', 'grekisk', 40), g('Tahini', 'tahini', 8), g('Gurka', 'gurka', 15), s('Persilja')], tip: 'Tahini och citron stelnar först, rör i en tesked vatten tills det blir slätt och vänd sist ner yoghurten.', heat: MICRO },
+    top: [g('Grekisk yoghurt', 'grekisk', 40), g('Tahini', 'tahini', 8), cut(g('Gurka', 'gurka', 15), 'Tärna'), cut(s('Persilja'), 'Hacka')], tip: 'Tahini och citron stelnar först, rör i en tesked vatten tills det blir slätt och vänd sist ner yoghurten.', heat: MICRO },
   { id: 'tikka', name: 'Tikka', tagline: 'Garam masala, ingefära, yoghurt', protein: ['kyckling', 'kikartor', 'linser'], carb: 'ris', veg: 'spenat', sauce: true, base: 'tomat',
-    mix: [g('Yoghurt 3 %', 'yoghurt3', 50), g('Majsstärkelse', 'majsstarkelse', 1.5), s('Garam masala', 0.5, 'tsk'), s('Spiskummin', 0.5, 'tsk'), s('Gurkmeja', 1, 'krm'), s('Riven ingefära', 0.5, 'tsk')],
-    top: [s('Koriander'), s('Mynta')], tip: 'Rosta kryddorna 30 s i lite olja, rör ner basen och sist yoghurten.', heat: MICRO },
+    mix: [g('Yoghurt 3 %', 'yoghurt3', 50), g('Majsstärkelse', 'majsstarkelse', 1.5), s('Garam masala', 0.5, 'tsk'), s('Spiskummin', 0.5, 'tsk'), s('Gurkmeja', 1, 'krm'), cut(s('Riven ingefära', 0.5, 'tsk'), 'Riv')],
+    top: [cut(s('Koriander'), 'Hacka'), cut(s('Mynta'), 'Hacka')], tip: 'Rosta kryddorna 30 s i lite olja, rör ner basen och sist yoghurten.', heat: MICRO },
   // TRIAL (Patrik 2026-09-24): FIH cookbook kits, near-verbatim. Keep or delete after testing.
   { id: 'filips-currymango', name: 'Filips curry mango', tagline: 'Curry, Philadelphia, soja', protein: ['kyckling'], carb: 'ris', veg: 'paprika', sauce: true, base: 'kram',
     mix: [g('Philadelphia light', 'philadelphia', 25), g('Mini fraiche', 'minifraiche', 33), g('Lättmjölk', 'lattmjolk', 65, 'ml'), g('Tomatpuré', 'tomatpure', 10), s('Curry mango-krydda', 2, 'tsk'), s('Japansk soja', 1, 'tsk')],
@@ -321,7 +326,7 @@ const KIT_LIST: readonly Omit<Kit, 'hue'>[] = [
     top: [g('Parmesan', 'parmesan', 10)], tip: 'Stäng av värmen innan osten rörs ner så skär sig inte såsen.', heat: MICRO },
   { id: 'filips-ajvar', name: 'Filips ajvar', tagline: 'Ajvar, vitlök, parmesan', protein: ['kyckling', 'notfars'], carb: 'pasta', veg: 'spenat', sauce: true, base: 'kram',
     mix: [g('Philadelphia light', 'philadelphia', 10), g('Ajvar', 'ajvar', 12), s('Grillkrydda', 1, 'krm')],
-    top: [g('Parmesan', 'parmesan', 6), s('Persilja')], tip: 'Spara lite pastavatten och späd såsen med det.', heat: MICRO },
+    top: [g('Parmesan', 'parmesan', 6), cut(s('Persilja'), 'Hacka')], tip: 'Spara lite pastavatten och späd såsen med det.', heat: MICRO },
   { id: 'filips-kebab', name: 'Filips Kebabgryta', tagline: 'Kebabkrydda, yoghurt, spenat', protein: ['kyckling'], carb: 'ris', veg: 'spenat', sauce: true,
     mix: [g('Mini fraiche', 'minifraiche', 40), g('Grekisk yoghurt', 'grekisk', 20), g('Röd kebabsås', 'kebabsas', 10), s('Kebabkrydda', 2, 'krm'), s('Spiskummin', 1, 'krm')],
     top: [s('Färsk spenat')], tip: 'Rör ner mejeriet på låg värme, sist.', heat: MICRO },
@@ -329,14 +334,14 @@ const KIT_LIST: readonly Omit<Kit, 'hue'>[] = [
     mix: [g('Philadelphia light', 'philadelphia', 5), g('Grekisk yoghurt', 'grekisk', 20), s('Pastavatten', 20, 'ml'), s('Vitlökspulver', 1, 'krm'), s('Paprikapulver', 1, 'krm')],
     top: [g('Mager ost', 'ost', 6)], tip: 'Stek färsen först, fräs paprika och lök mjuka i samma panna.', heat: MICRO },
   { id: 'filips-buffalo', name: 'Filips Buffalo', tagline: 'Hot sauce, ost, rödlök', protein: ['kyckling'], carb: 'sotpotatis', veg: 'broccoli', base: 'kram',
-    mix: [g('Philadelphia light', 'philadelphia', 25), g("Frank's RedHot", 'hotsauce', 15), s('Hackad rödlök', 0.5, 'msk')],
+    mix: [g('Philadelphia light', 'philadelphia', 25), g("Frank's RedHot", 'hotsauce', 15), cut(s('Hackad rödlök', 0.5, 'msk'), 'Hacka')],
     top: [g('Mager ost', 'ost', 20), s('Honung, en skvätt')], tip: 'Riv kycklingen med två gafflar så fäster såsen.', heat: MICRO },
   { id: 'filips-svampsas', name: 'Filips svampsås', tagline: 'Kalvfond, dijon, champinjoner', protein: ['flaskkarre', 'notfars', 'kyckling'], carb: 'mos', veg: 'champinjoner', sauce: true, base: 'kram',
     mix: [g('Milda Mat Lätt', 'mildamat', 50, 'ml'), g('Lättmjölk', 'lattmjolk', 75, 'ml'), s('Kalvfond', 0.5, 'msk'), s('Japansk soja', 0.5, 'msk'), s('Dijonsenap', 0.25, 'tsk')],
-    top: [g('Parmesan', 'parmesan', 15), s('Persilja')], tip: 'Stek svampen hårt tills den fått färg innan vätskan går i.', heat: MICRO },
+    top: [g('Parmesan', 'parmesan', 15), cut(s('Persilja'), 'Hacka')], tip: 'Stek svampen hårt tills den fått färg innan vätskan går i.', heat: MICRO },
   { id: 'filips-burger', name: 'Filips Cheeseburger', tagline: 'Ost, pickles, burgersås', protein: ['notfars'], carb: 'potatis', veg: 'broccoli',
     mix: [s('Hamburgerost', 1, 'st'), s('Vitlökspulver', 1, 'krm')],
-    top: [g('Grekisk yoghurt', 'grekisk', 25), s('Senap', 0.5, 'tsk'), s('Pickles, hackad', 1, 'msk'), s('Rå gullök')], tip: 'Smält osten i den varma färsen. Såsen i egen burk.', heat: MICRO },
+    top: [g('Grekisk yoghurt', 'grekisk', 25), s('Senap', 0.5, 'tsk'), cut(s('Pickles, hackad', 1, 'msk'), 'Hacka'), cut(s('Rå gullök'), 'Hacka')], tip: 'Smält osten i den varma färsen. Såsen i egen burk.', heat: MICRO },
 ];
 
 // Golden-angle hues: neighbouring kits always get clearly different colours.

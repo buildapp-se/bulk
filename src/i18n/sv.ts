@@ -1,6 +1,6 @@
 // All UI text. Food names live in lib/data.ts. English later: add en.ts with the same shape + next-intl.
 export const sv = {
-  tabs: ['Välj', 'Ingredienser', 'Tillagning', 'Träd'],
+  tabs: ['Välj', 'Ingredienser', 'Tillagning', 'Prepp'],
   summary: (boxes: number, kits: number, kcal: string) => `${boxes} lådor · ${kits} smaker · ø ${kcal} kcal`,
   hero: { title: 'Laga en bas. Byt smak per låda.', sub: 'Välj protein, antal lådor och smakkit. Mängder, macros, inköp och ugnsschema räknas ut direkt.' },
   sec: { goal: 'Mål', protein: 'Protein', boxes: 'Antal lådor', kits: 'Smakkit', veg: 'Grönsaker' },
@@ -16,7 +16,7 @@ export const sv = {
     reset: 'Återställ till beräknat',
   },
   activity: [[1.2, 'Stillasittande'], [1.375, 'Lätt aktiv'], [1.55, 'Tränar 3–5 ggr/v'], [1.725, 'Mycket aktiv']] as const,
-  method: { ugn: 'Ugn', sousvide: 'Sous vide', form: 'Långkok', gryta: 'Gryta' },
+  method: { ugn: 'Ugn', hel: 'Hel', sousvide: 'Sous vide', form: 'Långkok', gryta: 'Gryta' },
   veg: { rostade: ['Rostade', 'Egen plåt, 20 min'], frysta: ['Frysta', 'Direkt i lådan. Aubergine, svamp och kål rostas ändå'] },
   kitHint: (n: number) => (n === 0 ? 'Välj minst 1' : n > 3 ? `${n} valda, fler kastruller` : `${n} valda, 2–3 är lagom`),
   batch: 'Din batch',
@@ -58,13 +58,18 @@ export const sv = {
     stale: (when: string) => `Förra tillagningen: ${when}.`, restart: 'Börja om',
     late: (end: string) =>`Hinner inte: börjar du nu blir det klart ${end}`,
   },
-  tree: {
-    title: 'Ingrediensträd',
-    sub: 'Varje steg lägger till en ingrediens. Siffran är hur många lådtyper (kit + protein) som har allt på vägen dit. Tryck för att gå ner en gren.',
-    all: 'Alla lådtyper', shared: 'Följer med', best: 'Följ bästa grenen', reset: 'Börja om',
-    branches: (n: number) => `${n} förgreningar härifrån`, forks: (n: number) => `${n} grenar`,
-    more: (n: number) => `Visa alla ${n}`, less: 'Visa färre', leaf: 'Inga fler förgreningar: alla lådtyper här har samma ingredienser.',
-    recipes: (n: number) => `${n} ${n === 1 ? 'lådtyp' : 'lådtyper'}`,
+  prep: {
+    title: 'Preppträd',
+    sub: 'Kniven kostar tid, kryddor gör det inte. Ett knivjobb görs en gång och räcker till alla rätter som behöver det. Välj protein och antal smaker, så visas vilka kit som ger flest varianter på minst prepp.',
+    proteins: 'Protein', n: 'Antal smaker', options: (n: number) => `Minst prepp för ${n} smaker`,
+    jobs: (n: number) => (n === 0 ? 'ingen kniv' : `${String(n).replace('.', ',')} knivjobb`),
+    variants: (n: number) => `${n} ${n === 1 ? 'variant' : 'varianter'}`, pots: (n: number) => `${n} ${n === 1 ? 'kastrull' : 'kastruller'}`,
+    lvProtein: 'Protein', lvShared: 'Gemensam prepp, en gång', lvDirs: 'Dela upp i riktningar',
+    noKnife: 'Ingen kniv alls. Allt är burkar, kryddor och ugn.', serves: (n: number) => `räcker till ${n} ${n === 1 ? 'rätt' : 'rätter'}`,
+    own: 'Egen sås', potShared: 'Rör i hela potten innan du delar', spicesOnly: 'bara kryddor', extra: 'eget knivjobb',
+    use: 'Använd i batchen', none: 'Inget kit passar de valda proteinen.', pickProtein: 'Välj minst ett protein.',
+    easy: 'Nästan noll prepp', easySub: 'Varje kit med det protein som kräver minst kniv. Burkar, kryddor och en plåt i ugnen.',
+    groups: ['Ingen kniv', 'Ett knivjobb', 'Två knivjobb'],
   },
 } as const;
 
