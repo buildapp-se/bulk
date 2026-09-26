@@ -37,9 +37,9 @@ export const setKitProtein = (kit: string, protein: string) => {
     proteins: p.proteins.some((x) => x.id === protein) ? p.proteins : [...p.proteins, { id: protein, method: DEFAULT_METHOD(byId(PROTEINS, protein)) }],
   }));
 };
-/** From the prep tab: exactly these kits and proteins, each protein at its low-prep method. Per-kit choices start over. */
-export const applyPrep = (kits: string[], proteins: { id: string; method: MethodId }[]) =>
-  structural(() => ({ kits, proteins, kitProtein: {}, kitCarb: {}, kitVeg: {} }));
+/** From the prep tab: exactly these kits, each pinned to the protein it was picked under, proteins at their low-prep method. */
+export const applyPrep = (kitProtein: Record<string, string>, proteins: { id: string; method: MethodId }[]) =>
+  structural(() => ({ kits: Object.keys(kitProtein), proteins, kitProtein, kitCarb: {}, kitVeg: {} }));
 export const setKitVeg = (kit: string, veg: string) => { haptic(); setPlan((p) => ({ ...p, kitVeg: { ...p.kitVeg, [kit]: veg } })); };
 /** Empty the batch: kits, proteins, per-kit and per-box choices. Goal, box count and veg mode stay. */
 // A new batch starts clean: cooking progress and the shopping ticks go too, goal and box count stay.

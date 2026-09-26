@@ -3,7 +3,7 @@ reviewedAt: 2026-09-26
 ---
 # Handoff
 
-**2026-09-26:** fjärde fliken Prepp, preppträd som ger flest varianter på minst knivarbete, och kycklingmetoden Hel (hela filéer i ugn). Knivjobb taggade på kitens rader. Verifierat med check (protein-kostnad, delade jobb, bästa 4-kit, hel-steget i schemat och på plåtarna), typecheck, build och playwright-cli på 390 och 1280 px: "Använd i batchen" sätter planen och Tillagning visar "Kyckling, hela filéer in"; ingen horisontell scroll, inga konsolfel.
+**2026-09-26:** fjärde fliken Prepp: ett preppträd per protein (gemensamma knivjobb som stam, grenar där kiten börjar behöva olika), tryck på kit för att välja, live-mätning av knivjobb, ingredienser och kastruller, "Använd i batchen". Ny kycklingmetod Hel (hela filéer i ugn). Knivjobb taggade på kitens rader. Verifierat med check (protein-kostnad, lax-trädet, varje kit i exakt ett löv per protein, kostnad för delad bas, hel-steget i schemat och på plåtarna), typecheck, build och playwright-cli på 390 och 1280 px ("Använd i batchen" sätter planen, Tillagning visar "Kyckling, hela filéer in", kycklingträdets djupaste nivå ryms på 390), ingen horisontell scroll, inga konsolfel.
 
 **Läge:** live på https://buildapp.se/bulk/. Fyra vyer (Välj, Ingredienser, Tillagning, Prepp), 32 smakkit varav 24 på en grundbas (tomat, asiatisk, krämig, rökig rub), 10 proteiner (plus halloumi och sojafärs), mål med lösare, inköp i förpackningar, digitala timers med docka och larm.
 

@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
-import { best, combo, kitJobs, protPrep } from '../src/lib/prep.ts';
+import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
 
 const fails: string[] = [];
 const eq = (name: string, got: unknown, want: unknown) => {
@@ -178,10 +178,20 @@ eq('prep lax', protPrep(byId(PROTEINS, 'lax')).job?.w, 1);
 // Keema: base gul lök + vitlök, own riven ingefära + koriander.
 eq('prep keema jobs', kitJobs(byId(KITS, 'keema')).map((j) => j.key), ['gul lök', 'vitlök', 'ingefära', 'koriander']);
 // Teriyaki + sweet chili share the asia base (ingefära, vitlök) and salladslök; sweet chili's ingefära is the base's: 3 + ½.
-const tc = combo([byId(KITS, 'teriyaki'), byId(KITS, 'sweetchili')], [byId(PROTEINS, 'kyckling')]);
-eq('prep shared jobs', [tc.cost, tc.variants, tc.pots], [3.5, 2, 1]);
-const b4 = best([byId(PROTEINS, 'kyckling'), byId(PROTEINS, 'notfars')], 4)[0];
-eq('prep best 4 kits: only the kyckling slice', [b4.cost, b4.kits.length], [0.5, 4]);
+// Ingredients: soja, ingefära, vitlök (base), teriyakisås, edamame, sesam, salladslök, sweet chilisås, kycklingfilé = 9. One pot.
+const kyc = byId(PROTEINS, 'kyckling');
+const tc = cost([{ kit: byId(KITS, 'teriyaki'), protein: kyc }, { kit: byId(KITS, 'sweetchili'), protein: kyc }]);
+eq('prep shared cost', [tc.knife, tc.ingr, tc.pots], [3.5, 9, 1]);
+// Lax: pesto needs no knife, teriyaki + sweet chili share ingefära, vitlök, salladslök, dill och citron has its own three.
+const lt = prepTree(byId(PROTEINS, 'lax'));
+const show = (n: PNode): unknown => [n.jobs.map((j) => j.key), n.kits.map((k) => k.id), n.kids.map(show)];
+eq('prep lax tree', show(lt), [['lax'], ['pesto'], [
+  [['ingefära', 'vitlök', 'salladslök'], ['teriyaki', 'sweetchili'], []],
+  [['citron', 'dill', 'rödlök'], ['dill'], []],
+]]);
+// Every kit ends up in exactly one leaf of its protein's tree.
+const leaves = (n: PNode): string[] => [...n.kits.map((k) => k.id), ...n.kids.flatMap(leaves)];
+for (const p of PROTEINS) eq(`prep tree ${p.id} leaves`, leaves(prepTree(p)).sort(), KITS.filter((k) => k.protein.includes(p.id)).map((k) => k.id).sort());
 // Whole fillets go in the oven session with their own step and count on the trays.
 const hel: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'kyckling', method: 'hel' }, { id: 'notfars', method: 'ugn' }] };
 const helSch = schedule(resolveBoxes(hel).map((b) => calcBox(b, hel, null)), hel);

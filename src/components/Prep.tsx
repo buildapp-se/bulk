@@ -3,202 +3,173 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'motion/react';
 import { t } from '@/i18n/sv';
-import { BASES, byId, PROTEINS, type Kit, type Protein } from '@/lib/data';
-import { best, kitJobs, nearZero, ownJobs, protPrep, sharedSpices, type Combo } from '@/lib/prep';
+import { BASES, byId, KITS, PROTEINS, type Kit, type Protein } from '@/lib/data';
+import { cost, nearZero, prepTree, protPrep, type Cost, type Job, type Pick, type PNode } from '@/lib/prep';
 import { applyPrep } from '@/lib/actions';
 import { haptic } from '@/lib/haptics';
 import { KitArt } from './KitArt';
-import { Pill, Segmented, spring } from './ui';
+import { Pill, spring } from './ui';
 
-const NS = ['2', '3', '4', '5', '6'] as const;
-const jobsTxt = (n: number) => t.prep.jobs(n);
+const num = (n: number) => String(n).replace('.', ',');
+type Sel = Readonly<Record<string, string>>; // kit id -> protein id it was picked under
 
 export function Prep() {
-  const [pids, setPids] = useState<readonly string[]>(['kyckling', 'notfars']);
-  const [n, setN] = useState<(typeof NS)[number]>('4');
-  const [sel, setSel] = useState(0);
-  const proteins = useMemo(() => PROTEINS.filter((p) => pids.includes(p.id)), [pids]);
-  const combos = useMemo(() => (proteins.length ? best(proteins, Number(n)) : []), [proteins, n]);
-  const cur = combos[Math.min(sel, combos.length - 1)];
-  const toggle = (id: string) => { haptic(); setSel(0); setPids((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id])); };
+  const router = useRouter();
+  const [pids, setPids] = useState<readonly string[]>(['kyckling']);
+  const [sel, setSel] = useState<Sel>({});
+  const picks = useMemo<Pick[]>(() => Object.entries(sel).map(([k, p]) => ({ kit: byId(KITS, k), protein: byId(PROTEINS, p) })), [sel]);
+  const now = useMemo(() => cost(picks), [picks]);
+  const toggleProtein = (id: string) => { haptic(); setPids((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id])); };
+  const pick = (kit: Kit, p: Protein) => {
+    haptic();
+    setSel((s) => { const n = { ...s }; if (n[kit.id] === p.id) delete n[kit.id]; else n[kit.id] = p.id; return n; });
+  };
+  const use = () => {
+    haptic(14);
+    applyPrep({ ...sel }, [...new Set(Object.values(sel))].map((id) => ({ id, method: protPrep(byId(PROTEINS, id)).m })));
+    router.push('/', { transitionTypes: ['nav-back'] });
+  };
 
   return (
-    <div className="flex max-w-[760px] flex-col gap-7">
+    <div className="flex max-w-[760px] flex-col gap-7 pb-28">
       <div className="flex flex-col gap-1.5">
         <h1 className="text-2xl font-bold tracking-tight">{t.prep.title}</h1>
         <p className="max-w-[62ch] text-muted [text-wrap:pretty]">{t.prep.sub}</p>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <div className="label">{t.prep.proteins}</div>
-          <div className="flex flex-wrap gap-1.5">
-            {PROTEINS.map((p) => {
-              const w = protPrep(p).job?.w ?? 0;
-              return <Pill key={p.id} on={pids.includes(p.id)} onClick={() => toggle(p.id)}>{p.name} <span className="font-mono text-[10px] opacity-60">{w ? `✂ ${String(w).replace('.', ',')}` : '0'}</span></Pill>;
-            })}
-          </div>
-        </div>
-        <div className="flex flex-col gap-2">
-          <div className="label">{t.prep.n}</div>
-          <div className="max-w-[320px]"><Segmented id="prep-n" value={n} onChange={(v) => { setSel(0); setN(v); }} options={NS.map((x) => [x, x] as const)} small /></div>
+      <div className="flex flex-col gap-2">
+        <div className="label">{t.prep.proteins}</div>
+        <div className="flex flex-wrap gap-1.5">
+          {PROTEINS.map((p) => {
+            const w = protPrep(p).job?.w ?? 0;
+            return <Pill key={p.id} on={pids.includes(p.id)} onClick={() => toggleProtein(p.id)}>{p.name} <span className="font-mono text-[10px] opacity-60">{w ? `✂ ${num(w)}` : '0'}</span></Pill>;
+          })}
         </div>
       </div>
 
-      {!proteins.length ? <p className="text-muted">{t.prep.pickProtein}</p> : !cur ? <p className="text-muted">{t.prep.none}</p> : (
-        <>
-          <section className="flex flex-col gap-2.5">
-            <div className="label">{t.prep.options(Number(n))}</div>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-              {combos.map((c, i) => (
-                <motion.button key={c.kits.map((k) => k.id).join()} whileTap={{ scale: 0.97 }} onClick={() => { haptic(); setSel(i); }} aria-pressed={c === cur}
-                  className={`relative flex flex-col gap-2 rounded-2xl border p-3 text-left transition-colors ${c === cur ? 'border-ink bg-surface' : 'border-line hover:border-muted'}`}>
-                  <span className="flex -space-x-2">{c.kits.map((k) => <KitArt key={k.id} kit={k} size={30} spin />)}</span>
-                  <span className="text-sm font-semibold">{jobsTxt(c.cost)}</span>
-                  <span className="font-mono text-[11px] text-muted">{t.prep.variants(c.variants)} · {t.prep.pots(c.pots)}</span>
-                </motion.button>
-              ))}
-            </div>
-          </section>
-          <PrepTree c={cur} />
-        </>
-      )}
+      {pids.length === 0 && <p className="text-muted">{t.prep.pickProtein}</p>}
+      {PROTEINS.filter((p) => pids.includes(p.id)).map((p) => <ProteinTree key={p.id} p={p} sel={sel} picks={picks} now={now} pick={pick} />)}
 
       <Easy />
-    </div>
-  );
-}
 
-/** One level of the tree: a dot on the rail, a title, content. */
-function Level({ title, right, last, children }: { title: string; right?: React.ReactNode; last?: boolean; children: React.ReactNode }) {
-  return (
-    <li className="grid grid-cols-[20px_minmax(0,1fr)] gap-x-3">
-      <div className="relative flex justify-center">
-        <span className={`relative z-10 mt-[5px] h-3 w-3 rounded-full border-2 ${last ? 'border-[color:var(--c)] bg-[color:var(--c)]' : 'border-ink bg-surface'}`} />
-        {!last && <span className="absolute top-4 bottom-0 w-px bg-line" />}
-      </div>
-      <div className={`flex min-w-0 flex-col gap-2 ${last ? '' : 'pb-6'}`}>
-        <div className="flex items-baseline justify-between gap-3">
-          <span className="label">{title}</span>
-          {right && <span className="font-mono text-[11px] text-muted">{right}</span>}
-        </div>
-        {children}
-      </div>
-    </li>
-  );
-}
-
-function PrepTree({ c }: { c: Combo }) {
-  const router = useRouter();
-  // Directions: one per base, kits without a base each make their own sauce.
-  const groups = useMemo(() => {
-    const m = new Map<string, Kit[]>();
-    for (const k of c.kits) m.set(k.base ?? '', [...(m.get(k.base ?? '') ?? []), k]);
-    return [...m].sort((a, b) => b[1].length - a[1].length || (a[0] ? -1 : 1));
-  }, [c]);
-  const serves = (key: string) => c.kits.filter((k) => kitJobs(k).some((j) => j.key === key)).length;
-  const use = () => {
-    applyPrep(c.kits.map((k) => k.id), c.proteins.map((p) => ({ id: p.id, method: protPrep(p).m })));
-    router.push('/', { transitionTypes: ['nav-back'] });
-  };
-
-  return (
-    <motion.section key={c.kits.map((k) => k.id).join()} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={spring} className="flex flex-col gap-4">
-      <ol className="flex flex-col">
-        <Level title={t.prep.lvProtein}>
-          <div className="flex flex-wrap gap-1.5">
-            {c.proteins.map((p) => <ProteinTag key={p.id} p={p} />)}
-          </div>
-        </Level>
-        <Level title={t.prep.lvShared} right={jobsTxt(c.cost)}>
-          {c.jobs.length ? (
-            <ul className="flex flex-col gap-1">
-              {c.jobs.map((j) => (
-                <li key={j.key} className="flex items-baseline justify-between gap-3 rounded-lg bg-surface px-3 py-1.5 text-sm">
-                  <span>✂ {j.label}</span>
-                  <span className="shrink-0 font-mono text-[11px] text-muted">{c.proteins.some((p) => p.id === j.key) ? `½ · ${t.prep.serves(c.variants)}` : t.prep.serves(serves(j.key))}</span>
-                </li>
-              ))}
-            </ul>
-          ) : <p className="text-sm text-muted">{t.prep.noKnife}</p>}
-        </Level>
-        <Level title={t.prep.lvDirs} right={t.prep.pots(c.pots)} last>
-          <div className="flex flex-col gap-3">
-            {groups.map(([base, kits]) => <Direction key={base || 'own'} base={base} kits={kits} proteins={c.proteins} />)}
-          </div>
-        </Level>
-      </ol>
-      <motion.button whileTap={{ scale: 0.97 }} onClick={() => { haptic(); use(); }} className="self-start rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-on-ink">
-        {t.prep.use} →
-      </motion.button>
-    </motion.section>
-  );
-}
-
-function ProteinTag({ p }: { p: Protein }) {
-  const pp = protPrep(p);
-  return (
-    <span className="rounded-full border border-line bg-surface px-3 py-1 text-[13px]">
-      {p.name} <span className="text-muted">· {t.method[pp.m].toLowerCase()}</span>
-    </span>
-  );
-}
-
-/** A base pot that splits into kits. Tap to fold; tap a kit to see what goes into its share. */
-function Direction({ base, kits, proteins }: { base: string; kits: readonly Kit[]; proteins: readonly Protein[] }) {
-  const [open, setOpen] = useState(true);
-  const [kit, setKit] = useState<string | null>(null);
-  const b = base ? byId(BASES, base as (typeof BASES)[number]['id']) : null;
-  const spices = b ? sharedSpices(kits) : [];
-  return (
-    <div className="rounded-2xl border border-line bg-surface">
-      <button onClick={() => { haptic(); setOpen(!open); }} className="flex w-full items-baseline justify-between gap-3 px-4 py-3 text-left">
-        <span className="font-semibold">{b ? b.name : t.prep.own}</span>
-        <span className="font-mono text-[11px] text-muted">{kits.length} kit {open ? '−' : '+'}</span>
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring} className="overflow-hidden">
-            <div className="flex flex-col gap-2 px-4 pb-4">
-              {spices.length > 0 && (
-                <p className="rounded-lg bg-sunken px-3 py-2 text-[13px]"><span className="label mr-1.5">{t.prep.potShared}</span>{spices.map((s, i) => `${i ? s.name : s.name[0].toUpperCase() + s.name.slice(1)} ×${s.n}`).join(', ')}</p>
-              )}
-              <ul className="flex flex-col border-l border-line pl-3">
-                {kits.map((k) => {
-                  const own = ownJobs(k);
-                  const on = kit === k.id;
-                  return (
-                    <li key={k.id}>
-                      <button onClick={() => { haptic(); setKit(on ? null : k.id); }} className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left hover:bg-sunken">
-                        <KitArt kit={k} size={36} spin={on} />
-                        <span className="min-w-0 flex-1">
-                          <span className="block truncate text-sm font-medium">{k.name}</span>
-                          <span className="block truncate text-[12px] text-muted">{k.protein.filter((id) => proteins.some((p) => p.id === id)).map((id) => byId(PROTEINS, id).name).join(' · ')}</span>
-                        </span>
-                        <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] ${own.length ? 'bg-[color:var(--warn)]/15 text-[color:var(--warn)]' : 'bg-sunken text-muted'}`}>
-                          {own.length ? `✂ ${own.length}` : t.prep.spicesOnly}
-                        </span>
-                      </button>
-                      <AnimatePresence initial={false}>
-                        {on && (
-                          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring} className="overflow-hidden">
-                            <div className="flex flex-col gap-1 px-2 pb-2 pl-[60px] text-[13px] text-muted">
-                              {k.mix.length > 0 && <p>{k.mix.map((x) => x.name).join(', ')}</p>}
-                              {own.length > 0 && <p className="text-ink">{t.prep.extra}: {own.map((j) => j.label).join(', ')}</p>}
-                              <p className="italic">{k.tip}</p>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </li>
-                  );
-                })}
-              </ul>
+      <AnimatePresence>
+        {picks.length > 0 && (
+          <motion.div initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }} transition={spring}
+            className="fixed inset-x-0 bottom-0 z-20 px-4 pb-[calc(12px+env(safe-area-inset-bottom))] sm:px-5">
+            <div className="mx-auto flex max-w-[1120px] flex-col gap-2 rounded-2xl bg-ink px-4 py-3 text-on-ink shadow sm:flex-row sm:items-center-[0_8px_30px_rgba(35,33,29,.25)]">
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-[12px] [&>span]:whitespace-nowrap sm:flex-1">
+                <span className="font-semibold">{t.prep.picked(picks.length)}</span>
+                <span>✂ {t.prep.knife(now.knife)}</span>
+                <span className="opacity-75">{t.prep.ingr(now.ingr)}</span>
+                <span className="opacity-75">{t.prep.pots(now.pots)}</span>
+              </div>
+              <div className="flex items-center justify-end gap-2">
+                <button onClick={() => { haptic(); setSel({}); }} className="px-2 py-1.5 text-sm opacity-75 hover:opacity-100">{t.prep.clear}</button>
+              <motion.button whileTap={{ scale: 0.96 }} onClick={use} className="rounded-full bg-surface px-4 py-2 text-sm font-medium text-ink">{t.prep.use} →</motion.button>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+interface Ctx { p: Protein; sel: Sel; picks: readonly Pick[]; now: Cost; pick: (kit: Kit, p: Protein) => void }
+const holds = (n: PNode, p: Protein, sel: Sel): boolean => n.kits.some((k) => sel[k.id] === p.id) || n.kids.some((c) => holds(c, p, sel));
+
+function ProteinTree(c: Ctx) {
+  const root = useMemo(() => prepTree(c.p), [c.p]);
+  const pp = protPrep(c.p);
+  return (
+    <section className="flex flex-col">
+      <div className={`flex flex-col gap-2 rounded-2xl border px-4 py-3 transition-colors ${holds(root, c.p, c.sel) ? 'border-ink' : 'border-line'} bg-surface`}>
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="text-lg font-semibold tracking-tight">{c.p.name} <span className="text-sm font-normal text-muted">· {t.method[pp.m].toLowerCase()}</span></span>
+          <span className="shrink-0 font-mono text-[11px] text-muted">{t.prep.dishes(root.n)}</span>
+        </div>
+        <Jobs jobs={root.jobs} />
+      </div>
+      <Children node={root} {...c} />
+    </section>
+  );
+}
+
+function Jobs({ jobs }: { jobs: readonly Job[] }) {
+  if (!jobs.length) return <span className="text-[13px] text-muted">{t.prep.nothing}</span>;
+  return (
+    <span className="flex flex-wrap gap-1">
+      {jobs.map((j) => <span key={j.key} className="rounded-full bg-sunken px-2 py-0.5 text-[12px]">✂ {j.label}</span>)}
+    </span>
+  );
+}
+
+/** Leaves first (kits done at this node), then branches, joined by elbow lines. */
+function Children({ node, ...c }: Ctx & { node: PNode }) {
+  const items = [...node.kits.map((k) => ({ k })), ...node.kids.map((n) => ({ n }))];
+  return (
+    <ul className="ml-2 flex flex-col gap-2 pt-2 pl-3.5 sm:ml-[15px] sm:pl-5">
+      {items.map((it, i) => {
+        const on = 'k' in it ? c.sel[it.k.id] === c.p.id : holds(it.n, c.p, c.sel);
+        const line = on ? 'border-ink' : 'border-line';
+        return (
+          <li key={'k' in it ? it.k.id : it.n.id} className="relative">
+            <span className={`absolute -left-3.5 -top-2 h-[30px] w-2.5 rounded-bl-[8px] sm:-left-5 sm:w-4 sm:rounded-bl-[10px] border-b border-l ${line}`} />
+            {i < items.length - 1 && <span className={`absolute -left-3.5 top-0 -bottom-2 border-l sm:-left-5 ${items.slice(i + 1).some((x) => ('k' in x ? c.sel[x.k.id] === c.p.id : holds(x.n, c.p, c.sel))) ? 'border-ink' : 'border-line'}`} />}
+            {'k' in it ? <Leaf kit={it.k} {...c} /> : <Branch node={it.n} {...c} />}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function Branch({ node, ...c }: Ctx & { node: PNode }) {
+  const [open, setOpen] = useState(true);
+  const on = holds(node, c.p, c.sel);
+  return (
+    <div>
+      <button onClick={() => { haptic(); setOpen(!open); }} aria-expanded={open}
+        className={`flex w-full items-start justify-between gap-3 rounded-xl border bg-surface px-3 py-2 text-left transition-colors ${on ? 'border-ink' : 'border-line hover:border-muted'}`}>
+        <Jobs jobs={node.jobs} />
+        <span className="flex shrink-0 items-center gap-1.5 pt-0.5 font-mono text-[11px] text-muted">
+          {t.prep.dishes(node.n)}
+          <motion.span animate={{ rotate: open ? 0 : -90 }} transition={spring} aria-hidden>▾</motion.span>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring} className="overflow-hidden">
+            <Children node={node} {...c} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/** A kit: tap to pick it under this protein. Unpicked, it shows what it would add to the current picks. */
+function Leaf({ kit, ...c }: Ctx & { kit: Kit }) {
+  const on = c.sel[kit.id] === c.p.id;
+  const add = useMemo(() => {
+    if (on) return null;
+    const next = cost([...c.picks.filter((x) => x.kit.id !== kit.id), { kit, protein: c.p }]);
+    return { k: next.knife - c.now.knife, i: next.ingr - c.now.ingr };
+  }, [on, c.picks, c.now, c.p, kit]);
+  return (
+    <motion.button whileTap={{ scale: 0.98 }} onClick={() => c.pick(kit, c.p)} aria-pressed={on}
+      className={`flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-left transition-colors ${on ? 'bg-surface ring-1 ring-ink' : 'hover:bg-sunken'}`}>
+      <KitArt kit={kit} size={34} spin={on} />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-medium">{kit.name}</span>
+        <span className="block truncate text-[12px] text-muted">{kit.base ? byId(BASES, kit.base).name : kit.tagline}</span>
+      </span>
+      {on ? (
+        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-ink text-[12px] text-on-ink">✓</span>
+      ) : add && (
+        <span className={`shrink-0 font-mono text-[11px] ${add.k > 0 ? 'text-[color:var(--warn)]' : 'text-muted'}`}>{t.prep.plus(num(add.k), add.i)}</span>
+      )}
+    </motion.button>
   );
 }
 

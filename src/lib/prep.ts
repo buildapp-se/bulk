@@ -1,5 +1,6 @@
 // Prep tree: knife work is what costs time, spices and jars are free. A job (hacka gul lök) done once serves every dish
-// that needs it, so the best batch is the one where many kits share few jobs. No React.
+// that needs it, so a protein's kits form a tree: shared jobs are the trunk, it branches where the kits' knife work differs.
+// No React.
 import { BASES, byId, KITS, PROTEINS, type Base, type Kit, type KitItem, type MethodId, type Protein } from './data.ts';
 
 export interface Job { key: string; label: string; w: number }
@@ -11,6 +12,7 @@ const noun = (name: string) => {
 };
 const job = (it: KitItem): Job => ({ key: noun(it.name), label: `${it.prep} ${noun(it.name)}`, w: 1 });
 const cuts = (items: readonly KitItem[]) => items.filter((x) => x.prep).map(job);
+const uniq = (jobs: Job[]) => [...new Map(jobs.map((j) => [j.key, j])).values()];
 
 export const baseJobs = (b: Base) => cuts(b.items);
 /** The kit's own knife work, not counting its base. */
@@ -32,55 +34,61 @@ export function protPrep(p: Protein): { m: MethodId; job?: Job } {
   return opts.reduce((a, b) => ((b.job?.w ?? 0) < (a.job?.w ?? 0) ? b : a));
 }
 
-export interface Combo { kits: readonly Kit[]; proteins: readonly Protein[]; jobs: readonly Job[]; cost: number; variants: number; pots: number }
+// ---------- Tree ----------
 
-const uniq = (jobs: Job[]) => [...new Map(jobs.map((j) => [j.key, j])).values()];
-
-export function combo(kits: readonly Kit[], proteins: readonly Protein[]): Combo {
-  const jobs = uniq([...proteins.flatMap((p) => protPrep(p).job ?? []), ...kits.flatMap(kitJobs)]);
-  return {
-    kits, proteins, jobs,
-    cost: jobs.reduce((s, j) => s + j.w, 0),
-    variants: kits.reduce((s, k) => s + k.protein.filter((id) => proteins.some((p) => p.id === id)).length, 0),
-    pots: new Set(kits.map((k) => k.base ?? k.id)).size,
-  };
-}
-
-/** Kits that pair with at least one of the proteins. */
-export const eligible = (proteins: readonly Protein[]) => KITS.filter((k) => k.protein.some((id) => proteins.some((p) => p.id === id)));
+/** A node: knife jobs every kit below still needs, kits that are done once these are done, and the branches that need more. */
+export interface PNode { id: string; jobs: readonly Job[]; kits: readonly Kit[]; kids: readonly PNode[]; n: number }
 
 /**
- * The `top` n-kit batches with the least knife work, then the most kit × protein variants, then the fewest pots.
- * ponytail: brute force over all n-kit subsets with job bitmasks; C(32,6) ≈ 900k is the ceiling, fine up to n = 6.
+ * Greedy split: jobs all kits share stay in the node, then the job most of the rest need opens a branch, and so on.
+ * ponytail: greedy, not the provably smallest tree; with at most 23 kits per protein it reads right, revisit if it doesn't.
  */
-export function best(proteins: readonly Protein[], n: number, top = 3): Combo[] {
-  const ks = eligible(proteins);
-  const keys = [...new Set(ks.flatMap(kitJobs).map((j) => j.key))];
-  if (keys.length > 31) throw new Error(`prep: ${keys.length} jobs, bitmask holds 31`);
-  const mask = ks.map((k) => kitJobs(k).reduce((m, j) => m | (1 << keys.indexOf(j.key)), 0));
-  const vars = ks.map((k) => k.protein.filter((id) => proteins.some((p) => p.id === id)).length);
-  const bits = (m: number) => { let c = 0; for (; m; m &= m - 1) c++; return c; };
-  // Keep only the best few while walking, so up to a million subsets never sit in one array.
-  const keep = top * 4;
-  const found: { idx: number[]; cost: number; v: number }[] = [];
-  const worse = (a: { cost: number; v: number }, b: { cost: number; v: number }) => a.cost - b.cost || b.v - a.v;
-  const pick: number[] = [];
-  const walk = (from: number, m: number, v: number) => {
-    if (pick.length === n) {
-      const f = { idx: pick, cost: bits(m), v };
-      if (found.length === keep && worse(f, found[keep - 1]) >= 0) return;
-      found.push({ ...f, idx: [...pick] });
-      found.sort(worse);
-      if (found.length > keep) found.pop();
-      return;
-    }
-    for (let i = from; i <= ks.length - (n - pick.length); i++) { pick.push(i); walk(i + 1, m | mask[i], v + vars[i]); pick.pop(); }
-  };
-  walk(0, 0, 0);
-  // Knife jobs in kits all weigh 1, so the bit count orders them; combo() adds the protein jobs, the same for every candidate.
-  return found.map((f) => combo(f.idx.map((i) => ks[i]), proteins))
-    .sort((a, b) => a.cost - b.cost || b.variants - a.variants || a.pots - b.pots).slice(0, top);
+function split(kits: readonly Kit[], done: ReadonlySet<string>, id: string): PNode {
+  const left = (k: Kit, d: ReadonlySet<string>) => kitJobs(k).filter((j) => !d.has(j.key));
+  const jobs = uniq(kits.length ? left(kits[0], done).filter((j) => kits.every((k) => left(k, done).some((x) => x.key === j.key))) : []);
+  const d = new Set([...done, ...jobs.map((j) => j.key)]);
+  const kids: PNode[] = [];
+  let rest = kits.filter((k) => left(k, d).length);
+  while (rest.length) {
+    const count = new Map<string, number>();
+    for (const k of rest) for (const j of uniq(left(k, d))) count.set(j.key, (count.get(j.key) ?? 0) + 1);
+    const top = [...count].sort((a, b) => b[1] - a[1])[0][0];
+    const group = rest.filter((k) => left(k, d).some((j) => j.key === top));
+    kids.push(split(group, d, `${id}/${top}`));
+    rest = rest.filter((k) => !group.includes(k));
+  }
+  return { id, jobs, kits: kits.filter((k) => !left(k, d).length), kids: kids.sort((a, b) => b.n - a.n), n: kits.length };
 }
+
+/** Every kit that pairs with the protein, as one tree. The protein's own job sits in the root. */
+export function prepTree(p: Protein): PNode {
+  const root = split(KITS.filter((k) => k.protein.includes(p.id)), new Set(), p.id);
+  const pj = protPrep(p).job;
+  return pj ? { ...root, jobs: [pj, ...root.jobs] } : root;
+}
+
+// ---------- Cost ----------
+
+// One ingredient per jar, spice or fresh item; the base counts with its own items.
+const itemKey = (it: KitItem) => it.ingr ?? noun(it.name).replace(/^torkad /, '');
+const kitIngr = (k: Kit) => [...(k.base ? byId(BASES, k.base).items : []), ...k.mix, ...k.top].map(itemKey);
+
+export interface Pick { kit: Kit; protein: Protein }
+export interface Cost { knife: number; ingr: number; pots: number; jobs: readonly Job[] }
+
+/** What a set of kit × protein picks costs: knife jobs (each once), distinct ingredients, pots (a base = one pot). */
+export function cost(picks: readonly Pick[]): Cost {
+  const proteins = [...new Set(picks.map((x) => x.protein))];
+  const jobs = uniq([...proteins.flatMap((p) => protPrep(p).job ?? []), ...picks.flatMap((x) => kitJobs(x.kit))]);
+  return {
+    jobs,
+    knife: jobs.reduce((s, j) => s + j.w, 0),
+    ingr: new Set([...proteins.map((p) => p.ingr), ...picks.flatMap((x) => kitIngr(x.kit))]).size,
+    pots: new Set(picks.map((x) => x.kit.base ?? x.kit.id)).size,
+  };
+}
+
+// ---------- Near zero ----------
 
 export interface Easy { kit: Kit; protein: Protein; m: MethodId; jobs: readonly Job[]; cost: number }
 
@@ -90,14 +98,3 @@ export const nearZero = (): Easy[] => KITS.map((kit) => {
     .map((o) => ({ ...o, cost: o.jobs.reduce((s, j) => s + j.w, 0) }));
   return { kit, ...opts.reduce((a, b) => (b.cost < a.cost ? b : a)) };
 }).sort((a, b) => a.cost - b.cost || a.kit.name.localeCompare(b.kit.name, 'sv'));
-
-/** Spices (non-knife mix items) shared by at least two of the kits: stir them into the pot before splitting. */
-export function sharedSpices(kits: readonly Kit[]): { name: string; n: number }[] {
-  const c = new Map<string, { name: string; n: number }>();
-  for (const k of kits) for (const key of new Set(k.mix.filter((x) => !x.prep).map((x) => noun(x.name).replace(/^torkad /, '')))) {
-    const e = c.get(key) ?? { name: key, n: 0 };
-    e.n++;
-    c.set(key, e);
-  }
-  return [...c.values()].filter((e) => e.n > 1).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name, 'sv'));
-}
