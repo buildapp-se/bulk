@@ -74,6 +74,20 @@ export const sv = {
     groups: ['Ingen kniv', 'Ett knivjobb', 'Två knivjobb'],
     toExplore: 'Utforska preppträdet →',
   },
+  price: {
+    kr: (v: string) => `${v} kr`, perKg: (v: string) => `${v} kr/kg`, box: (v: string) => `${v} kr/låda`,
+    week: 'Veckans priser i Umeå',
+    weekSub: (at: string) => `Hyllpris: billigaste matchande vara på Willys. Erbjudanden: Willys (4 butiker) och ICA (8 butiker) i Umeå. Hämtat ${at}.`,
+    groups: { protein: 'Protein', carb: 'Kolhydrat', veg: 'Grönt', base: 'Baser', kit: 'Smakkit' } as Record<string, string>,
+    cheapestProtein: 'Billigast protein', perProtein: (v: string) => `${v} kr per 100 g protein`,
+    vsShelf: (p: number) => `−${p} % mot vanligt`, vsOrd: (p: number) => `−${p} % rea`, member: 'medlemspris',
+    until: (d: string) => `t.o.m. ${d}`, shelf: (v: string) => `vanligt ${v}`, noPrice: 'pris saknas',
+    stores: (n: number) => `${n} ${n === 1 ? 'butik' : 'butiker'}`, onlyOrd: 'Rea, men vanliga billigaste är billigare',
+    cheapest: 'Billigast just nu', cheapestSub: 'Varje kit med varje protein det passar, per låda efter ditt mål, med veckans bästa erbjudanden. Kryddor och färskt garnityr ingår inte.',
+    perBox: 'Pris per låda', excl: 'exkl. kryddor och garnityr', dealsUsed: 'Veckans erbjudanden i lådan',
+    shop: (n: number, buy: string, waste: string) => `${n} lådor: handla ${buy} kr (spill ${waste} kr)`,
+    avg: (v: string) => `ø ${v} kr/låda`, missing: (s: string) => `saknar pris: ${s}`,
+  },
 } as const;
 
 export const t = sv;

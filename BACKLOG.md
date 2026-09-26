@@ -1,7 +1,7 @@
 # Backlog
 
 ## P1
-- **Nästa batch (Patrik 2026-09-26): utforska på pris.** Vad är billigast att laga, per kit × protein och för ett markerat urval i Prepp. Bonus: aktuella priser och veckans rabatter via API (ICA/Willys/Coop, eller Matpriskollen och liknande) eller en AI-tjänst som söker (Gemini/Google Cloud-nyckel, samma sorts upplägg som i flaskor fast för priser). Kräver prisdata per ingrediens och förpackning i data.ts; nyckeln ska aldrig in i appen (statisk export), så sökningen går via ett skript eller en worker.
+- Priser, nästa steg: Coop-erbjudanden i Umeå (Stora Coop Avion 232400, Ersboda 231400, Tomtebo 235660) kräver Coops publika frontendnyckel i anropet (`external.api.coop.se/dke/offers/sorting-groups/<butik>?api-version=v3`), väntar på Patriks ja. Lidl (nationella erbjudanden i veckosidornas `data-grid-data`, sid-id byts varje vecka). Hyllpris saknas för jordnötspulver, chipotle i adobo, Mini fraiche, Milda.
 - Testa på riktig telefon (iPhone + Android): installera som PWA, aviseringar, larmljud och vibration när en timer är klar (även med skärmen låst), haptik (iOS switch-tricket), Wake Lock.
 
 ## P2

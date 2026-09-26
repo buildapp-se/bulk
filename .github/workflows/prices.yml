@@ -1,0 +1,39 @@
+name: Fetch prices
+
+# Monday and Thursday 04:00 UTC (06:00 Stockholm in summer, 05:00 in winter): Willys and ICA
+# offers start Monday, weekend offers Thursday. Fetches, commits src/lib/prices.json, redeploys.
+on:
+  schedule:
+    - cron: '0 4 * * 1,4'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write # a push by GITHUB_TOKEN does not trigger deploy.yml, so we dispatch it
+
+concurrency:
+  group: prices
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node scripts/prices.ts
+      # Bad data never ships: the same checks as deploy, including the shape of prices.json.
+      - run: npm ci && npm run check
+      - name: Commit and redeploy if prices changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git diff --quiet -- src/lib/prices.json && { echo "Inga ändringar"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/lib/prices.json
+          git commit -m "Priser $(date -u +%F)"
+          git push
+          gh workflow run deploy.yml --ref main

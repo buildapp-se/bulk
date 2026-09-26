@@ -14,6 +14,8 @@
   --c: oklch(0.7 0.11 80);
   --f: oklch(0.64 0.12 30);
   --warn: oklch(0.62 0.15 55);
+  --deal: oklch(0.5 0.13 150); /* a price that is actually low this week */
+  --deal-bg: oklch(0.93 0.06 150);
   --kit-l: 0.72;
   --kit-c: 0.11;
   color-scheme: light;
@@ -29,6 +31,8 @@
     --line-soft: #2a2622;
     --on-ink: #161412;
     --kit-l: 0.68;
+    --deal: oklch(0.8 0.14 150);
+    --deal-bg: oklch(0.32 0.06 150);
     color-scheme: dark;
   }
 }
@@ -46,6 +50,8 @@
   --color-c: var(--c);
   --color-f: var(--f);
   --color-warn: var(--warn);
+  --color-deal: var(--deal);
+  --color-deal-bg: var(--deal-bg);
   --font-sans: var(--font-hanken), system-ui, sans-serif;
   --font-mono: var(--font-plex), ui-monospace, monospace;
 }

@@ -5,6 +5,8 @@ import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
+import { boxCost, deals, krPerProtein, live, matches, PRICES, shopCost, type Prices } from '../src/lib/price.ts';
+import type { ShopRow } from '../src/lib/calc.ts';
 
 const fails: string[] = [];
 const eq = (name: string, got: unknown, want: unknown) => {
@@ -197,6 +199,37 @@ const hel: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'kyckling', method: 'hel' 
 const helSch = schedule(resolveBoxes(hel).map((b) => calcBox(b, hel, null)), hel);
 eq('hel step', helSch.steps.find((s) => s.id === 'prot-kyckling-hel')?.dur, 25);
 eq('hel on trays', helSch.trays, schedule(resolveBoxes(DEFAULT_PLAN).map((b) => calcBox(b, DEFAULT_PLAN, null)), DEFAULT_PLAN).trays);
+
+// Prices, on a fixed table so the weekly fetch never moves the numbers. The same teriyaki box as above:
+// kyckling 175 g, olja 4,55 + 3,64 g, ris 60 g, broccoli 140 g, soja 8 g (base), teriyaki 25 g, edamame 40 g, sesam 3 g.
+const FIX: Prices = {
+  at: '2026-09-26',
+  shelf: Object.fromEntries(Object.entries({ kycklingfile: 100, ris: 20, broccoli: 30, teriyaki: 100, soja: 50, edamame: 60, sesam: 70, olja: 20 })
+    .map(([id, krKg]) => [id, { krKg, kr: 0, pack: '', name: id, brand: '', code: '' }])),
+  offers: [
+    { ingr: 'kycklingfile', chain: 'Willys', store: 'Test', name: 'Kycklingfilé', brand: '', pack: '', krKg: 80, ordKrKg: 110, label: '', member: false, until: '2026-09-27' },
+    { ingr: 'ris', chain: 'ICA', store: 'Gammal', name: 'Jasminris', brand: '', pack: '', krKg: 1, label: '', member: false, until: '2026-09-20' },
+  ],
+};
+const fixLive = live(FIX, '2026-09-26');
+eq('expired offer dropped', fixLive.map((o) => o.ingr), ['kycklingfile']);
+// Shelf: 17,5 + olja 8,19 g × 20 = 0,1638 + 1,2 + 4,2 + 0,4 + 2,5 + 2,4 + 0,21 = 28,5738. Kyckling on offer at 80: 14 instead of 17,5.
+near('box price shelf', boxCost(c, FIX, []).kr, 28.5738, 0.001);
+near('box price offer', boxCost(c, FIX, fixLive).kr, 25.0738, 0.001);
+eq('box deals', boxCost(c, FIX, fixLive).deals.map((o) => o.ingr), ['kycklingfile']);
+// Two boxes of kyckling: 350 g needed, one 500 g pack bought. At 80 kr/kg: buy 40, use 28. Olja has no packs: 10 g = 0,2 both.
+const rows = [{ key: 'kycklingfile', need: 350, packs: pickPacks(350, [500, 900, 1500]) }, { key: 'olja', need: 10, packs: [] }] as unknown as ShopRow[];
+eq('shop cost', shopCost(rows, FIX, fixLive), { buy: 40.2, use: 28.2 });
+near('vs shelf', deals(FIX, fixLive)[0].vsShelf ?? 0, 0.2, 0.001);
+near('vs ordinary', deals(FIX, fixLive)[0].vsOrd ?? 0, 1 - 80 / 110, 0.001);
+// 100 kr/kg ÷ 231 g protein per kg × 100 g = 43,29 kr per 100 g protein.
+near('kr per protein', krPerProtein('kycklingfile', 100), 43.29, 0.01);
+// Matching: pet food and flavoured tomatoes out, 18 % coconut milk in, "Färsk" prefix ignored.
+eq('match', [matches('notfars', 'Nötfärs Bitar i Gelé Kattmat Våt'), matches('notfars', 'Färsk nötfärs'), matches('krossade', 'Smaksatta krossade tomater'),
+  matches('kokosmjolk', 'Kokosmjölk 18%'), matches('kokosmjolk', 'Kokosmjölk 7%')], [false, true, false, true, false]);
+// The fetched file has the shape the app reads (every shelf price positive, every offer on a known ingredient).
+for (const [id, s] of Object.entries(PRICES.shelf)) if (!(id in INGR) || !(s.krKg > 0)) fails.push(`prices.json: dålig hyllrad ${id}`);
+for (const o of PRICES.offers) if (!(o.ingr in INGR) || !(o.krKg > 0) || !/^\d{4}-\d\d-\d\d$/.test(o.until)) fails.push(`prices.json: dåligt erbjudande ${o.store} ${o.name}`);
 
 // Drift vs grammat (only where the sibling repo exists, i.e. locally).
 const gpath = new URL('../../recept/nutrients.json', import.meta.url);
