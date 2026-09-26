@@ -145,6 +145,8 @@ export interface BoxCalc { box: Box; parts: Part[]; m: Macro; missing: Slot[] }
 const macroOf = (id: IngrId, grams: number): Macro => INGR[id].n.map((v) => (v * grams) / 100) as unknown as Macro;
 const addM = (a: Macro, b: Macro): Macro => a.map((v, i) => v + b[i]) as unknown as Macro;
 const ZERO: Macro = [0, 0, 0, 0];
+/** One part's kcal, protein, carbs, fat; null for items that don't count (spices, "efter smak"). */
+export const partMacro = (x: Part): Macro | null => (x.ingr && (x.u === 'g' || x.u === 'ml') ? macroOf(x.ingr, x.q) : null);
 const sumParts = (parts: Part[]): Macro =>
   parts.reduce<Macro>((acc, x) => (x.ingr && (x.u === 'g' || x.u === 'ml') ? addM(acc, macroOf(x.ingr, x.q)) : acc), ZERO);
 

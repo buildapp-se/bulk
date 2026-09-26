@@ -3,7 +3,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
-import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
+import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, partMacro, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
 import { basket, boxCost, deals, krPerProtein, live, matches, pantryCost, PRICES, type Prices } from '../src/lib/price.ts';
 import type { ShopRow } from '../src/lib/calc.ts';
@@ -46,6 +46,9 @@ const box: Box = { i: 0, kit: byId(KITS, 'teriyaki'), protein: byId(PROTEINS, 'k
 const c = calcBox(box, DEFAULT_PLAN, null);
 near('box kcal', c.m[0], 619.65);
 near('box protein', c.m[1], 55.30, 0.05);
+// The per-ingredient macros on Ingredienser (including the tray oil) add up to the box.
+for (let i = 0; i < 4; i++) near(`parts add up ${i}`, c.parts.reduce((s, x) => s + (partMacro(x)?.[i] ?? 0), 0), c.m[i], 0.001);
+near('kyckling part kcal', partMacro(c.parts[0])![0], 182, 0.001); // 175 g × 104 kcal/100 g
 
 // Goal solver, fixed point: kyckling (50 - 17,49) / 0,231 = 140,7 -> 140 g,
 // ris (700 - 362,8) / 3,54 = 95,3 -> 95 g; stable. Result: ca 50 g protein.

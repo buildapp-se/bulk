@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { AnimatePresence, motion } from 'motion/react';
 import { Fragment, useState } from 'react';
 import { t } from '@/i18n/sv';
-import { baseBatches, boxTypes, fmtG, fmtPacks, fmtQty, nf, type BaseBatch, type BoxCalc, type ShopRow } from '@/lib/calc';
+import { baseBatches, boxTypes, fmtG, fmtPacks, fmtQty, nf, partMacro, type BaseBatch, type BoxCalc, type Part, type ShopRow } from '@/lib/calc';
+import type { Macro } from '@/lib/data';
 import { BASES, byId } from '@/lib/data';
 import { useBatch } from '@/lib/useBatch';
 import { setCook, useCook } from '@/lib/store';
@@ -120,16 +121,30 @@ function BoxCard({ c, n }: { c: BoxCalc; n: number }) {
       </div>
       <div className="flex flex-col gap-1 border-t border-line-soft pt-3 text-sm">
         <div className="label mb-0.5">{t.ing.perBox}</div>
-        {k.base && <div className="flex justify-between gap-3"><span>{byId(BASES, k.base).name}</span><span className="font-mono text-[13px]">{t.base.portion}</span></div>}
+        {k.base && <PartRow name={byId(BASES, k.base).name} qty={t.base.portion} m={sum(c.parts.filter((x) => x.role === 'bas'))} />}
         {c.parts.filter((x) => x.role !== 'olja' && x.role !== 'bas').map((x, i) => (
-          <div key={i} className={`flex justify-between gap-3 ${x.role === 'topp' ? 'text-muted' : ''}`}>
-            <span>{x.role === 'topp' ? '+ ' : ''}{x.name}</span>
-            <span className="font-mono text-[13px]">{x.u === 'g' && x.cooked ? `${nf(x.q)} g rå` : fmtQty(x.q, x.u)}</span>
-          </div>
+          <PartRow key={i} name={`${x.role === 'topp' ? '+ ' : ''}${x.name}`} muted={x.role === 'topp'} qty={x.u === 'g' && x.cooked ? `${nf(x.q)} g rå` : fmtQty(x.q, x.u)} m={partMacro(x)} />
         ))}
+        {/* Oil for the trays, so the rows add up to the box. */}
+        {c.parts.some((x) => x.role === 'olja') && <PartRow name={t.ing.oil} qty={fmtG(c.parts.filter((x) => x.role === 'olja').reduce((s, x) => s + x.q, 0))} m={sum(c.parts.filter((x) => x.role === 'olja'))} />}
       </div>
       <div className="rounded-lg bg-bg px-3 py-2 text-[12px] text-muted">{t.cook.heat}: {k.heat} {k.tip}</div>
     </motion.article>
+  );
+}
+
+const sum = (parts: Part[]): Macro | null => {
+  const ms = parts.map(partMacro).filter((m): m is Macro => !!m);
+  return ms.length ? ms.reduce<Macro>((a, m) => [a[0] + m[0], a[1] + m[1], a[2] + m[2], a[3] + m[3]], [0, 0, 0, 0]) : null;
+};
+
+/** An ingredient in a box: amount, and under it kcal and the three macros for that amount. */
+function PartRow({ name, qty, m, muted }: { name: string; qty: string; m: Macro | null; muted?: boolean }) {
+  return (
+    <div className="flex flex-col">
+      <div className={`flex justify-between gap-3 ${muted ? 'text-muted' : ''}`}><span>{name}</span><span className="font-mono text-[13px]">{qty}</span></div>
+      {m && <div className="font-mono text-[11px] text-muted">{t.ing.partMacro(nf(m[0]), nf(m[1], 1), nf(m[2], 1), nf(m[3], 1))}</div>}
+    </div>
   );
 }
 

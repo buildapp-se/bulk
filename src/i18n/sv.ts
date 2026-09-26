@@ -44,6 +44,8 @@ export const sv = {
     spices: 'Kryddor och smått', copy: 'Kopiera lista', copied: 'Kopierad', source: 'Näringsvärden: Livsmedelsverkets livsmedelsdatabas (CC BY 4.0) och etiketter.',
     boxesOf: (n: number) => `${n} ${n === 1 ? 'låda' : 'lådor'}`,
     macros: ['Protein', 'Kolhydr.', 'Fett'],
+    oil: 'Olja till plåten',
+    partMacro: (kcal: string, p: string, c: string, f: string) => `${kcal} kcal · ${p} P · ${c} K · ${f} F`,
   },
   cook: {
     title: 'Tillagning',
