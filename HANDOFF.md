@@ -1,7 +1,15 @@
 ---
-reviewedAt: 2026-09-26
+reviewedAt: 2026-09-29
 ---
 # Handoff
+
+**2026-09-29, batch i fyra delar (alla pushade, check + typecheck + build gröna):**
+1. `1c584c6` Förbered allt tar med kitens knivjobb, ihopslagna per jobb med basernas (vitlök från asiatisk bas + grekisk = en rad, 3 st), underrad med vilka baser och kit, tiden följer raderna. Sett i playwright-cli på 390 och 1280, ingen horisontell scroll.
+2. `4c28e18` Bulgur och mini fraiche från LV (829, 2046); Philadelphia light, BBQ-sås, ostronsås, matvete och Milda (nu Flora Matlagning 4 %) från etiketter på willys.se, `src: 'etikett'` + `label`. Handräknade andelar per låda i check.
+3. `5e02039` Lidls nationella erbjudanden i prices.ts (i dag: paprikamix, lax, fläskfärs), syns i översikten men räknas aldrig som hel butik (check). Chipotlepasta som ersättare för chipotle i adobo, Flora 4 % matchas. Buggfix: Coops literpriser föll bort (enheten heter `liter`), Coop 56 -> 71 vanliga priser. Kvar utan pris: jordnötspulver. Sett i Prepp på 390 och 1600.
+4. `59f17dd` Stabila låd-id (`teriyaki:0`), `Plan.v` 2, migrering av v1-planer vid inläsning. Testat i check (flytt vid 10 lådor, 4:e kit, nytt protein, rensning, migrering) och i webbläsaren: en seedad v1-plan med pasta på låda 4 migrerades, +2 lådor flyttade pastan till låda 5.
+
+**Inte verifierat:** prices.yml-körningen på GitHub med Lidl-koden (körd lokalt, samma kod).
 
 **2026-09-26, makron per ingrediens:** lådkorten på 02 Ingredienser visar kcal, protein, kolhydrat och fett under varje ingrediens, basen som en rad och oljan till plåten som egen rad så att raderna summerar till lådan (`partMacro` i calc.ts, check: raderna summerar till lådans fyra värden, kyckling 175 g = 182 kcal). Sett i playwright-cli på 390 px, ingen horisontell scroll på 390 och 1280.
 
