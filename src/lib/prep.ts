@@ -6,7 +6,7 @@ import { BASES, byId, KITS, PROTEINS, type Base, type Kit, type KitItem, type Me
 export interface Job { key: string; label: string; w: number }
 
 // "Riven ingefära" and "Vitlöksklyftor" are the same job as the base's ingefära and vitlök.
-const noun = (name: string) => {
+export const noun = (name: string) => {
   const n = name.split(',')[0].toLowerCase().replace(/^(riven|färsk|hackad|rå) /, '').replace(/sklyft(a|or)$/, '');
   return n === 'gullök' ? 'gul lök' : n;
 };

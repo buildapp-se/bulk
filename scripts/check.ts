@@ -162,10 +162,20 @@ const hal = calcBox(resolveBoxes(veg)[0], veg, { kcal: 740, protein: 41, dailyKc
 eq('halloumi: goal hit, carbs traded for fat', [Math.abs(hal.m[1] - 41) < 2, Math.abs(hal.m[0] - 740) < 15, hal.m[3] > 45, hal.m[2] < 30], [true, true, true, true]);
 
 // Prep list, default plan (no goal): kyckling in the oven 4 × 175 g = 700 g, then carbs/veg needing knife work,
-// then the asia base for 3 teriyaki boxes: 3 × ½ tsk ginger = 1,5 tsk, 3 × ½ clove = 1,5 st.
+// then knife jobs, one row each. Asia base for 3 teriyaki boxes: 3 × ½ tsk ginger = 1,5 tsk, 3 × ½ clove; grekisk ×3 adds
+// 3 × ½ clove -> vitlök 3 st. Teriyaki salladslök 3 × 1, grekisk gurka 3 × 50 g, tex-mex ×2 lime 2 × ¼.
 const prep = sch.steps.find((s) => s.id === 'prep')!;
 eq('prep rows', prep.rows?.map((r) => `${r.name}: ${r.right}`),
-  ['Kyckling: 700 g', 'Potatisklyftor: 675 g', 'Broccoli: 420 g', 'Haricots verts: 330 g', 'Paprikamix: 280 g', 'Riven ingefära (asiatisk bas): 1,5 tsk', 'Vitlöksklyfta (asiatisk bas): 1,5 st']);
+  ['Kyckling: 700 g', 'Potatisklyftor: 675 g', 'Broccoli: 420 g', 'Haricots verts: 330 g', 'Paprikamix: 280 g', 'Ingefära: 1,5 tsk', 'Vitlök: 3 st',
+    'Salladslök: 3 st', 'Gurka: 150 g', 'Rödlök: efter smak', 'Lime: 0,5 st', 'Koriander: efter smak']);
+eq('shared knife job names who', prep.rows?.find((r) => r.name === 'Vitlök')?.sub, 'asiatisk bas, Grekisk citron');
+// Pad krapow ×8: base ½ tsk ingefära = 4 tsk (shown 1,5 msk), ½ clove + own 1½ = 16 st vitlök, 8 chili.
+const kp8: Plan = { ...DEFAULT_PLAN, kits: ['krapow'] };
+eq('krapow knife jobs', schedule(resolveBoxes(kp8).map((b) => calcBox(b, kp8, null)), kp8).steps.find((s) => s.id === 'prep')?.rows?.slice(-4).map((r) => `${r.name}: ${r.right}`),
+  ['Ingefära: 1,5 msk', 'Vitlök: 16 st', 'Chili: 8 st', 'Basilika: efter smak']);
+// Grekisk rödlök efter smak + buffalo 4 × ½ msk hackad rödlök.
+const rb: Plan = { ...DEFAULT_PLAN, boxes: 8, kits: ['grekisk', 'filips-buffalo'] };
+eq('knife amount + efter smak', schedule(resolveBoxes(rb).map((b) => calcBox(b, rb, null)), rb).steps.find((s) => s.id === 'prep')?.rows?.find((r) => r.name === 'Rödlök')?.right, '2 msk + efter smak');
 eq('prep time scales, capped', prep.dur, 30);
 eq('tomato base onion for 6 boxes', schedule(mixedCalcs, mixed).steps.find((s) => s.id === 'prep')?.rows?.find((r) => r.name.startsWith('Gul lök'))?.right, '180 g');
 // Portions: one row per box type, cooked weights (kyckling 175 × 0,75 = 131 -> 130 g, ris 60 × 2,8 = 168 -> 170 g).

@@ -1,8 +1,9 @@
 // Pure calculation engine: plan in, boxes/nutrition/shopping/schedule out. No React, no DOM.
 import {
   BASES, byId, CARBS, DEFAULT_METHOD, INGR, isOven, KITS, OIL_G_PER_RAW_G, PROTEINS, TRAY_CAPACITY_G, VEGS,
-  type Base, type Carb, type IngrId, type Kit, type Macro, type MethodId, type Protein, type Unit, type Veg,
+  type Base, type Carb, type IngrId, type Kit, type KitItem, type Macro, type MethodId, type Protein, type Unit, type Veg,
 } from './data.ts';
+import { noun } from './prep.ts';
 
 // ---------- Plan (persisted state) ----------
 
@@ -269,6 +270,33 @@ export const isLong = (s: Step) => (s.track === 'sousvide' || s.track === 'form'
 export interface StepLine { name: string; right: string; sub?: string; note?: string; hue?: number }
 export interface Schedule { steps: Step[]; trays: number; total: number; warnings: string[] }
 
+/**
+ * Knife work from the bases and kits, one row per job, as in the prep tree: the base's vitlök and a kit's vitlöksklyftor
+ * are chopped once. Amounts add up per unit; "efter smak" rides along.
+ */
+function knifeRows(batches: BaseBatch[], kits: { kit: Kit; n: number }[]): StepLine[] {
+  const jobs = new Map<string, { q: Map<Unit, number>; how: Set<string>; who: Set<string> }>();
+  const add = (x: KitItem, n: number, who: string) => {
+    if (!x.prep) return;
+    const j = jobs.get(noun(x.name)) ?? { q: new Map(), how: new Set(), who: new Set() };
+    j.q.set(x.u, (j.q.get(x.u) ?? 0) + x.q * n);
+    j.how.add(x.prep);
+    j.who.add(who);
+    jobs.set(noun(x.name), j);
+  };
+  for (const { base, n } of batches) base.items.forEach((x) => add(x, n, base.name.toLowerCase()));
+  for (const { kit, n } of kits) [...kit.mix, ...kit.top].forEach((x) => add(x, n, kit.name));
+  return [...jobs].map(([key, j]) => {
+    const amt = [...j.q].filter(([u]) => u).map(([u, q]) => fmtQty(q, u));
+    return {
+      name: key[0].toUpperCase() + key.slice(1),
+      right: amt.length ? amt.join(' + ') + (j.q.has('') ? ' + efter smak' : '') : 'efter smak',
+      sub: [...j.who].join(', '),
+      note: [...j.how].map((h, i) => (i ? h[0].toLowerCase() + h.slice(1) : h)).join(', '),
+    };
+  });
+}
+
 export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   const raw = (pred: (c: BoxCalc, x: Part) => boolean) => calcs.reduce((s, c) => s + c.parts.filter((x) => pred(c, x)).reduce((a, x) => a + x.q, 0), 0);
   const used = <T extends { id: string }>(get: (b: Box) => T | undefined) => [...new Map(calcs.map((c) => get(c.box)).filter((x): x is T => !!x).map((x) => [x.id, x])).values()];
@@ -303,8 +331,7 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
       ({ name: cb.name, right: fmtG(raw((c, x) => x.role === 'carb' && c.box.carb?.id === cb.id)), note: cb.prep })),
     ...ovenVegs.filter((v) => v.prep).map((v) =>
       ({ name: v.name, right: fmtG(raw((c, x) => x.role === 'veg' && c.box.veg?.id === v.id && roasted(c.box, 'veg', p.vegMode))), note: v.prep })),
-    ...batches.flatMap(({ base, n }) => base.items.filter((x) => x.prep).map((x) =>
-      ({ name: `${x.name} (${base.name.toLowerCase()})`, right: fmtQty(x.q * n, x.u), note: x.prep }))),
+    ...knifeRows(batches, used((b) => b.kit).map((kit) => ({ kit, n: calcs.filter((c) => c.box.kit?.id === kit.id).length }))),
   ];
   const prepDur = clamp(prepRows.length * 5, 10, 30);
 
