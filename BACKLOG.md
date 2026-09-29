@@ -1,7 +1,7 @@
 # Backlog
 
 ## P1
-- Priser, nästa steg: Lidl (nationella erbjudanden i veckosidornas `data-grid-data`, sid-id byts varje vecka; hyllpriser saknas oftast). ICA:s vanliga priser om det finns en öppen väg utan bot-spärr. Pris saknas för jordnötspulver, chipotle i adobo och Milda.
+- Priser, nästa steg: ICA:s vanliga priser om det finns en öppen väg utan bot-spärr. Jordnötspulver saknar pris (finns inte hos Willys eller Coop, kanske hälsokost eller nätbutik). Lidl-varor som bara har styckpris (gurka, avokado) räknas inte, de saknar kg-pris.
 - Testa på riktig telefon (iPhone + Android): installera som PWA, aviseringar, larmljud och vibration när en timer är klar (även med skärmen låst), haptik (iOS switch-tricket), Wake Lock.
 
 ## P2

@@ -1,5 +1,5 @@
 // Weekly price fetch: `node scripts/prices.ts`. Writes src/lib/prices.json, which the app imports at build time.
-// Ordinary price per ingredient and chain (Willys, ICA, Coop), plus this week's offers per Umeå store. No worker:
+// Ordinary price per ingredient and chain (Willys, Coop; none for ICA and Lidl), plus this week's offers per Umeå store and Lidl's national ones. No worker:
 // .github/workflows/prices.yml runs it and redeploys.
 // Fetched pages are data only: ICA's embedded object is parsed as JSON after stripping two JS constructs, never evaluated.
 import { writeFileSync } from 'node:fs';
@@ -61,12 +61,12 @@ const coop = async (q: string): Promise<Hit[]> => {
   });
   if (!r.ok) return [];
   const j = await r.json() as any;
-  return (j.results?.items ?? []).filter((x: any) => /^(kg|l)$/i.test(x.comparativePriceUnit?.unit ?? ''))
+  return (j.results?.items ?? []).filter((x: any) => /^(kg|l|liter)$/i.test(x.comparativePriceUnit?.unit ?? '')) // Coop says "liter"
     .map((x: any) => ({ krKg: x.comparativePriceData?.b2cPrice, kr: x.salesPriceData?.b2cPrice, pack: x.packageSizeInformation ?? '', name: x.name ?? '', brand: x.manufacturerName ?? '', code: String(x.id ?? '') }));
 };
-const FETCH: Record<Chain, (q: string) => Promise<Hit[]>> = { Willys: willys, ICA: async () => [], Coop: coop };
+const FETCH: Record<Chain, (q: string) => Promise<Hit[]>> = { Willys: willys, ICA: async () => [], Coop: coop, Lidl: async () => [] };
 
-const shelf: Record<Chain, Partial<Record<IngrId, Shelf>>> = { Willys: {}, ICA: {}, Coop: {} };
+const shelf: Record<Chain, Partial<Record<IngrId, Shelf>>> = { Willys: {}, ICA: {}, Coop: {}, Lidl: {} };
 for (const id of ids) {
   await Promise.all(CHAINS.map(async (chain) => {
     const hits = await FETCH[chain](BUY[id][0]).catch((e) => { console.log(`${chain} ${id}: ${e.message}`); return []; });
@@ -138,8 +138,36 @@ for (const [store, storeName] of coopKey ? COOP : []) {
   }
 }
 
+// Lidl: national offers, no ordinary prices (so Lidl is like ICA: in the overview, never a whole basket). The week's pages
+// (/c/<slug>/a<id>) change id every week, so they are read off lidl.se's front page. Each product sits in a `data-grid-data`
+// attribute as JSON. Only offers that have started count; Thursday's run picks up the Thursday offers.
+const LIDL = 'Lidl';
+const lidlHome: string = await get('https://www.lidl.se/', false).catch((e) => { console.log(`Lidl: ${e.message}`); return ''; });
+const lidlPages = [...new Set([...lidlHome.matchAll(/href="(\/c\/[a-z0-9-]+\/a\d+)"/g)].map((m) => m[1]))];
+const unesc = (s: string) => s.replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+const now = Date.now() / 1000;
+for (const path of lidlPages) {
+  const h: string = await get(`https://www.lidl.se${path}`, false).catch(() => '');
+  for (const [, attr] of h.matchAll(/data-grid-data="([^"]*)"/g)) {
+    const x = JSON.parse(unesc(attr));
+    if (!['Food', 'F+V'].includes(x.keyfacts?.analyticsCategory) || !(x.storeStartDate <= now)) continue; // F+V = frukt och grönt
+    // Plain price, or a Lidl Plus price when that is all there is.
+    const plus = !x.price?.price && x.lidlPlus?.[0]?.price;
+    const p = plus || x.price;
+    if (!p?.price) continue;
+    const base = String(p.basePrice?.text ?? '');
+    // "/kg (Ca 1,2 kg)" is a kg price with a weight hint, "109,83 kr/kg" a comparison price, else price over the pack weight.
+    const krKg = /^\/(kg|l)\b/.test(base) ? p.price : ok(perKg(base)) ? perKg(base) : p.price / (grams(p.packaging?.text ?? '') / 1000);
+    const old = p.oldPrice ?? p.discount?.deletedPrice;
+    push({ chain: 'Lidl', store: LIDL, name: String(x.title ?? '').trim(), brand: String(x.brand?.name ?? ''), pack: p.packaging?.text ?? '', krKg: r2(krKg),
+      ordKrKg: ok(old) && old > p.price ? r2(krKg * old / p.price) : undefined, label: `${String(p.price).replace('.', ',')} kr${base.startsWith('/') ? base.split(' ')[0] : ''}`,
+      member: !!plus, until: new Date(x.storeEndDate * 1000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' }) });
+  }
+}
+if (lidlHome && !lidlPages.length) console.log('Lidl: inga veckosidor länkade från lidl.se');
+
 const stores: Store[] = [...WILLYS.map(([, name]) => ({ chain: 'Willys' as const, name })), ...ICA.map(([, name]) => ({ chain: 'ICA' as const, name })),
-  ...(coopKey ? COOP : []).map(([, name]) => ({ chain: 'Coop' as const, name }))];
+  ...(coopKey ? COOP : []).map(([, name]) => ({ chain: 'Coop' as const, name })), ...(lidlPages.length ? [{ chain: 'Lidl' as const, name: LIDL }] : [])];
 const out: Prices = { at: new Date().toISOString().slice(0, 10), stores, shelf, offers };
 writeFileSync(new URL('../src/lib/prices.json', import.meta.url), JSON.stringify(out, null, 1) + '\n');
 console.log(`${CHAINS.map((c) => `${c} ${Object.keys(shelf[c]).length}`).join(', ')} av ${ids.length} hyllpriser, ${offers.length} erbjudanden på ${new Set(offers.map((o) => o.ingr)).size} ingredienser`);

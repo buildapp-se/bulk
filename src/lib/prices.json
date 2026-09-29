@@ -1,5 +1,5 @@
 {
- "at": "2026-09-28",
+ "at": "2026-09-29",
  "stores": [
   {
    "chain": "Willys",
@@ -64,6 +64,10 @@
   {
    "chain": "Coop",
    "name": "Coop City Umeå"
+  },
+  {
+   "chain": "Lidl",
+   "name": "Lidl"
   }
  ],
  "shelf": {
@@ -628,6 +632,14 @@
     "brand": "Wang",
     "code": "101262307_ST"
    },
+   "chipotle": {
+    "krKg": 188.3,
+    "kr": 18.83,
+    "pack": "100g",
+    "name": "Chipotle Paste Hot",
+    "brand": "Santa Maria",
+    "code": "101412914_ST"
+   },
    "sriracha": {
     "krKg": 80.28,
     "kr": 34.92,
@@ -667,6 +679,14 @@
     "name": "Light 11%",
     "brand": "Philadelphia",
     "code": "100173900_ST"
+   },
+   "mildamat": {
+    "krKg": 37,
+    "kr": 18.5,
+    "pack": "5dl",
+    "name": "Mat Gräddalternativ Låglaktos 4%",
+    "brand": "Flora",
+    "code": "101456813_ST"
    },
    "lattmjolk": {
     "krKg": 10.6,
@@ -903,6 +923,22 @@
     "brand": "Änglamark",
     "code": "7340011315858"
    },
+   "olja": {
+    "krKg": 24.49,
+    "kr": 24.49,
+    "pack": "1 l",
+    "name": "Rapsolja",
+    "brand": "Xtra",
+    "code": "7340011340188"
+   },
+   "olivolja": {
+    "krKg": 97.11,
+    "kr": 72.83,
+    "pack": "750 ml",
+    "name": "Olivolja Virgin Classico",
+    "brand": "Coop",
+    "code": "7340191156883"
+   },
    "svartabonor": {
     "krKg": 70.88,
     "kr": 28.35,
@@ -967,6 +1003,30 @@
     "brand": "TAT",
     "code": "8690635030873"
    },
+   "kokosmjolk": {
+    "krKg": 61.4,
+    "kr": 24.56,
+    "pack": "400ml",
+    "name": "Kokosmjölk",
+    "brand": "Aroy-D",
+    "code": "16229001711"
+   },
+   "grädde": {
+    "krKg": 53.28,
+    "kr": 13.32,
+    "pack": "2.5 dl",
+    "name": "Matlagningsgrädde 15%",
+    "brand": "Kelda®",
+    "code": "7310865066732"
+   },
+   "graddfil": {
+    "krKg": 37.78,
+    "kr": 18.89,
+    "pack": "5 dl",
+    "name": "Gräddfil 12%",
+    "brand": "Coop",
+    "code": "7300156493965"
+   },
    "rivenost": {
     "krKg": 70.95,
     "kr": 70.95,
@@ -1015,6 +1075,22 @@
     "brand": "Änglamark",
     "code": "7340191163089"
    },
+   "soja": {
+    "krKg": 227.64,
+    "kr": 56.91,
+    "pack": "250 ml",
+    "name": "Shoyu Japansk Soja",
+    "brand": "Renée Voltaire",
+    "code": "7340130502283"
+   },
+   "ostronsas": {
+    "krKg": 78.78,
+    "kr": 47.27,
+    "pack": "600ML",
+    "name": "Ostronsås",
+    "brand": "Mae Krua",
+    "code": "8850038400080"
+   },
    "pesto": {
     "krKg": 155.26,
     "kr": 29.5,
@@ -1046,6 +1122,22 @@
     "name": "Lingonsylt Refill",
     "brand": "Coop",
     "code": "7340191165861"
+   },
+   "worcester": {
+    "krKg": 170.07,
+    "kr": 25.51,
+    "pack": "150 ml",
+    "name": "Sås Worcestershire",
+    "brand": "Heinz",
+    "code": "5000111041065"
+   },
+   "apelsin": {
+    "krKg": 21.72,
+    "kr": 21.72,
+    "pack": "1 liter",
+    "name": "Apelsinjuice",
+    "brand": "Coop",
+    "code": "7340191150843"
    },
    "champinjoner": {
     "krKg": 59.9,
@@ -1087,6 +1179,14 @@
     "brand": "Arla Köket®",
     "code": "4016241051103"
    },
+   "lattcreme": {
+    "krKg": 48.1,
+    "kr": 9.62,
+    "pack": "2 dl",
+    "name": "Crème Fraiche Lätt 13%",
+    "brand": "Coop",
+    "code": "7300156486462"
+   },
    "tahini": {
     "krKg": 153.78,
     "kr": 55.36,
@@ -1102,6 +1202,22 @@
     "name": "Jordnötter Rostade & saltade",
     "brand": "Xtra",
     "code": "7340191130272"
+   },
+   "gochujang": {
+    "krKg": 162.6,
+    "kr": 40.65,
+    "pack": "250ml",
+    "name": "Gochujang Mayo",
+    "brand": "UMA",
+    "code": "7350142550011"
+   },
+   "chipotle": {
+    "krKg": 205,
+    "kr": 20.5,
+    "pack": "100 g",
+    "name": "Kryddpasta Chipotle",
+    "brand": "Santa Maria",
+    "code": "7311312007384"
    },
    "sriracha": {
     "krKg": 80.26,
@@ -1143,6 +1259,30 @@
     "brand": "Philadelphia",
     "code": "5700419083360"
    },
+   "minifraiche": {
+    "krKg": 58.25,
+    "kr": 11.65,
+    "pack": "2 dl",
+    "name": "Mini Fraiche 5%",
+    "brand": "Arla Köket®",
+    "code": "7310865014702"
+   },
+   "mildamat": {
+    "krKg": 39.66,
+    "kr": 19.83,
+    "pack": "500ml",
+    "name": "Mat Flora",
+    "brand": "Flora by Milda",
+    "code": "8719200248144"
+   },
+   "lattmjolk": {
+    "krKg": 10.51,
+    "kr": 15.77,
+    "pack": "1.5 L",
+    "name": "Lättmjölk",
+    "brand": "Coop",
+    "code": "7300156595188"
+   },
    "ajvar": {
     "krKg": 54.8,
     "kr": 37.81,
@@ -1150,8 +1290,17 @@
     "name": "Ajvar Mild",
     "brand": "Podravka",
     "code": "3850104051012"
+   },
+   "kebabsas": {
+    "krKg": 93.07,
+    "kr": 31.18,
+    "pack": "335ml",
+    "name": "Kebabsås Het",
+    "brand": "Felix",
+    "code": "7350126089308"
    }
-  }
+  },
+  "Lidl": {}
  },
  "offers": [
   {
@@ -1194,6 +1343,19 @@
    "until": "2026-10-04"
   },
   {
+   "ingr": "paprika",
+   "chain": "Willys",
+   "store": "Willys Ersboda",
+   "name": "Paprikamix 400g",
+   "brand": "NEDERLÄNDERNA • SPANIEN",
+   "pack": "400g",
+   "krKg": 49.75,
+   "ordKrKg": 69.75,
+   "label": "19,90/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
    "ingr": "kokosmjolk",
    "chain": "Willys",
    "store": "Willys Ersboda",
@@ -1285,6 +1447,19 @@
    "until": "2026-10-04"
   },
   {
+   "ingr": "paprika",
+   "chain": "Willys",
+   "store": "Willys Umeå Syd",
+   "name": "Paprikamix 400g",
+   "brand": "NEDERLÄNDERNA • SPANIEN",
+   "pack": "400g",
+   "krKg": 49.75,
+   "ordKrKg": 69.75,
+   "label": "19,90/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
    "ingr": "kokosmjolk",
    "chain": "Willys",
    "store": "Willys Umeå Syd",
@@ -1376,6 +1551,19 @@
    "until": "2026-10-04"
   },
   {
+   "ingr": "paprika",
+   "chain": "Willys",
+   "store": "Willys Klockarbäcken",
+   "name": "Paprikamix 400g",
+   "brand": "NEDERLÄNDERNA • SPANIEN",
+   "pack": "400g",
+   "krKg": 49.75,
+   "ordKrKg": 69.75,
+   "label": "19,90/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
    "ingr": "kokosmjolk",
    "chain": "Willys",
    "store": "Willys Klockarbäcken",
@@ -1426,6 +1614,19 @@
    "label": "17,90/st",
    "member": false,
    "until": "2026-11-01"
+  },
+  {
+   "ingr": "paprika",
+   "chain": "Willys",
+   "store": "Willys Hemma Rådhusesplanaden",
+   "name": "Paprikamix 400g",
+   "brand": "NEDERLÄNDERNA • SPANIEN",
+   "pack": "400g",
+   "krKg": 49.75,
+   "ordKrKg": 74.75,
+   "label": "19,90/st",
+   "member": false,
+   "until": "2026-10-04"
   },
   {
    "ingr": "champinjoner",
@@ -1474,7 +1675,7 @@
    "brand": "ICA",
    "pack": "800 g",
    "krKg": 24.38,
-   "ordKrKg": 31.24,
+   "ordKrKg": 31.87,
    "label": "2 för 39 kr",
    "member": false,
    "until": "2026-10-04"
@@ -1712,6 +1913,18 @@
    "until": "2026-10-04"
   },
   {
+   "ingr": "ajvar",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Ajvar",
+   "brand": "Podravka",
+   "pack": "690 g.",
+   "krKg": 43.48,
+   "label": "30 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
    "ingr": "blandfars",
    "chain": "Coop",
    "store": "Stora Coop Avion",
@@ -1732,18 +1945,6 @@
    "pack": "450 g.",
    "krKg": 104.22,
    "label": "46.9 kr",
-   "member": false,
-   "until": "2026-10-04"
-  },
-  {
-   "ingr": "ajvar",
-   "chain": "Coop",
-   "store": "Stora Coop Avion",
-   "name": "Ajvar",
-   "brand": "Podravka",
-   "pack": "690 g.",
-   "krKg": 43.48,
-   "label": "30 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -1775,18 +1976,6 @@
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
-   "name": "Färsk kycklingfilé",
-   "brand": "Familjefågel",
-   "pack": "450 g.",
-   "krKg": 104.22,
-   "label": "46.9 kr",
-   "member": false,
-   "until": "2026-10-04"
-  },
-  {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Ersboda",
    "name": "Majskycklingfilé ",
    "brand": "Guldfågeln",
    "pack": "1000 g.",
@@ -1804,6 +1993,18 @@
    "pack": "690 g.",
    "krKg": 43.48,
    "label": "30 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Färsk kycklingfilé",
+   "brand": "Familjefågel",
+   "pack": "450 g.",
+   "krKg": 104.22,
+   "label": "46.9 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -1832,14 +2033,14 @@
    "until": "2026-10-04"
   },
   {
-   "ingr": "kycklingfile",
+   "ingr": "ajvar",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
-   "name": "Majskycklingfilé ",
-   "brand": "Guldfågeln",
-   "pack": "1000 g.",
-   "krKg": 139,
-   "label": "139 kr",
+   "name": "Ajvar",
+   "brand": "Podravka",
+   "pack": "690 g.",
+   "krKg": 43.48,
+   "label": "30 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -1856,14 +2057,62 @@
    "until": "2026-10-04"
   },
   {
-   "ingr": "ajvar",
+   "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
-   "name": "Ajvar",
-   "brand": "Podravka",
-   "pack": "690 g.",
-   "krKg": 43.48,
-   "label": "30 kr",
+   "name": "Majskycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "1000 g.",
+   "krKg": 139,
+   "label": "139 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "paprika",
+   "chain": "Coop",
+   "store": "Coop City Umeå",
+   "name": "Paprikamix 3-pack",
+   "brand": "Coop",
+   "pack": "400 g.",
+   "krKg": 55,
+   "label": "22 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "paprika",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Paprikamix",
+   "brand": "",
+   "pack": "1 kg",
+   "krKg": 34.9,
+   "label": "34,9 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "lax",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Laxfilé hel sida",
+   "brand": "",
+   "pack": "",
+   "krKg": 129,
+   "label": "129 kr/kg",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "flaskfars",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Fläskfärs 20%",
+   "brand": "BUTCHER´S",
+   "pack": "",
+   "krKg": 54.9,
+   "label": "54,9 kr/kg",
    "member": false,
    "until": "2026-10-04"
   }

@@ -243,7 +243,7 @@ const FIX: Prices = {
   shelf: {
     Willys: shelfOf({ kycklingfile: 100, ris: 20, broccoli: 30, teriyaki: 100, soja: 50, edamame: 60, sesam: 70, olja: 20 }),
     Coop: shelfOf({ kycklingfile: 90, ris: 25, broccoli: 30, teriyaki: 100, soja: 50, edamame: 60, sesam: 70, olja: 20, gochujang: 200 }),
-    ICA: {},
+    ICA: {}, Lidl: {},
   },
   offers: [offer('kycklingfile', 'Willys', 'A', 80, '2026-09-27', 110), offer('broccoli', 'ICA', 'I', 5, '2026-09-27'), offer('ris', 'Willys', 'B', 1, '2026-09-20')],
 };
@@ -257,6 +257,10 @@ eq('box at one store', one.store.name, 'A');
 near('box price one store', one.kr, 25.0738, 0.001);
 eq('box deals', one.deals.map((o) => o.ingr), ['kycklingfile']);
 near('box price no offers', boxCost(c, FIX, [])!.kr, 27.1238, 0.001);
+// Lidl has offers but no ordinary prices, like ICA: a 10 kr/kg kyckling at Lidl shows in the overview but the box stays at A.
+const withLidl: Prices = { ...FIX, stores: [...FIX.stores, { chain: 'Lidl', name: 'L' }], offers: [...FIX.offers, { ...offer('kycklingfile', 'Willys', 'L', 10, '2026-09-27'), chain: 'Lidl' }] };
+const lidlLive = live(withLidl, '2026-09-26');
+eq('lidl never a whole basket', [boxCost(c, withLidl, lidlLive)!.store.name, deals(withLidl, lidlLive).find((d) => d.id === 'kycklingfile')!.best.store], ['A', 'L']);
 // A store missing an ingredient loses to one that has everything: gochujang only at Coop. 100 g × 200 + 1 kg × 90 = 110.
 const g = basket([{ ingr: 'gochujang', g: 100 }, { ingr: 'kycklingfile', g: 1000 }], FIX, fixLive)!;
 eq('complete store wins', [g.store.name, g.elsewhere], ['C', []]);

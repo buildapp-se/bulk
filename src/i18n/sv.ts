@@ -79,7 +79,7 @@ export const sv = {
   price: {
     kr: (v: string) => `${v} kr`, perKg: (v: string) => `${v} kr/kg`, box: (v: string) => `${v} kr/låda`,
     week: 'Veckans priser i Umeå',
-    weekSub: (at: string) => `Vanligt pris = billigaste matchande vara hos Willys och Coop (coop.se:s webbutik). Erbjudanden från Willys (4 butiker), ICA (8) och Coop (4) i Umeå. ICA:s vanliga priser går inte att hämta, så hela rätter räknas på Willys eller Coop. Hämtat ${at}.`,
+    weekSub: (at: string) => `Vanligt pris = billigaste matchande vara hos Willys och Coop (coop.se:s webbutik). Erbjudanden från Willys (4 butiker), ICA (8) och Coop (4) i Umeå plus Lidls nationella. ICA och Lidl har inga vanliga priser att hämta, så hela rätter räknas på Willys eller Coop. Hämtat ${at}.`,
     groups: { protein: 'Protein', carb: 'Kolhydrat', veg: 'Grönt', base: 'Baser', kit: 'Smakkit' } as Record<string, string>,
     cheapestProtein: 'Billigast protein', perProtein: (v: string) => `${v} kr per 100 g protein`,
     vsShelf: (p: number) => `−${p} % mot vanligt`, vsOrd: (p: number) => `−${p} % rea`, member: 'medlemspris',

@@ -5,7 +5,7 @@ import { BUY, INGR, type IngrId } from './data.ts';
 import type { BoxCalc, ShopRow } from './calc.ts';
 import raw from './prices.json' with { type: 'json' };
 
-export type Chain = 'Willys' | 'ICA' | 'Coop';
+export type Chain = 'Willys' | 'ICA' | 'Coop' | 'Lidl';
 /** A chain's ordinary price for an ingredient: its cheapest matching product per kg or litre. */
 export interface Shelf { krKg: number; kr: number; pack: string; name: string; brand: string; code: string }
 export interface Offer {
@@ -15,7 +15,7 @@ export interface Offer {
 export interface Store { chain: Chain; name: string }
 export interface Prices { at: string; stores: Store[]; shelf: Record<Chain, Partial<Record<IngrId, Shelf>>>; offers: Offer[] }
 export const PRICES = raw as Prices;
-export const CHAINS: readonly Chain[] = ['Willys', 'ICA', 'Coop'];
+export const CHAINS: readonly Chain[] = ['Willys', 'ICA', 'Coop', 'Lidl'];
 
 // Product names in lower case without accents or a leading "färsk/fryst/svensk", so "Färsk nötfärs" is "notfars".
 export const norm = (s: string) =>
@@ -74,7 +74,7 @@ export function basket(need: readonly Need[], P: Prices, offers: readonly Offer[
   const known = need.filter((x) => regular(P, x.ingr));
   const missing = need.filter((x) => !regular(P, x.ingr)).map((x) => INGR[x.ingr].name);
   let best: (Basket & { gaps: number }) | null = null;
-  // A chain without ordinary prices (ICA, see scripts/prices.ts) can't be priced as a whole basket.
+  // A chain without ordinary prices (ICA, Lidl, see scripts/prices.ts) can't be priced as a whole basket.
   for (const store of P.stores.filter((s) => Object.keys(P.shelf[s.chain] ?? {}).length)) {
     let kr = 0;
     const deals: Offer[] = [], elsewhere: string[] = [];
