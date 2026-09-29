@@ -1,12 +1,11 @@
 'use client';
 import { DEFAULT_METHOD, PROTEINS, byId, type MethodId } from './data.ts';
-import { resolveBoxes, type Goal, type Plan, type Slot } from './calc.ts';
+import { pruneOverrides, resolveBoxes, type Goal, type Plan, type Slot } from './calc.ts';
 import { FRESH_COOK, setCook, setPlan } from './store.ts';
 import { haptic } from './haptics.ts';
 
-// ponytail: structural changes (boxes/kits/proteins) drop per-box overrides, since indexes shift.
-// Upgrade path: key overrides by stable box ids if people complain about losing edits.
-const structural = (f: (p: Plan) => Partial<Plan>) => { haptic(); setPlan((p) => ({ ...p, ...f(p), overrides: {} })); };
+// Structural changes (boxes/kits/proteins) keep per-box edits: overrides are keyed by stable box ids. Only boxes that are gone lose theirs.
+const structural = (f: (p: Plan) => Partial<Plan>) => { haptic(); setPlan((p) => { const n = { ...p, ...f(p) }; return { ...n, overrides: pruneOverrides(n) }; }); };
 
 export const setBoxes = (n: number) => structural(() => ({ boxes: Math.min(40, Math.max(1, n)) }));
 
@@ -59,23 +58,23 @@ export const setKitCarb = (kit: string, carb: string) => { haptic(); setPlan((p)
 export const setVegMode = (vegMode: Plan['vegMode']) => { haptic(); setPlan((p) => ({ ...p, vegMode })); };
 export const setGoal = (g: Partial<Goal>) => setPlan((p) => ({ ...p, goal: { ...p.goal, ...g } }));
 
-export const setSlot = (i: number, slot: Slot, id: string | null) => {
+export const setSlot = (box: string, slot: Slot, id: string | null) => {
   haptic();
-  setPlan((p) => ({ ...p, overrides: { ...p.overrides, [i]: { ...p.overrides[i], [slot]: id } } }));
+  setPlan((p) => ({ ...p, overrides: { ...p.overrides, [box]: { ...p.overrides[box], [slot]: id } } }));
 };
 
-export const resetBox = (i: number) => {
+export const resetBox = (box: string) => {
   haptic();
-  setPlan((p) => { const o = { ...p.overrides }; delete o[i]; return { ...p, overrides: o }; });
+  setPlan((p) => { const o = { ...p.overrides }; delete o[box]; return { ...p, overrides: o }; });
 };
 
-/** Swap the full contents of two boxes. */
+/** Swap the full contents of two boxes, by position. */
 export const swapBoxes = (a: number, b: number) => {
   if (a === b) return;
   haptic(14);
   setPlan((p) => {
     const boxes = resolveBoxes(p);
     const slots = (i: number) => ({ protein: boxes[i].protein?.id ?? null, kit: boxes[i].kit?.id ?? null, carb: boxes[i].carb?.id ?? null, veg: boxes[i].veg?.id ?? null });
-    return { ...p, overrides: { ...p.overrides, [a]: slots(b), [b]: slots(a) } };
+    return { ...p, overrides: { ...p.overrides, [boxes[a].id]: slots(b), [boxes[b].id]: slots(a) } };
   });
 };

@@ -3,7 +3,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
-import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, partMacro, pickPacks, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
+import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, migratePlan, partMacro, pickPacks, pruneOverrides, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
 import { basket, boxCost, deals, krPerProtein, live, matches, pantryCost, PRICES, type Prices } from '../src/lib/price.ts';
 import type { ShopRow } from '../src/lib/calc.ts';
@@ -35,14 +35,34 @@ const frysSch = schedule(resolveBoxes(frys).map((b) => calcBox(b, frys, null)), 
 eq('frysta: aubergine still roasted', frysSch.steps.find((s) => s.id === 'veg')?.details, 'Aubergine på egen plåt.');
 eq('frysta: broccoli frozen', calcBox(resolveBoxes(frys)[0], frys, null).parts.find((x) => x.role === 'veg')?.name, 'Broccoli (fryst)');
 eq('kit veg', resolveBoxes({ ...DEFAULT_PLAN, kitVeg: { teriyaki: 'haricots' } })[0].veg?.id, 'haricots');
-const cleared: Plan = { ...DEFAULT_PLAN, overrides: { 2: { protein: null } } };
+const cleared: Plan = { ...DEFAULT_PLAN, overrides: { 'teriyaki:2': { protein: null } } };
 eq('override clears slot', resolveBoxes(cleared)[2].protein, undefined);
+
+// Stable box ids: default kit + its n-th box. Default 8 boxes = teriyaki 3, grekisk 3, texmex 2.
+eq('box ids', resolveBoxes(DEFAULT_PLAN).map((b) => b.id), ['teriyaki:0', 'teriyaki:1', 'teriyaki:2', 'grekisk:0', 'grekisk:1', 'grekisk:2', 'texmex:0', 'texmex:1']);
+// An edit on grekisk's first box (index 3) follows it: 10 boxes split 4/3/3 -> index 4; a 4th kit, 2/2/2/2 -> index 2;
+// another protein moves nothing. Box ids are made from the default kit, so a kit override doesn't move the id either.
+const pasta: Plan = { ...DEFAULT_PLAN, overrides: { 'grekisk:0': { carb: 'pasta', kit: 'chili' } } };
+const carbAt = (p: Plan) => resolveBoxes(p).findIndex((b) => b.carb?.id === 'pasta');
+eq('edit survives structure', [carbAt(pasta), carbAt({ ...pasta, boxes: 10 }), carbAt({ ...pasta, kits: [...pasta.kits, 'chili'] }),
+  carbAt({ ...pasta, proteins: [...pasta.proteins, { id: 'lax', method: 'ugn' }] })], [3, 4, 2, 3]);
+eq('kit override keeps id', resolveBoxes(pasta)[3].id, 'grekisk:0');
+// Boxes that are gone lose their edits: 6 boxes = 2/2/2, no teriyaki:2; grekisk removed, no grekisk:0.
+const two: Plan = { ...DEFAULT_PLAN, overrides: { 'teriyaki:2': { veg: 'spenat' }, 'grekisk:0': { veg: 'spenat' }, 'texmex:1': { veg: 'spenat' } } };
+eq('prune gone boxes', [Object.keys(pruneOverrides({ ...two, boxes: 6 })), Object.keys(pruneOverrides({ ...two, kits: ['teriyaki', 'texmex'] }))],
+  [['grekisk:0', 'texmex:1'], ['teriyaki:2', 'texmex:1']]);
+// Migration v1 -> v2: index 3 was grekisk's first box, index 9 doesn't exist in 8 boxes and goes. The box looks the same after.
+const v1 = { ...DEFAULT_PLAN, v: 1 as const, overrides: { 3: { carb: 'pasta' }, 9: { carb: 'ris' } } };
+const v2 = migratePlan(v1);
+eq('migrate v1', [v2.v, v2.overrides], [2, { 'grekisk:0': { carb: 'pasta' } }]);
+eq('migrate keeps the box', resolveBoxes(v2)[3].carb?.id, 'pasta');
+eq('migrate leaves v2 alone', migratePlan(pasta), pasta);
 
 // One box: kyckling 175 g (ugn) + ris 60 g + broccoli 140 g rostad + teriyaki kit.
 // Teriyaki sits on the asia base: teriyakisås 25 g + base soja 8 g.
 // kcal: 182 + olja 40,22 + 212,4 + 50,4 + olja 32,18 + 27,5 + soja 5,76 + 52 + 17,19 = 619,65
 // protein: 40,43 + 4,5 + 4,06 + 0,8 + soja 0,62 + 4,36 + 0,53 = 55,30
-const box: Box = { i: 0, kit: byId(KITS, 'teriyaki'), protein: byId(PROTEINS, 'kyckling'), method: 'ugn', carb: byId(CARBS, 'ris'), veg: byId(VEGS, 'broccoli') };
+const box: Box = { i: 0, id: '', kit: byId(KITS, 'teriyaki'), protein: byId(PROTEINS, 'kyckling'), method: 'ugn', carb: byId(CARBS, 'ris'), veg: byId(VEGS, 'broccoli') };
 const c = calcBox(box, DEFAULT_PLAN, null);
 near('box kcal', c.m[0], 619.65);
 near('box protein', c.m[1], 55.30, 0.05);
@@ -186,7 +206,7 @@ eq('portion cooked weights', portion.rows?.[0].sub?.startsWith('Kyckling ca 130 
 // LV and label values (2026-09-29): each ingredient's share of one default box of a kit that uses it, per 100 g × grams.
 const share = (kitId: string, ingr: string) => {
   const kit = byId(KITS, kitId);
-  const b: Box = { i: 0, kit, protein: byId(PROTEINS, kit.protein[0]), method: 'ugn', carb: byId(CARBS, kit.carb), veg: byId(VEGS, kit.veg) };
+  const b: Box = { i: 0, id: '', kit, protein: byId(PROTEINS, kit.protein[0]), method: 'ugn', carb: byId(CARBS, kit.carb), veg: byId(VEGS, kit.veg) };
   return calcBox(b, DEFAULT_PLAN, null).parts.filter((x) => x.ingr === ingr).reduce((s, x) => [s[0] + partMacro(x)![0], s[1] + partMacro(x)![1]], [0, 0]);
 };
 const shareIs = (name: string, got: number[], kcal: number, prot: number) => { near(`${name} kcal`, got[0], kcal, 0.01); near(`${name} protein`, got[1], prot, 0.01); };

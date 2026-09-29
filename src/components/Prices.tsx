@@ -33,7 +33,7 @@ export function usePricing(): Pricing {
       const key = `${kit.id}:${p.id}`;
       let x = memo.get(key);
       if (!x) {
-        const c = calcBox({ i: 0, kit, protein: p, method: protPrep(p).m, carb: byId(CARBS, kit.carb), veg: byId(VEGS, kit.veg) }, plan, goal);
+        const c = calcBox({ i: 0, id: '', kit, protein: p, method: protPrep(p).m, carb: byId(CARBS, kit.carb), veg: byId(VEGS, kit.veg) }, plan, goal);
         x = { c, cost: basket(needs([{ c, n: 1 }]), PRICES, offers) };
         memo.set(key, x);
       }

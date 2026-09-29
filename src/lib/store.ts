@@ -1,7 +1,7 @@
 'use client';
 // Tiny persisted store: localStorage + useSyncExternalStore. Server snapshot = defaults, so hydration matches.
 import { useSyncExternalStore } from 'react';
-import { DEFAULT_PLAN, type Plan } from './calc.ts';
+import { DEFAULT_PLAN, migratePlan, type Plan } from './calc.ts';
 import type { Clock } from './clock.ts';
 
 export interface Cook {
@@ -17,7 +17,7 @@ const DEFAULT_COOK: Cook = { done: {}, clocks: {}, bought: {}, sub: {}, at: null
 /** A cooking session's progress, cleared by Nollställ and "Börja om". Rensa allt also clears `bought` and `ready`. */
 export const FRESH_COOK = { done: {}, clocks: {}, sub: {}, at: null, last: null } satisfies Partial<Cook>;
 
-function createStore<T extends object>(key: string, initial: T) {
+function createStore<T extends object>(key: string, initial: T, migrate: (s: T) => T = (s) => s) {
   let state = initial;
   let loaded = false;
   const subs = new Set<() => void>();
@@ -26,8 +26,8 @@ function createStore<T extends object>(key: string, initial: T) {
     loaded = true;
     try {
       const raw = localStorage.getItem(key);
-      if (raw) state = { ...initial, ...(JSON.parse(raw) as Partial<T>) };
-    } catch { /* private mode or bad JSON: keep defaults */ }
+      if (raw) state = migrate({ ...initial, ...(JSON.parse(raw) as Partial<T>) });
+    } catch { /* private mode, bad JSON or a plan that no longer resolves: keep defaults */ }
   };
   return {
     get: () => (load(), state),
@@ -42,8 +42,9 @@ function createStore<T extends object>(key: string, initial: T) {
   };
 }
 
-// Key carries the schema version: bump v when Plan changes shape incompatibly.
-export const planStore = createStore<Plan>('bulk:plan:v2', DEFAULT_PLAN);
+// The key's version drops every saved plan: bump it only for a break no migration can bridge. Plan.v is the schema inside it:
+// v 1 -> 2 (2026-09-29) re-keys per-box overrides from index to box id, see migratePlan.
+export const planStore = createStore<Plan>('bulk:plan:v2', DEFAULT_PLAN, (p) => migratePlan(p as Parameters<typeof migratePlan>[0]));
 export const cookStore = createStore<Cook>('bulk:cook:v1', DEFAULT_COOK);
 
 export const usePlan = () => useSyncExternalStore(planStore.subscribe, planStore.get, () => planStore.initial);

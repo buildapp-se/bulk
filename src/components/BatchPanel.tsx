@@ -236,10 +236,10 @@ function BoxSheet({ c, onClose }: { c: BoxCalc; onClose: () => void }) {
             <div key={r.slot} className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
                 <span className={`label ${!r.cur ? '!text-warn' : ''}`}>{t.slots[r.slot]}{!r.cur && ` · ${t.box.empty}`}</span>
-                {r.cur && <button className="text-[12px] text-muted underline" onClick={() => setSlot(i, r.slot, null)}>{t.box.clear}</button>}
+                {r.cur && <button className="text-[12px] text-muted underline" onClick={() => setSlot(c.box.id, r.slot, null)}>{t.box.clear}</button>}
               </div>
               <div className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4">
-                {r.opts.map((o) => <Pill key={o.id} on={o.id === r.cur} hue={o.hue} onClick={() => setSlot(i, r.slot, o.id)}>{o.name}</Pill>)}
+                {r.opts.map((o) => <Pill key={o.id} on={o.id === r.cur} hue={o.hue} onClick={() => setSlot(c.box.id, r.slot, o.id)}>{o.name}</Pill>)}
               </div>
             </div>
           ))}
@@ -250,7 +250,7 @@ function BoxSheet({ c, onClose }: { c: BoxCalc; onClose: () => void }) {
               ))}
             </div>
           )}
-          <button onClick={() => { resetBox(i); }} className="self-start text-[13px] text-muted underline">{t.box.reset}</button>
+          <button onClick={() => { resetBox(c.box.id); }} className="self-start text-[13px] text-muted underline">{t.box.reset}</button>
         </div>
       </motion.div>
     </>

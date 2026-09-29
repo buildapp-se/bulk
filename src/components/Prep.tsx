@@ -220,7 +220,7 @@ function MarkButton({ on, label, onClick }: { on: boolean; label: string; onClic
 function Recipe({ kit, p, onClose, ...c }: Ctx & { kit: Kit; p: Protein; onClose?: () => void }) {
   const { plan, t: goal } = useBatch();
   const m = protPrep(p).m;
-  const box = calcBox({ i: 0, kit, protein: p, method: m, carb: byId(CARBS, kit.carb), veg: byId(VEGS, kit.veg) }, plan, goal);
+  const box = calcBox({ i: 0, id: '', kit, protein: p, method: m, carb: byId(CARBS, kit.carb), veg: byId(VEGS, kit.veg) }, plan, goal);
   const bc = c.pr.box(kit, p).cost;
   // Each row at the store the whole box is cheapest at, so the rows add up to the total.
   const krOf = (x: Part) => {

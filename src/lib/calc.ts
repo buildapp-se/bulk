@@ -23,7 +23,7 @@ export interface Goal {
 
 export type Slot = 'protein' | 'kit' | 'carb' | 'veg';
 export interface Plan {
-  v: 1;
+  v: 2;
   boxes: number;
   proteins: { id: string; method: MethodId }[];
   kits: string[];
@@ -31,12 +31,12 @@ export interface Plan {
   kitCarb: Record<string, string>;
   kitVeg: Record<string, string>;
   vegMode: 'rostade' | 'frysta';
-  overrides: Record<number, Partial<Record<Slot, string | null>>>; // null = cleared on purpose
+  overrides: Record<string, Partial<Record<Slot, string | null>>>; // by Box.id; null = cleared on purpose
   goal: Goal;
 }
 
 export const DEFAULT_PLAN: Plan = {
-  v: 1,
+  v: 2,
   boxes: 8,
   proteins: [{ id: 'kyckling', method: 'ugn' }, { id: 'notfars', method: 'ugn' }],
   kits: ['teriyaki', 'grekisk', 'texmex'],
@@ -51,7 +51,8 @@ export const DEFAULT_PLAN: Plan = {
 // ---------- Boxes ----------
 
 export interface Box {
-  i: number;
+  i: number; // position in the batch, for display
+  id: string; // stable: default kit + its n-th box ("teriyaki:0"), so per-box edits survive box count, kit and protein changes
   kit?: Kit;
   protein?: Protein;
   method?: MethodId;
@@ -87,8 +88,11 @@ export function resolveBoxes(p: Plan): Box[] {
     return pick;
   });
 
+  const seen = new Map<string, number>();
+  const ids = kitOf.map((k) => { const key = k?.id ?? '-'; const n = seen.get(key) ?? 0; seen.set(key, n + 1); return `${key}:${n}`; });
+
   return kitOf.map((k, i) => {
-    const o = p.overrides[i] ?? {};
+    const o = p.overrides[ids[i]] ?? {};
     const pick = (slot: Slot, dflt: string | undefined) => (slot in o ? o[slot] ?? undefined : dflt);
     const kitId = pick('kit', k?.id);
     const kit = kitId ? byId(KITS, kitId) : undefined;
@@ -98,13 +102,29 @@ export function resolveBoxes(p: Plan): Box[] {
     const vegId = pick('veg', kit ? p.kitVeg[kit.id] ?? kit.veg : undefined);
     const method = protein ? p.proteins.find((x) => x.id === protein.id)?.method ?? DEFAULT_METHOD(protein) : undefined;
     return {
-      i, kit, protein,
+      i, id: ids[i], kit, protein,
       method: protein && method && protein.methods[method] ? method : protein ? DEFAULT_METHOD(protein) : undefined,
       carb: carbId ? byId(CARBS, carbId) : undefined,
       veg: vegId ? byId(VEGS, vegId) : undefined,
     };
   });
 }
+
+/**
+ * Saved plans from before stable ids (v 1) keyed overrides by box index. Every structural change used to clear them,
+ * so the index still points at the box it was made on: map it to that box's id.
+ */
+export function migratePlan(p: Plan | (Omit<Plan, 'v'> & { v: 1 })): Plan {
+  if (p.v === 2) return p;
+  const boxes = resolveBoxes({ ...p, v: 2, overrides: {} });
+  return { ...p, v: 2, overrides: Object.fromEntries(Object.entries(p.overrides).filter(([i]) => boxes[+i]).map(([i, o]) => [boxes[+i].id, o])) };
+}
+
+/** Drop overrides whose box no longer exists (fewer boxes, kit removed), so a box that comes back starts clean. */
+export const pruneOverrides = (p: Plan): Plan['overrides'] => {
+  const ids = new Set(resolveBoxes({ ...p, overrides: {} }).map((b) => b.id));
+  return Object.fromEntries(Object.entries(p.overrides).filter(([id]) => ids.has(id)));
+};
 
 export const missing = (b: Box): Slot[] =>
   (['protein', 'kit', 'carb', 'veg'] as const).filter((s) => !b[s]);

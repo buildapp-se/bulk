@@ -10,7 +10,7 @@
 - Fler `src: 'est'` kvar (grekisk yoghurt, kesella, gochujang, sriracha, chipotle, jordnötspulver, Filips-ingredienser m.fl.): samma väg, LV eller etikett via willys.se:s produkt-API (`/axfood/rest/p/<kod>`, `nutrientHeaders`).
 - Riktiga förpackningsstorlekar från ICA/Willys i stället för handskriven tabell.
 - Engelska (`en.ts` + next-intl). Matnamnen i data.ts behöver också översättas.
-- Per-låda-ändringar försvinner när antal lådor, kit eller proteiner ändras (index flyttas). Stabila låd-id om det stör.
+- Lådans ark på 390 px: kitbilden i hörnet sticker ut, sidan kan skrollas 32 px i sidled medan arket är öppet (finns även live före 2026-09-29; `BatchPanel.tsx:190`, `-right-2.5`). Valda Pill-knappar saknar `aria-pressed` (`ui.tsx:27`), valet syns bara i färg.
 
 
 ## P3

@@ -110,7 +110,7 @@ function KitCard({ k }: { k: Kit }) {
   const sel = idx >= 0;
   // Preview box: the kit's own defaults, sized to the current goal.
   const pr = byId(PROTEINS, k.protein[0]);
-  const box = calcBox({ i: 0, kit: k, protein: pr, method: DEFAULT_METHOD(pr), carb: byId(CARBS, k.carb), veg: byId(VEGS, k.veg) }, plan, tg);
+  const box = calcBox({ i: 0, id: '', kit: k, protein: pr, method: DEFAULT_METHOD(pr), carb: byId(CARBS, k.carb), veg: byId(VEGS, k.veg) }, plan, tg);
   const list = (xs: readonly KitItem[]) => xs.map((x) => x.name.toLowerCase()).join(', ');
   return (
     <motion.button layout variants={stagger.child} whileTap={{ scale: 0.985 }} onClick={() => toggleKit(k.id)}
