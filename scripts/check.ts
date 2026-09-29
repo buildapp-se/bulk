@@ -183,6 +183,24 @@ const portion = sch.steps.find((s) => s.id === 'portion')!;
 eq('portion rows', portion.rows?.map((r) => `${r.name} ${r.right}`), ['Teriyaki ×3', 'Grekisk citron ×1', 'Grekisk citron ×2', 'Tex-mex ×2']);
 eq('portion cooked weights', portion.rows?.[0].sub?.startsWith('Kyckling ca 130 g · Ris ca 170 g'), true);
 
+// LV and label values (2026-09-29): each ingredient's share of one default box of a kit that uses it, per 100 g × grams.
+const share = (kitId: string, ingr: string) => {
+  const kit = byId(KITS, kitId);
+  const b: Box = { i: 0, kit, protein: byId(PROTEINS, kit.protein[0]), method: 'ugn', carb: byId(CARBS, kit.carb), veg: byId(VEGS, kit.veg) };
+  return calcBox(b, DEFAULT_PLAN, null).parts.filter((x) => x.ingr === ingr).reduce((s, x) => [s[0] + partMacro(x)![0], s[1] + partMacro(x)![1]], [0, 0]);
+};
+const shareIs = (name: string, got: number[], kcal: number, prot: number) => { near(`${name} kcal`, got[0], kcal, 0.01); near(`${name} protein`, got[1], prot, 0.01); };
+shareIs('bulgur 60 g (LV 829)', share('shawarma', 'bulgur'), 60 * 3.53, 60 * 0.123); // 211,8 / 7,38 (was 205,2 / 7,38)
+shareIs('matvete 60 g (etikett)', share('kryddbonor', 'matvete'), 60 * 3.5, 60 * 0.1); // 210 / 6 (was 210 / 7,5)
+shareIs('bbq-sås 30 g (etikett)', share('bbq', 'bbq'), 30 * 1.68, 30 * 0.006); // 50,4 / 0,18 (was 45 / 0,3)
+shareIs('ostronsås 9 g (etikett)', share('krapow', 'ostronsas'), 9 * 0.77, 9 * 0.026); // 6,93 / 0,234 (was 9,9 / 0,18)
+// Marry me: base 25 g + mix 5 g Philadelphia = 30 g; 80 ml Flora 4 %.
+shareIs('philadelphia 30 g (etikett)', share('filips-marryme', 'philadelphia'), 30 * 1.45, 30 * 0.072); // 43,5 / 2,16
+shareIs('flora 4 % 80 ml (etikett)', share('filips-marryme', 'mildamat'), 80 * 0.6, 80 * 0.011); // 48 / 0,88 (was 49,6 / 2,4)
+shareIs('mini fraiche 33 g (LV 2046)', share('filips-currymango', 'minifraiche'), 33 * 0.84, 33 * 0.038); // 27,72 / 1,254
+// Every label value names its product.
+for (const [id, x] of Object.entries(INGR)) if (x.src === 'etikett' && !x.label) fails.push(`etikett utan källa: ${id}`);
+
 // Data integrity: every kit/protein/carb/veg ingredient exists, every kit default resolves.
 for (const k of KITS) { byId(CARBS, k.carb); byId(VEGS, k.veg); k.protein.forEach((p) => byId(PROTEINS, p)); }
 

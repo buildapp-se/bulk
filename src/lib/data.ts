@@ -1,6 +1,7 @@
 // All food data in one place. Nutrition is per 100 g RAW (as bought).
 // src: 'lv' = Livsmedelsverket, via grammat's nutrients.json (`gm`, drift-checked by scripts/check.ts) or the LV API (`lv` = food number),
-//      'est' = estimate (label/typical value), replace when a real source is found.
+//      'etikett' = a product label, `label` says which product and where it was read,
+//      'est' = estimate (typical value), replace when a real source is found.
 // Livsmedelsverkets livsmedelsdatabas, CC BY 4.0.
 
 export type Macro = readonly [kcal: number, protein: number, carbs: number, fat: number];
@@ -9,7 +10,8 @@ export type Cat = 'kött' | 'grönt' | 'fryst' | 'skafferi' | 'mejeri';
 export interface Ingr {
   name: string;
   n: Macro;
-  src: 'lv' | 'est';
+  src: 'lv' | 'etikett' | 'est';
+  label?: string; // for 'etikett': product and where the label was read
   gm?: string; // grammat nutrients.json key
   lv?: number; // Livsmedelsverket food number (dataportal.livsmedelsverket.se)
   cat: Cat;
@@ -31,8 +33,8 @@ const INGR_ = {
 
   ris: { name: 'Ris', n: [354, 7.5, 78.2, 0.7], src: 'lv', gm: 'ris (gärna jasmin)', cat: 'skafferi', packs: [1000, 2000], y: 2.8 },
   pasta: { name: 'Pasta', n: [358, 11.9, 71.5, 1.3], src: 'lv', gm: 'spagetti', cat: 'skafferi', packs: [500, 1000], y: 2.3 },
-  bulgur: { name: 'Bulgur', n: [342, 12.3, 68, 1.3], src: 'est', cat: 'skafferi', packs: [500, 1000], y: 2.8 },
-  matvete: { name: 'Matvete', n: [350, 12.5, 69, 2], src: 'est', cat: 'skafferi', packs: [500, 1000], y: 2.5 },
+  bulgur: { name: 'Bulgur', n: [353, 12.3, 68.2, 1.3], src: 'lv', lv: 829, cat: 'skafferi', packs: [500, 1000], y: 2.8 },
+  matvete: { name: 'Matvete', n: [350, 10, 64, 2.6], src: 'etikett', label: 'Frebaco Kvarn Matvete,  (LV har bara kokt)', cat: 'skafferi', packs: [500, 1000], y: 2.5 },
   couscous: { name: 'Couscous', n: [361, 12.8, 72.4, 0.6], src: 'lv', lv: 831, cat: 'skafferi', packs: [500, 1000], y: 2.5 },
   potatis: { name: 'Potatis', n: [79, 1.7, 16.4, 0.1], src: 'lv', lv: 4457, cat: 'grönt', packs: [1000, 2000], y: 0.8 },
   sotpotatis: { name: 'Sötpotatis', n: [71, 1.6, 12.9, 0.4], src: 'lv', gm: 'sötpotatis', cat: 'grönt', packs: [500, 1000], y: 0.8 },
@@ -56,7 +58,7 @@ const INGR_ = {
   salsa: { name: 'Salsa', n: [30, 1.2, 6, 0.2], src: 'lv', gm: 'salsa (texmex)', cat: 'skafferi', packs: [230, 500] },
   tacokrydda: { name: 'Tacokrydda', n: [300, 10, 50, 10], src: 'lv', gm: 'texmexkrydda', cat: 'skafferi', packs: [28] },
   teriyaki: { name: 'Teriyakisås', n: [110, 3.2, 22.2, 0.8], src: 'lv', gm: 'teriyakisås', cat: 'skafferi', packs: [250, 500] },
-  bbq: { name: 'BBQ-sås', n: [150, 1, 35, 0.5], src: 'lv', gm: 'bbq-sås', cat: 'skafferi', packs: [500] },
+  bbq: { name: 'BBQ-sås', n: [168, 0.6, 41, 0], src: 'etikett', label: 'Santa Maria Original American Style BBQ Sauce,  (LV 1971 Grillsås är en fet sås, 8 g kolhydrat)', cat: 'skafferi', packs: [500] },
   krossade: { name: 'Krossade tomater', n: [22, 0.8, 3.7, 0.2], src: 'lv', gm: 'krossade tomater', cat: 'skafferi', packs: [400, 500] },
   passerade: { name: 'Passerade tomater', n: [24, 1.2, 4, 0.2], src: 'est', cat: 'skafferi', packs: [500] },
   tomatpure: { name: 'Tomatpuré', n: [84, 4.4, 13.5, 0.2], src: 'lv', gm: 'tomatpuré', cat: 'skafferi', packs: [70, 200] },
@@ -70,7 +72,7 @@ const INGR_ = {
   yoghurt: { name: 'Turkisk yoghurt', n: [95, 3.5, 4, 7.5], src: 'est', cat: 'mejeri', packs: [500, 1000] },
   sesam: { name: 'Sesamfrön', n: [573, 17.7, 23.4, 49.7], src: 'lv', gm: 'sesamfrön', cat: 'skafferi', packs: [100] },
   soja: { name: 'Japansk soja', n: [72, 7.7, 10.1, 0], src: 'lv', gm: 'japansk soja', cat: 'skafferi', packs: [150, 500] },
-  ostronsas: { name: 'Ostronsås', n: [110, 2, 25, 0], src: 'est', cat: 'skafferi', packs: [150, 255] },
+  ostronsas: { name: 'Ostronsås', n: [77, 2.6, 15, 0.6], src: 'etikett', label: 'Santa Maria Oyster Sauce, ', cat: 'skafferi', packs: [150, 255] },
   sweetchili: { name: 'Sweet chilisås', n: [207, 0.8, 43.4, 2.9], src: 'lv', lv: 2007, cat: 'skafferi', packs: [250, 500] },
   pesto: { name: 'Grön pesto', n: [581, 4.2, 12.6, 57.1], src: 'lv', lv: 2004, cat: 'skafferi', packs: [140, 190] },
   soltorkade: { name: 'Soltorkade tomater', n: [200, 4, 12, 15], src: 'est', cat: 'skafferi', packs: [180, 280] },
@@ -99,9 +101,9 @@ const INGR_ = {
   senap: { name: 'Senap', n: [173, 4.5, 23.1, 6.8], src: 'lv', lv: 1972, cat: 'skafferi', packs: [300] },
   majsstarkelse: { name: 'Majsstärkelse', n: [362, 0, 87.5, 0.7], src: 'lv', lv: 1945, cat: 'skafferi', packs: [400] },
   // Trial: ingredients for Filips kits (FIH cookbook), label values.
-  philadelphia: { name: 'Philadelphia light', n: [145, 7.4, 4.9, 11], src: 'est', cat: 'mejeri', packs: [200, 300] },
-  minifraiche: { name: 'Mini fraiche', n: [70, 3.2, 3.8, 5], src: 'est', cat: 'mejeri', packs: [200, 500] },
-  mildamat: { name: 'Milda Mat Lätt', n: [62, 3, 4.5, 3.5], src: 'est', cat: 'mejeri', packs: [250, 500] },
+  philadelphia: { name: 'Philadelphia light', n: [145, 7.2, 5.1, 10], src: 'etikett', label: 'Philadelphia Light 11 %, ', cat: 'mejeri', packs: [200, 300] },
+  minifraiche: { name: 'Mini fraiche', n: [84, 3.8, 5.7, 5.2], src: 'lv', lv: 2046, cat: 'mejeri', packs: [200, 500] },
+  mildamat: { name: 'Flora Matlagning 4 %', n: [60, 1.1, 4.5, 4.4], src: 'etikett', label: 'Flora by Milda Matlagning 4 % (efterföljaren till Milda Mat Lätt), ', cat: 'mejeri', packs: [250, 500] },
   lattmjolk: { name: 'Lättmjölk', n: [38, 3.5, 5, 0.5], src: 'est', cat: 'mejeri', packs: [1000] },
   ajvar: { name: 'Ajvar', n: [70, 1.3, 8, 3.5], src: 'est', cat: 'skafferi', packs: [350] },
   kebabsas: { name: 'Röd kebabsås', n: [120, 1, 25, 1.5], src: 'est', cat: 'skafferi', packs: [300] },
@@ -414,7 +416,7 @@ const KIT_LIST: readonly Omit<Kit, 'hue'>[] = [
     mix: [g('Philadelphia light', 'philadelphia', 25), g('Mini fraiche', 'minifraiche', 33), g('Lättmjölk', 'lattmjolk', 65, 'ml'), g('Tomatpuré', 'tomatpure', 10), s('Curry mango-krydda', 2, 'tsk'), s('Japansk soja', 1, 'tsk')],
     top: [s('Chiliflakes')], tip: 'Fräs tomatpurén torrt 1–2 min innan mejeriet går i.', heat: MICRO },
   { id: 'filips-marryme', name: 'Filips Marry me', tagline: 'Soltorkat, vitlök, parmesan', protein: ['kyckling'], carb: 'pasta', veg: 'spenat', sauce: true, base: 'kram',
-    mix: [g('Philadelphia light vitlök & örter', 'philadelphia', 5), g('Milda Mat Lätt', 'mildamat', 80, 'ml'), g('Soltorkade tomater', 'soltorkade', 6), s('Paprikapulver', 1, 'krm'), s('Chiliflakes', 1, 'krm')],
+    mix: [g('Philadelphia light vitlök & örter', 'philadelphia', 5), g('Flora Matlagning 4 %', 'mildamat', 80, 'ml'), g('Soltorkade tomater', 'soltorkade', 6), s('Paprikapulver', 1, 'krm'), s('Chiliflakes', 1, 'krm')],
     top: [g('Parmesan', 'parmesan', 10)], tip: 'Stäng av värmen innan osten rörs ner så skär sig inte såsen.', heat: MICRO },
   { id: 'filips-ajvar', name: 'Filips ajvar', tagline: 'Ajvar, vitlök, parmesan', protein: ['kyckling', 'notfars'], carb: 'pasta', veg: 'spenat', sauce: true, base: 'kram',
     mix: [g('Philadelphia light', 'philadelphia', 10), g('Ajvar', 'ajvar', 12), s('Grillkrydda', 1, 'krm')],
@@ -429,7 +431,7 @@ const KIT_LIST: readonly Omit<Kit, 'hue'>[] = [
     mix: [g('Philadelphia light', 'philadelphia', 25), g("Frank's RedHot", 'hotsauce', 15), cut(s('Hackad rödlök', 0.5, 'msk'), 'Hacka')],
     top: [g('Mager ost', 'ost', 20), s('Honung, en skvätt')], tip: 'Riv kycklingen med två gafflar så fäster såsen.', heat: MICRO },
   { id: 'filips-svampsas', name: 'Filips svampsås', tagline: 'Kalvfond, dijon, champinjoner', protein: ['flaskkarre', 'notfars', 'kyckling'], carb: 'mos', veg: 'champinjoner', sauce: true, base: 'kram',
-    mix: [g('Milda Mat Lätt', 'mildamat', 50, 'ml'), g('Lättmjölk', 'lattmjolk', 75, 'ml'), s('Kalvfond', 0.5, 'msk'), s('Japansk soja', 0.5, 'msk'), s('Dijonsenap', 0.25, 'tsk')],
+    mix: [g('Flora Matlagning 4 %', 'mildamat', 50, 'ml'), g('Lättmjölk', 'lattmjolk', 75, 'ml'), s('Kalvfond', 0.5, 'msk'), s('Japansk soja', 0.5, 'msk'), s('Dijonsenap', 0.25, 'tsk')],
     top: [g('Parmesan', 'parmesan', 15), cut(s('Persilja'), 'Hacka')], tip: 'Stek svampen hårt tills den fått färg innan vätskan går i.', heat: MICRO },
   { id: 'filips-burger', name: 'Filips Cheeseburger', tagline: 'Ost, pickles, burgersås', protein: ['notfars'], carb: 'potatis', veg: 'broccoli',
     mix: [s('Hamburgerost', 1, 'st'), s('Vitlökspulver', 1, 'krm')],

@@ -7,7 +7,7 @@
 ## P2
 - Firebase Auth + synk av plan mellan enheter (familjehubbens mönster).
 - Stekpanna som tillagningsmetod. Fler sous vide-proteiner (fläskfilé, kalkon).
-- Byt `src: 'est'` mot LV- eller etikettvärden: Philadelphia light, mini fraiche, Milda, BBQ-sås (LV "Grillsås" ser fel ut), ostronsås, matvete, bulgur.
+- Fler `src: 'est'` kvar (grekisk yoghurt, kesella, gochujang, sriracha, chipotle, jordnötspulver, Filips-ingredienser m.fl.): samma väg, LV eller etikett via willys.se:s produkt-API (`/axfood/rest/p/<kod>`, `nutrientHeaders`).
 - Riktiga förpackningsstorlekar från ICA/Willys i stället för handskriven tabell.
 - Engelska (`en.ts` + next-intl). Matnamnen i data.ts behöver också översättas.
 - Per-låda-ändringar försvinner när antal lådor, kit eller proteiner ändras (index flyttas). Stabila låd-id om det stör.
