@@ -1,5 +1,5 @@
 {
- "at": "2026-09-29",
+ "at": "2026-10-01",
  "stores": [
   {
    "chain": "Willys",
@@ -217,8 +217,8 @@
     "code": "101273514_ST"
    },
    "paprika": {
-    "krKg": 49.9,
-    "kr": 49.9,
+    "krKg": 59.9,
+    "kr": 59.9,
     "pack": "ca: 200g",
     "name": "Paprika Röd Klass 1",
     "brand": "",
@@ -886,7 +886,7 @@
    "vitkal": {
     "krKg": 15.9,
     "kr": 15.9,
-    "pack": "1350 gram ungefärlig vikt",
+    "pack": "2000 gram ungefärlig vikt",
     "name": "Vitkål",
     "brand": "",
     "code": "2317305000009"
@@ -940,12 +940,12 @@
     "code": "7340191156883"
    },
    "svartabonor": {
-    "krKg": 70.88,
-    "kr": 28.35,
-    "pack": "400g",
-    "name": "Svarta Bönor",
-    "brand": "GoGreen",
-    "code": "7310130009464"
+    "krKg": 33.63,
+    "kr": 12.78,
+    "pack": "380 GRM",
+    "name": "Svarta Bönor Eko",
+    "brand": "Änglamark",
+    "code": "7340011496113"
    },
    "kidney": {
     "krKg": 25.51,
@@ -1134,7 +1134,7 @@
    "apelsin": {
     "krKg": 21.72,
     "kr": 21.72,
-    "pack": "1 liter",
+    "pack": "1000 MLT",
     "name": "Apelsinjuice",
     "brand": "Coop",
     "code": "7340191150843"
@@ -1616,6 +1616,19 @@
    "until": "2026-11-01"
   },
   {
+   "ingr": "parmesan",
+   "chain": "Willys",
+   "store": "Willys Hemma Rådhusesplanaden",
+   "name": "Parmigiano reggiano",
+   "brand": "GARANT",
+   "pack": "150g",
+   "krKg": 232.67,
+   "ordKrKg": 366.01,
+   "label": "34,90/st",
+   "member": true,
+   "until": "2026-10-04"
+  },
+  {
    "ingr": "paprika",
    "chain": "Willys",
    "store": "Willys Hemma Rådhusesplanaden",
@@ -1876,6 +1889,19 @@
    "until": "2026-10-19"
   },
   {
+   "ingr": "notfars",
+   "chain": "ICA",
+   "store": "ICA Supermarket Teg",
+   "name": "Nötfärs 12%",
+   "brand": "Snellman",
+   "pack": "700g",
+   "krKg": 128.5,
+   "ordKrKg": 186.25,
+   "label": "89,95 kr/st",
+   "member": false,
+   "until": "2026-10-25"
+  },
+  {
    "ingr": "vitkal",
    "chain": "ICA",
    "store": "ICA Supermarket Teg",
@@ -1925,18 +1951,6 @@
    "until": "2026-10-04"
   },
   {
-   "ingr": "blandfars",
-   "chain": "Coop",
-   "store": "Stora Coop Avion",
-   "name": "Blandfärs",
-   "brand": "Scan",
-   "pack": "1000 g.",
-   "krKg": 99,
-   "label": "99 kr",
-   "member": false,
-   "until": "2026-10-04"
-  },
-  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Avion",
@@ -1945,6 +1959,18 @@
    "pack": "450 g.",
    "krKg": 104.22,
    "label": "46.9 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Blandfärs",
+   "brand": "Scan",
+   "pack": "1000 g.",
+   "krKg": 99,
+   "label": "99 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -1969,18 +1995,6 @@
    "pack": "1000 g.",
    "krKg": 99,
    "label": "99 kr",
-   "member": false,
-   "until": "2026-10-04"
-  },
-  {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Ersboda",
-   "name": "Majskycklingfilé ",
-   "brand": "Guldfågeln",
-   "pack": "1000 g.",
-   "krKg": 139,
-   "label": "139 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -2009,6 +2023,18 @@
    "until": "2026-10-04"
   },
   {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Majskycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "1000 g.",
+   "krKg": 139,
+   "label": "139 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
    "ingr": "lax",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
@@ -2018,18 +2044,6 @@
    "krKg": 139,
    "label": "139 kr",
    "member": true,
-   "until": "2026-10-04"
-  },
-  {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Färsk kycklingfilé",
-   "brand": "Familjefågel",
-   "pack": "450 g.",
-   "krKg": 104.22,
-   "label": "46.9 kr",
-   "member": false,
    "until": "2026-10-04"
   },
   {
@@ -2065,6 +2079,18 @@
    "pack": "1000 g.",
    "krKg": 139,
    "label": "139 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Färsk kycklingfilé",
+   "brand": "Familjefågel",
+   "pack": "450 g.",
+   "krKg": 104.22,
+   "label": "46.9 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -2113,6 +2139,31 @@
    "pack": "",
    "krKg": 54.9,
    "label": "54,9 kr/kg",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "graddfil",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Gräddfil",
+   "brand": "MATRIKET",
+   "pack": "300 ml",
+   "krKg": 30,
+   "ordKrKg": 39.33,
+   "label": "18 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "halloumi",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Halloumi Originalet",
+   "brand": "FONTANA",
+   "pack": "200 g",
+   "krKg": 139.5,
+   "label": "27,9 kr",
    "member": false,
    "until": "2026-10-04"
   }
