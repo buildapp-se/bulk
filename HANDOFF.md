@@ -1,5 +1,10 @@
 ---
 reviewedAt: 2026-09-29
+schemaVersion: 1
+status: active
+currentGoal: "Bulk är live på buildapp.se/bulk: matlådeplanering med smakkit, inköp, tillagning och veckans priser i Umeå."
+nextAction: "BACKLOG P1, test på riktig telefon. Filips-kiten ska provlagas och behållas eller raderas."
+blockers: []
 ---
 # Handoff
 
