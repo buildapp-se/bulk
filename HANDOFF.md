@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-09-29
+reviewedAt: 2026-10-03
 schemaVersion: 1
 status: active
 currentGoal: "Bulk är live på buildapp.se/bulk: matlådeplanering med smakkit, inköp, tillagning och veckans priser i Umeå."
@@ -7,6 +7,8 @@ nextAction: "BACKLOG P1, test på riktig telefon. Filips-kiten ska provlagas och
 blockers: []
 ---
 # Handoff
+
+**2026-10-03, regioner (`0bb7855`):** Veckans priser har ett regionval (Umeå, Stockholm, Göteborg, Malmö) som styr vilka butiker och erbjudanden som räknas; vanliga priser är nationella. Storstäderna har en Willys, en Maxi och en Stora Coop var, alla gav erbjudanden i första körningen (prices.json 46 -> 57 KB). Raden "Bor du någon annanstans? Säg till" mejlar kontakt@buildapp.se. Verifierat: check (Umeå ser aldrig Stockholms butiker, Stockholms butik vinner där med 20,12 kr, gammal fil = Umeå), typecheck, build, playwright-cli 1280 (Stockholm och Malmö visar bara egna butiker, valet överlever omladdning) och 390 (44 px select, ingen horisontell scroll).
 
 **2026-09-29, batch i fyra delar (alla pushade, check + typecheck + build gröna):**
 1. `1c584c6` Förbered allt tar med kitens knivjobb, ihopslagna per jobb med basernas (vitlök från asiatisk bas + grekisk = en rad, 3 st), underrad med vilka baser och kit, tiden följer raderna. Sett i playwright-cli på 390 och 1280, ingen horisontell scroll.
