@@ -55,7 +55,8 @@ export const clearAll = () => {
   setCook((c) => ({ ...c, ...FRESH_COOK, bought: {}, ready: null }));
 };
 export const setKitCarb = (kit: string, carb: string) => { haptic(); setPlan((p) => ({ ...p, kitCarb: { ...p.kitCarb, [kit]: carb } })); };
-export const setVegMode = (vegMode: Plan['vegMode']) => { haptic(); setPlan((p) => ({ ...p, vegMode })); };
+export const setRegion = (region: Plan['region']) => { haptic(); setPlan((p) => ({ ...p, region })); };
+export const setVegMode =(vegMode: Plan['vegMode']) => { haptic(); setPlan((p) => ({ ...p, vegMode })); };
 export const setGoal = (g: Partial<Goal>) => setPlan((p) => ({ ...p, goal: { ...p.goal, ...g } }));
 
 export const setSlot = (box: string, slot: Slot, id: string | null) => {

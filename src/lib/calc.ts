@@ -4,6 +4,7 @@ import {
   type Base, type Carb, type IngrId, type Kit, type KitItem, type Macro, type MethodId, type Protein, type Unit, type Veg,
 } from './data.ts';
 import { noun } from './prep.ts';
+import type { Region } from './price.ts';
 
 // ---------- Plan (persisted state) ----------
 
@@ -31,6 +32,7 @@ export interface Plan {
   kitCarb: Record<string, string>;
   kitVeg: Record<string, string>;
   vegMode: 'rostade' | 'frysta';
+  region: Region; // whose store offers count; plans saved before 2026-10-03 get Umeå from DEFAULT_PLAN on load
   overrides: Record<string, Partial<Record<Slot, string | null>>>; // by Box.id; null = cleared on purpose
   goal: Goal;
 }
@@ -44,6 +46,7 @@ export const DEFAULT_PLAN: Plan = {
   kitCarb: {},
   kitVeg: {},
   vegMode: 'rostade',
+  region: 'Umeå',
   overrides: {},
   goal: { mode: 'simple', kind: 'behall', weight: 75, height: 180, age: 30, sex: 'm', activity: 1.55, perDay: 2, proteinBox: null, kcalBox: null },
 };

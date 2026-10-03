@@ -5,7 +5,7 @@ import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, migratePlan, partMacro, pickPacks, pruneOverrides, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
-import { basket, boxCost, deals, krPerProtein, live, matches, pantryCost, PRICES, type Prices } from '../src/lib/price.ts';
+import { basket, boxCost, deals, forRegion, krPerProtein, live, matches, pantryCost, PRICES, type Prices, type Region } from '../src/lib/price.ts';
 import type { ShopRow } from '../src/lib/calc.ts';
 
 const fails: string[] = [];
@@ -281,6 +281,17 @@ near('box price no offers', boxCost(c, FIX, [])!.kr, 27.1238, 0.001);
 const withLidl: Prices = { ...FIX, stores: [...FIX.stores, { chain: 'Lidl', name: 'L' }], offers: [...FIX.offers, { ...offer('kycklingfile', 'Willys', 'L', 10, '2026-09-27'), chain: 'Lidl' }] };
 const lidlLive = live(withLidl, '2026-09-26');
 eq('lidl never a whole basket', [boxCost(c, withLidl, lidlLive)!.store.name, deals(withLidl, lidlLive).find((d) => d.id === 'kycklingfile')!.best.store], ['A', 'L']);
+// Regions: a Stockholm Coop with kyckling at 50 must never price a box for Umeå, and wins for Stockholm.
+// Stockholm sees only S + Lidl; S is Coop, so the box costs 27,1238 - 15,75 + 0,175 × 50 = 20,1238.
+// A file without regions (written before 2026-10-03) counts its stores as Umeå.
+const reg: Prices = { ...FIX, stores: [...FIX.stores.map((s) => ({ ...s, region: 'Umeå' as const })), { chain: 'Coop', name: 'S', region: 'Stockholm' }, { chain: 'Lidl', name: 'L' }],
+  offers: [...FIX.offers, { ...offer('kycklingfile', 'Coop', 'S', 50, '2026-09-27') }] };
+const inRegion = (r: Region) => { const P = forRegion(reg, r); return boxCost(c, P, live(P, '2026-09-26'))!; };
+eq('umeå never sees stockholm', [inRegion('Umeå').store.name, forRegion(reg, 'Umeå').stores.map((s) => s.name)], ['A', ['A', 'B', 'C', 'I', 'L']]);
+eq('stockholm store wins there', inRegion('Stockholm').store.name, 'S');
+near('stockholm box price', inRegion('Stockholm').kr, 20.1238, 0.001);
+eq('old file = umeå', forRegion(FIX, 'Umeå').stores.length, 4);
+eq('old file has no stockholm stores', forRegion(FIX, 'Stockholm').stores.length, 0);
 // A store missing an ingredient loses to one that has everything: gochujang only at Coop. 100 g × 200 + 1 kg × 90 = 110.
 const g = basket([{ ingr: 'gochujang', g: 100 }, { ingr: 'kycklingfile', g: 1000 }], FIX, fixLive)!;
 eq('complete store wins', [g.store.name, g.elsewhere], ['C', []]);

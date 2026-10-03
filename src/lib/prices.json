@@ -1,69 +1,130 @@
 {
- "at": "2026-10-01",
+ "at": "2026-10-03",
  "stores": [
   {
    "chain": "Willys",
-   "name": "Willys Ersboda"
+   "name": "Willys Ersboda",
+   "region": "Umeå"
   },
   {
    "chain": "Willys",
-   "name": "Willys Umeå Syd"
+   "name": "Willys Umeå Syd",
+   "region": "Umeå"
   },
   {
    "chain": "Willys",
-   "name": "Willys Klockarbäcken"
+   "name": "Willys Klockarbäcken",
+   "region": "Umeå"
   },
   {
    "chain": "Willys",
-   "name": "Willys Hemma Rådhusesplanaden"
+   "name": "Willys Hemma Rådhusesplanaden",
+   "region": "Umeå"
+  },
+  {
+   "chain": "Willys",
+   "name": "Willys Port 73",
+   "region": "Stockholm"
+  },
+  {
+   "chain": "Willys",
+   "name": "Willys Gamlestaden",
+   "region": "Göteborg"
+  },
+  {
+   "chain": "Willys",
+   "name": "Willys Mobilia",
+   "region": "Malmö"
   },
   {
    "chain": "ICA",
-   "name": "Maxi ICA Stormarknad"
+   "name": "Maxi ICA Stormarknad",
+   "region": "Umeå"
   },
   {
    "chain": "ICA",
-   "name": "ICA Kvantum Ersboda"
+   "name": "ICA Kvantum Ersboda",
+   "region": "Umeå"
   },
   {
    "chain": "ICA",
-   "name": "ICA Kvantum Kronoparken"
+   "name": "ICA Kvantum Kronoparken",
+   "region": "Umeå"
   },
   {
    "chain": "ICA",
-   "name": "ICA Kvantum Mariehem"
+   "name": "ICA Kvantum Mariehem",
+   "region": "Umeå"
   },
   {
    "chain": "ICA",
-   "name": "ICA Supermarket Ålidhem"
+   "name": "ICA Supermarket Ålidhem",
+   "region": "Umeå"
   },
   {
    "chain": "ICA",
-   "name": "ICA Supermarket Boleäng"
+   "name": "ICA Supermarket Boleäng",
+   "region": "Umeå"
   },
   {
    "chain": "ICA",
-   "name": "ICA Supermarket City"
+   "name": "ICA Supermarket City",
+   "region": "Umeå"
   },
   {
    "chain": "ICA",
-   "name": "ICA Supermarket Teg"
+   "name": "ICA Supermarket Teg",
+   "region": "Umeå"
+  },
+  {
+   "chain": "ICA",
+   "name": "Maxi ICA Solna",
+   "region": "Stockholm"
+  },
+  {
+   "chain": "ICA",
+   "name": "Maxi ICA Göteborg",
+   "region": "Göteborg"
+  },
+  {
+   "chain": "ICA",
+   "name": "Maxi ICA Malmö",
+   "region": "Malmö"
   },
   {
    "chain": "Coop",
-   "name": "Stora Coop Avion"
+   "name": "Stora Coop Avion",
+   "region": "Umeå"
   },
   {
    "chain": "Coop",
-   "name": "Stora Coop Ersboda"
+   "name": "Stora Coop Ersboda",
+   "region": "Umeå"
   },
   {
    "chain": "Coop",
-   "name": "Stora Coop Tomtebo"
+   "name": "Stora Coop Tomtebo",
+   "region": "Umeå"
   },
   {
    "chain": "Coop",
-   "name": "Coop City Umeå"
+   "name": "Coop City Umeå",
+   "region": "Umeå"
+  },
+  {
+   "chain": "Coop",
+   "name": "Stora Coop Bromma",
+   "region": "Stockholm"
+  },
+  {
+   "chain": "Coop",
+   "name": "Stora Coop Backaplan",
+   "region": "Göteborg"
+  },
+  {
+   "chain": "Coop",
+   "name": "Stora Coop Stadion",
+   "region": "Malmö"
   },
   {
    "chain": "Lidl",
@@ -113,12 +174,12 @@
     "code": "101300146_KG"
    },
    "lax": {
-    "krKg": 189.08,
-    "kr": 94.54,
-    "pack": "4x125g",
-    "name": "Laxfilé Fryst",
-    "brand": "Omega",
-    "code": "101804336_ST"
+    "krKg": 169,
+    "kr": 169,
+    "pack": "ca: 1.4kg",
+    "name": "Laxfilè C-trim",
+    "brand": "Falkenberg",
+    "code": "101751386_KG"
    },
    "kikartor": {
     "krKg": 47.8,
@@ -428,9 +489,9 @@
     "krKg": 146,
     "kr": 21.9,
     "pack": "150g",
-    "name": "Fetaost Block 23%",
-    "brand": "Garant",
-    "code": "101533198_ST"
+    "name": "Fetaost",
+    "brand": "Kassos",
+    "code": "101676983_ST"
    },
    "tzatziki": {
     "krKg": 59.8,
@@ -812,12 +873,12 @@
     "code": "7331217016854"
    },
    "ris": {
-    "krKg": 23.95,
-    "kr": 23.95,
-    "pack": "1000 g",
-    "name": "Jasminris och långkornigt ris",
+    "krKg": 18.6,
+    "kr": 93,
+    "pack": "5 KGM",
+    "name": "Jasminris",
     "brand": "Xtra",
-    "code": "7340191185517"
+    "code": "7340191185548"
    },
    "pasta": {
     "krKg": 13.95,
@@ -868,8 +929,8 @@
     "code": "7340191174573"
    },
    "paprika": {
-    "krKg": 59.9,
-    "kr": 59.9,
+    "krKg": 69.9,
+    "kr": 69.9,
     "pack": "200 gram ungefärlig vikt",
     "name": "Paprika Röd",
     "brand": "",
@@ -884,16 +945,16 @@
     "code": "7340191151376"
    },
    "vitkal": {
-    "krKg": 15.9,
-    "kr": 15.9,
+    "krKg": 14.9,
+    "kr": 14.9,
     "pack": "2000 gram ungefärlig vikt",
     "name": "Vitkål",
     "brand": "",
     "code": "2317305000009"
    },
    "aubergine": {
-    "krKg": 73.48,
-    "kr": 16.9,
+    "krKg": 64.78,
+    "kr": 14.9,
     "pack": "300 gram ungefärlig vikt",
     "name": "Aubergine",
     "brand": "",
@@ -956,12 +1017,12 @@
     "code": "7340191144484"
    },
    "salsa": {
-    "krKg": 43.79,
-    "kr": 12.26,
-    "pack": "280 G",
-    "name": "Tacosås Medium",
-    "brand": "Xtra",
-    "code": "7340191142794"
+    "krKg": 55.2,
+    "kr": 16.56,
+    "pack": "300 g",
+    "name": "Salsa Chunky Medium",
+    "brand": "Coop",
+    "code": "7340191148772"
    },
    "tacokrydda": {
     "krKg": 178.57,
@@ -1180,12 +1241,12 @@
     "code": "4016241051103"
    },
    "lattcreme": {
-    "krKg": 48.1,
-    "kr": 9.62,
-    "pack": "2 dl",
+    "krKg": 47.9,
+    "kr": 23.95,
+    "pack": "5 dl",
     "name": "Crème Fraiche Lätt 13%",
     "brand": "Coop",
-    "code": "7300156486462"
+    "code": "7300156486486"
    },
    "tahini": {
     "krKg": 153.78,
@@ -1276,8 +1337,8 @@
     "code": "8719200248144"
    },
    "lattmjolk": {
-    "krKg": 10.51,
-    "kr": 15.77,
+    "krKg": 10.33,
+    "kr": 15.5,
     "pack": "1.5 L",
     "name": "Lättmjölk",
     "brand": "Coop",
@@ -1655,6 +1716,318 @@
    "until": "2026-11-01"
   },
   {
+   "ingr": "parmesan",
+   "chain": "Willys",
+   "store": "Willys Port 73",
+   "name": "Parmigiano reggiano",
+   "brand": "GARANT",
+   "pack": "150g",
+   "krKg": 232.67,
+   "ordKrKg": 332.67,
+   "label": "34,90/st",
+   "member": true,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "olivolja",
+   "chain": "Willys",
+   "store": "Willys Port 73",
+   "name": "Olivolja",
+   "brand": "DE CECCO",
+   "pack": "750ml",
+   "krKg": 118.67,
+   "ordKrKg": 158.67,
+   "label": "89,00/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Willys",
+   "store": "Willys Port 73",
+   "name": "Kycklingbröstfilé",
+   "brand": "TOP CHOICE",
+   "pack": "Ca 1kg",
+   "krKg": 89.9,
+   "ordKrKg": 109,
+   "label": "89,90/kg",
+   "member": true,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "paprika",
+   "chain": "Willys",
+   "store": "Willys Port 73",
+   "name": "Paprikamix 400g",
+   "brand": "NEDERLÄNDERNA • SPANIEN",
+   "pack": "400g",
+   "krKg": 49.75,
+   "ordKrKg": 69.75,
+   "label": "19,90/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kokosmjolk",
+   "chain": "Willys",
+   "store": "Willys Port 73",
+   "name": "Kokosmjölk",
+   "brand": "AMPAWA",
+   "pack": "500ml",
+   "krKg": 57.8,
+   "ordKrKg": 65.8,
+   "label": "28,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "ajvar",
+   "chain": "Willys",
+   "store": "Willys Port 73",
+   "name": "Ajvar",
+   "brand": "MINELLA",
+   "pack": "690g",
+   "krKg": 46.23,
+   "ordKrKg": 51.97,
+   "label": "31,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "champinjoner",
+   "chain": "Willys",
+   "store": "Willys Port 73",
+   "name": "Champinjoner",
+   "brand": "GARANT",
+   "pack": "380g",
+   "krKg": 82.93,
+   "ordKrKg": 97.08,
+   "label": "2 för 34,00",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "senap",
+   "chain": "Willys",
+   "store": "Willys Port 73",
+   "name": "Senap",
+   "brand": "FELIX",
+   "pack": "360-380g",
+   "krKg": 47.11,
+   "ordKrKg": 52.37,
+   "label": "17,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "parmesan",
+   "chain": "Willys",
+   "store": "Willys Gamlestaden",
+   "name": "Parmigiano reggiano",
+   "brand": "GARANT",
+   "pack": "150g",
+   "krKg": 232.67,
+   "ordKrKg": 332.67,
+   "label": "34,90/st",
+   "member": true,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "olivolja",
+   "chain": "Willys",
+   "store": "Willys Gamlestaden",
+   "name": "Olivolja",
+   "brand": "DE CECCO",
+   "pack": "750ml",
+   "krKg": 118.67,
+   "ordKrKg": 158.67,
+   "label": "89,00/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Willys",
+   "store": "Willys Gamlestaden",
+   "name": "Kycklingbröstfilé",
+   "brand": "TOP CHOICE",
+   "pack": "Ca 1kg",
+   "krKg": 89.9,
+   "ordKrKg": 109,
+   "label": "89,90/kg",
+   "member": true,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "paprika",
+   "chain": "Willys",
+   "store": "Willys Gamlestaden",
+   "name": "Paprikamix 400g",
+   "brand": "NEDERLÄNDERNA • SPANIEN",
+   "pack": "400g",
+   "krKg": 49.75,
+   "ordKrKg": 69.75,
+   "label": "19,90/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kokosmjolk",
+   "chain": "Willys",
+   "store": "Willys Gamlestaden",
+   "name": "Kokosmjölk",
+   "brand": "AMPAWA",
+   "pack": "500ml",
+   "krKg": 57.8,
+   "ordKrKg": 65.8,
+   "label": "28,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "ajvar",
+   "chain": "Willys",
+   "store": "Willys Gamlestaden",
+   "name": "Ajvar",
+   "brand": "MINELLA",
+   "pack": "690g",
+   "krKg": 46.23,
+   "ordKrKg": 51.97,
+   "label": "31,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "champinjoner",
+   "chain": "Willys",
+   "store": "Willys Gamlestaden",
+   "name": "Champinjoner",
+   "brand": "GARANT",
+   "pack": "380g",
+   "krKg": 82.93,
+   "ordKrKg": 97.08,
+   "label": "2 för 34,00",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "senap",
+   "chain": "Willys",
+   "store": "Willys Gamlestaden",
+   "name": "Senap",
+   "brand": "FELIX",
+   "pack": "360-380g",
+   "krKg": 47.11,
+   "ordKrKg": 52.37,
+   "label": "17,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "parmesan",
+   "chain": "Willys",
+   "store": "Willys Mobilia",
+   "name": "Parmigiano reggiano",
+   "brand": "GARANT",
+   "pack": "150g",
+   "krKg": 232.67,
+   "ordKrKg": 332.67,
+   "label": "34,90/st",
+   "member": true,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "olivolja",
+   "chain": "Willys",
+   "store": "Willys Mobilia",
+   "name": "Olivolja",
+   "brand": "DE CECCO",
+   "pack": "750ml",
+   "krKg": 118.67,
+   "ordKrKg": 158.67,
+   "label": "89,00/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Willys",
+   "store": "Willys Mobilia",
+   "name": "Kycklingbröstfilé",
+   "brand": "TOP CHOICE",
+   "pack": "Ca 1kg",
+   "krKg": 89.9,
+   "ordKrKg": 109,
+   "label": "89,90/kg",
+   "member": true,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "paprika",
+   "chain": "Willys",
+   "store": "Willys Mobilia",
+   "name": "Paprikamix 400g",
+   "brand": "NEDERLÄNDERNA • SPANIEN",
+   "pack": "400g",
+   "krKg": 49.75,
+   "ordKrKg": 69.75,
+   "label": "19,90/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kokosmjolk",
+   "chain": "Willys",
+   "store": "Willys Mobilia",
+   "name": "Kokosmjölk",
+   "brand": "AMPAWA",
+   "pack": "500ml",
+   "krKg": 57.8,
+   "ordKrKg": 65.8,
+   "label": "28,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "ajvar",
+   "chain": "Willys",
+   "store": "Willys Mobilia",
+   "name": "Ajvar",
+   "brand": "MINELLA",
+   "pack": "690g",
+   "krKg": 46.23,
+   "ordKrKg": 51.97,
+   "label": "31,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "champinjoner",
+   "chain": "Willys",
+   "store": "Willys Mobilia",
+   "name": "Champinjoner",
+   "brand": "GARANT",
+   "pack": "380g",
+   "krKg": 82.93,
+   "ordKrKg": 97.08,
+   "label": "2 för 34,00",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "senap",
+   "chain": "Willys",
+   "store": "Willys Mobilia",
+   "name": "Senap",
+   "brand": "FELIX",
+   "pack": "360-380g",
+   "krKg": 47.11,
+   "ordKrKg": 52.37,
+   "label": "17,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
    "ingr": "kycklingfile",
    "chain": "ICA",
    "store": "Maxi ICA Stormarknad",
@@ -1915,6 +2288,149 @@
    "until": "2026-10-04"
   },
   {
+   "ingr": "krossade",
+   "chain": "ICA",
+   "store": "Maxi ICA Solna",
+   "name": "Krossade tomater",
+   "brand": "Cirio",
+   "pack": "390 g",
+   "krKg": 29.91,
+   "ordKrKg": 45.97,
+   "label": "3 för 35 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "broccoli",
+   "chain": "ICA",
+   "store": "Maxi ICA Solna",
+   "name": "Fryst broccoli",
+   "brand": "ICA",
+   "pack": "800 g",
+   "krKg": 24.38,
+   "ordKrKg": 31.78,
+   "label": "2 för 39 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "krossade",
+   "chain": "ICA",
+   "store": "Maxi ICA Göteborg",
+   "name": "HELGKLIPP! Krossade tomater",
+   "brand": "Garofalo",
+   "pack": "1200g",
+   "krKg": 62.5,
+   "ordKrKg": 87.3,
+   "label": "25 kr/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "ICA",
+   "store": "Maxi ICA Göteborg",
+   "name": "Färsk kycklingfilé",
+   "brand": "Kronfågel",
+   "pack": "900 g",
+   "krKg": 98.89,
+   "ordKrKg": 155.2,
+   "label": "89 kr/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "krossade",
+   "chain": "ICA",
+   "store": "Maxi ICA Göteborg",
+   "name": "Krossade tomater",
+   "brand": "Cirio",
+   "pack": "390 g",
+   "krKg": 29.91,
+   "ordKrKg": 38.56,
+   "label": "3 för 35 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "broccoli",
+   "chain": "ICA",
+   "store": "Maxi ICA Göteborg",
+   "name": "Fryst broccoli",
+   "brand": "ICA",
+   "pack": "800 g",
+   "krKg": 24.38,
+   "ordKrKg": 31.88,
+   "label": "2 för 39 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "olivolja",
+   "chain": "ICA",
+   "store": "Maxi ICA Malmö",
+   "name": "Olivolja extra virgin",
+   "brand": "ICA",
+   "pack": "750 ml",
+   "krKg": 66,
+   "ordKrKg": 80.6,
+   "label": "2 för 99 kr",
+   "member": true,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "lax",
+   "chain": "ICA",
+   "store": "Maxi ICA Malmö",
+   "name": "Fryst laxfilé",
+   "brand": "",
+   "pack": "500 g",
+   "krKg": 175,
+   "ordKrKg": 189,
+   "label": "2 för 175 kr",
+   "member": false,
+   "until": "2026-10-07"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "ICA",
+   "store": "Maxi ICA Malmö",
+   "name": "Färsk kycklingfilé",
+   "brand": "Kronfågel",
+   "pack": "900 g",
+   "krKg": 98.89,
+   "ordKrKg": 158.95,
+   "label": "89 kr/st",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "krossade",
+   "chain": "ICA",
+   "store": "Maxi ICA Malmö",
+   "name": "Krossade tomater",
+   "brand": "Cirio",
+   "pack": "390 g",
+   "krKg": 29.91,
+   "ordKrKg": 42.43,
+   "label": "3 för 35 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "broccoli",
+   "chain": "ICA",
+   "store": "Maxi ICA Malmö",
+   "name": "Fryst broccoli",
+   "brand": "ICA",
+   "pack": "800 g",
+   "krKg": 24.38,
+   "ordKrKg": 31.26,
+   "label": "2 för 39 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
    "ingr": "lax",
    "chain": "Coop",
    "store": "Stora Coop Avion",
@@ -1927,14 +2443,14 @@
    "until": "2026-10-04"
   },
   {
-   "ingr": "kycklingfile",
+   "ingr": "blandfars",
    "chain": "Coop",
    "store": "Stora Coop Avion",
-   "name": "Majskycklingfilé ",
-   "brand": "Guldfågeln",
+   "name": "Blandfärs",
+   "brand": "Scan",
    "pack": "1000 g.",
-   "krKg": 139,
-   "label": "139 kr",
+   "krKg": 99,
+   "label": "99 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -1954,23 +2470,23 @@
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Avion",
-   "name": "Färsk kycklingfilé",
-   "brand": "Familjefågel",
-   "pack": "450 g.",
-   "krKg": 104.22,
-   "label": "46.9 kr",
+   "name": "Majskycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "1000 g.",
+   "krKg": 139,
+   "label": "139 kr",
    "member": false,
    "until": "2026-10-04"
   },
   {
-   "ingr": "blandfars",
+   "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Avion",
-   "name": "Blandfärs",
-   "brand": "Scan",
-   "pack": "1000 g.",
-   "krKg": 99,
-   "label": "99 kr",
+   "name": "Färsk kycklingfilé",
+   "brand": "Familjefågel",
+   "pack": "450 g.",
+   "krKg": 104.22,
+   "label": "46.9 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -1999,6 +2515,18 @@
    "until": "2026-10-04"
   },
   {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Majskycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "1000 g.",
+   "krKg": 139,
+   "label": "139 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
    "ingr": "ajvar",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
@@ -2019,18 +2547,6 @@
    "pack": "450 g.",
    "krKg": 104.22,
    "label": "46.9 kr",
-   "member": false,
-   "until": "2026-10-04"
-  },
-  {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Ersboda",
-   "name": "Majskycklingfilé ",
-   "brand": "Guldfågeln",
-   "pack": "1000 g.",
-   "krKg": 139,
-   "label": "139 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -2047,30 +2563,6 @@
    "until": "2026-10-04"
   },
   {
-   "ingr": "ajvar",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Ajvar",
-   "brand": "Podravka",
-   "pack": "690 g.",
-   "krKg": 43.48,
-   "label": "30 kr",
-   "member": false,
-   "until": "2026-10-04"
-  },
-  {
-   "ingr": "blandfars",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Blandfärs",
-   "brand": "Scan",
-   "pack": "1000 g.",
-   "krKg": 99,
-   "label": "99 kr",
-   "member": false,
-   "until": "2026-10-04"
-  },
-  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
@@ -2091,6 +2583,30 @@
    "pack": "450 g.",
    "krKg": 104.22,
    "label": "46.9 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Blandfärs",
+   "brand": "Scan",
+   "pack": "1000 g.",
+   "krKg": 99,
+   "label": "99 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "ajvar",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Ajvar",
+   "brand": "Podravka",
+   "pack": "690 g.",
+   "krKg": 43.48,
+   "label": "30 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -2103,6 +2619,174 @@
    "pack": "400 g.",
    "krKg": 55,
    "label": "22 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "lax",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Färsk laxfilé",
+   "brand": "Harbour",
+   "pack": "Ca 1 kg.",
+   "krKg": 139,
+   "label": "139 kr",
+   "member": true,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Majskycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "1000 g.",
+   "krKg": 139,
+   "label": "139 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Färsk kycklingfilé",
+   "brand": "Familjefågel",
+   "pack": "450 g.",
+   "krKg": 104.22,
+   "label": "46.9 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "ajvar",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Ajvar",
+   "brand": "Podravka",
+   "pack": "690 g.",
+   "krKg": 43.48,
+   "label": "30 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Blandfärs",
+   "brand": "Scan",
+   "pack": "1000 g.",
+   "krKg": 99,
+   "label": "99 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Backaplan",
+   "name": "Majskycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "1000 g.",
+   "krKg": 139,
+   "label": "139 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "ajvar",
+   "chain": "Coop",
+   "store": "Stora Coop Backaplan",
+   "name": "Ajvar",
+   "brand": "Podravka",
+   "pack": "690 g.",
+   "krKg": 43.48,
+   "label": "30 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Backaplan",
+   "name": "Färsk kycklingfilé",
+   "brand": "Familjefågel",
+   "pack": "450 g.",
+   "krKg": 104.22,
+   "label": "46.9 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Backaplan",
+   "name": "Blandfärs",
+   "brand": "Scan",
+   "pack": "1000 g.",
+   "krKg": 99,
+   "label": "99 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "lax",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Färsk laxfilé",
+   "brand": "Harbour",
+   "pack": "Ca 1 kg.",
+   "krKg": 139,
+   "label": "139 kr",
+   "member": true,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Blandfärs",
+   "brand": "Scan",
+   "pack": "1000 g.",
+   "krKg": 99,
+   "label": "99 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Majskycklingfilé ",
+   "brand": "Guldfågeln",
+   "pack": "1000 g.",
+   "krKg": 139,
+   "label": "139 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "ajvar",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Ajvar",
+   "brand": "Podravka",
+   "pack": "690 g.",
+   "krKg": 43.48,
+   "label": "30 kr",
+   "member": false,
+   "until": "2026-10-04"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Färsk kycklingfilé",
+   "brand": "Familjefågel",
+   "pack": "450 g.",
+   "krKg": 104.22,
+   "label": "46.9 kr",
    "member": false,
    "until": "2026-10-04"
   },
@@ -2125,9 +2809,9 @@
    "name": "Laxfilé hel sida",
    "brand": "",
    "pack": "",
-   "krKg": 129,
-   "label": "129 kr/kg",
-   "member": false,
+   "krKg": 119,
+   "label": "119 kr/kg",
+   "member": true,
    "until": "2026-10-04"
   },
   {

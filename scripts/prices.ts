@@ -1,5 +1,5 @@
 // Weekly price fetch: `node scripts/prices.ts`. Writes src/lib/prices.json, which the app imports at build time.
-// Ordinary price per ingredient and chain (Willys, Coop; none for ICA and Lidl), plus this week's offers per Umeå store and Lidl's national ones. No worker:
+// Ordinary price per ingredient and chain (Willys, Coop; none for ICA and Lidl), plus this week's offers per store (Umeå and the three metro regions) and Lidl's national ones. No worker:
 // .github/workflows/prices.yml runs it and redeploys.
 // Fetched pages are data only: ICA's embedded object is parsed as JSON after stripping two JS constructs, never evaluated.
 import { writeFileSync } from 'node:fs';
@@ -7,14 +7,22 @@ import { BUY, type IngrId } from '../src/lib/data.ts';
 import { CHAINS, matches, type Chain, type Offer, type Prices, type Shelf, type Store } from '../src/lib/price.ts';
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/128 Safari/537.36';
-const WILLYS = [[2203, 'Willys Ersboda'], [2276, 'Willys Umeå Syd'], [2333, 'Willys Klockarbäcken'], [2872, 'Willys Hemma Rådhusesplanaden']] as const;
+// [id, name, region]. The metro regions get one store per chain, the biggest format (Patrik 2026-10-03: not the corner shop):
+// offers barely differ between stores of a chain (2026-10-03: Willys 100 % per format, ICA Maxi 92–96 %, Stora Coop 90–100 %
+// shared between Umeå and the metros), so one Maxi and one Stora Coop catch the local ones. Ids: willys.se/axfood/rest/store,
+// ica.se/butiker/maxi/, Coop's store API (ledgerAccountNumber). Names must be unique: offers point at their store by name.
+const WILLYS = [[2203, 'Willys Ersboda', 'Umeå'], [2276, 'Willys Umeå Syd', 'Umeå'], [2333, 'Willys Klockarbäcken', 'Umeå'], [2872, 'Willys Hemma Rådhusesplanaden', 'Umeå'],
+  [2252, 'Willys Port 73', 'Stockholm'], [2111, 'Willys Gamlestaden', 'Göteborg'], [2253, 'Willys Mobilia', 'Malmö']] as const;
 const ICA = [
-  ['maxi-ica-stormarknad-umea-1003828', 'Maxi ICA Stormarknad'], ['ica-kvantum-ersboda-1106008', 'ICA Kvantum Ersboda'],
-  ['ica-kvantum-kronoparken-1004229', 'ICA Kvantum Kronoparken'], ['ica-kvantum-mariehem-1003786', 'ICA Kvantum Mariehem'],
-  ['ica-supermarket-alidhem-1004111', 'ICA Supermarket Ålidhem'], ['ica-supermarket-boleang-1004302', 'ICA Supermarket Boleäng'],
-  ['ica-supermarket-city-umea-1003465', 'ICA Supermarket City'], ['ica-supermarket-teg-1003487', 'ICA Supermarket Teg'],
+  ['maxi-ica-stormarknad-umea-1003828', 'Maxi ICA Stormarknad', 'Umeå'], ['ica-kvantum-ersboda-1106008', 'ICA Kvantum Ersboda', 'Umeå'],
+  ['ica-kvantum-kronoparken-1004229', 'ICA Kvantum Kronoparken', 'Umeå'], ['ica-kvantum-mariehem-1003786', 'ICA Kvantum Mariehem', 'Umeå'],
+  ['ica-supermarket-alidhem-1004111', 'ICA Supermarket Ålidhem', 'Umeå'], ['ica-supermarket-boleang-1004302', 'ICA Supermarket Boleäng', 'Umeå'],
+  ['ica-supermarket-city-umea-1003465', 'ICA Supermarket City', 'Umeå'], ['ica-supermarket-teg-1003487', 'ICA Supermarket Teg', 'Umeå'],
+  ['maxi-ica-stormarknad-solna-1003380', 'Maxi ICA Solna', 'Stockholm'], ['maxi-ica-stormarknad-goteborg-1004219', 'Maxi ICA Göteborg', 'Göteborg'],
+  ['maxi-ica-stormarknad-malmo-1004492', 'Maxi ICA Malmö', 'Malmö'],
 ] as const;
-const COOP = [[232400, 'Stora Coop Avion'], [231400, 'Stora Coop Ersboda'], [235660, 'Stora Coop Tomtebo'], [235560, 'Coop City Umeå']] as const;
+const COOP = [[232400, 'Stora Coop Avion', 'Umeå'], [231400, 'Stora Coop Ersboda', 'Umeå'], [235660, 'Stora Coop Tomtebo', 'Umeå'], [235560, 'Coop City Umeå', 'Umeå'],
+  [252700, 'Stora Coop Bromma', 'Stockholm'], [252600, 'Stora Coop Backaplan', 'Göteborg'], [105860, 'Stora Coop Stadion', 'Malmö']] as const;
 
 // "59:90 kr/kg", "87,90 kr", "72:73-100:00/kg" -> first number.
 const num = (s: string | null | undefined) => {
@@ -166,8 +174,8 @@ for (const path of lidlPages) {
 }
 if (lidlHome && !lidlPages.length) console.log('Lidl: inga veckosidor länkade från lidl.se');
 
-const stores: Store[] = [...WILLYS.map(([, name]) => ({ chain: 'Willys' as const, name })), ...ICA.map(([, name]) => ({ chain: 'ICA' as const, name })),
-  ...(coopKey ? COOP : []).map(([, name]) => ({ chain: 'Coop' as const, name })), ...(lidlPages.length ? [{ chain: 'Lidl' as const, name: LIDL }] : [])];
+const stores: Store[] = [...WILLYS.map(([, name, region]) => ({ chain: 'Willys' as const, name, region })), ...ICA.map(([, name, region]) => ({ chain: 'ICA' as const, name, region })),
+  ...(coopKey ? COOP : []).map(([, name, region]) => ({ chain: 'Coop' as const, name, region })), ...(lidlPages.length ? [{ chain: 'Lidl' as const, name: LIDL }] : [])];
 const out: Prices = { at: new Date().toISOString().slice(0, 10), stores, shelf, offers };
 writeFileSync(new URL('../src/lib/prices.json', import.meta.url), JSON.stringify(out, null, 1) + '\n');
 console.log(`${CHAINS.map((c) => `${c} ${Object.keys(shelf[c]).length}`).join(', ')} av ${ids.length} hyllpriser, ${offers.length} erbjudanden på ${new Set(offers.map((o) => o.ingr)).size} ingredienser`);

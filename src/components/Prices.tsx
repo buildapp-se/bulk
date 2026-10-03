@@ -4,7 +4,8 @@ import { t } from '@/i18n/sv';
 import { BASES, byId, CARBS, INGR, KITS, PROTEINS, VEGS, type IngrId, type Kit, type Protein } from '@/lib/data';
 import { calcBox, nf, split, shopping, type BoxCalc } from '@/lib/calc';
 import { protPrep, type Pick } from '@/lib/prep';
-import { basket, CHAINS, deals, krPerProtein, live, needs, pantryCost, PRICES, regular, unit, type Basket, type Deal, type Offer } from '@/lib/price';
+import { basket, CHAINS, deals, forRegion, krPerProtein, live, needs, pantryCost, PRICES, REGIONS, regular, unit, type Basket, type Deal, type Offer, type Region } from '@/lib/price';
+import { setRegion } from '@/lib/actions';
 import { useBatch } from '@/lib/useBatch';
 import { haptic } from '@/lib/haptics';
 
@@ -27,14 +28,15 @@ export function usePricing(): Pricing {
   const [today, setToday] = useState('');
   useEffect(() => setToday(new Date().toLocaleDateString('sv-SE')), []);
   return useMemo(() => {
-    const offers = live(PRICES, today);
+    const P = forRegion(PRICES, plan.region);
+    const offers = live(P, today);
     const memo = new Map<string, Priced>();
     const box = (kit: Kit, p: Protein): Priced => {
       const key = `${kit.id}:${p.id}`;
       let x = memo.get(key);
       if (!x) {
         const c = calcBox({ i: 0, id: '', kit, protein: p, method: protPrep(p).m, carb: byId(CARBS, kit.carb), veg: byId(VEGS, kit.veg) }, plan, goal);
-        x = { c, cost: basket(needs([{ c, n: 1 }]), PRICES, offers) };
+        x = { c, cost: basket(needs([{ c, n: 1 }]), P, offers) };
         memo.set(key, x);
       }
       return x;
@@ -43,10 +45,10 @@ export function usePricing(): Pricing {
     const shop = (picks: readonly Pick[]): Bill | null => {
       const counts = split(Math.max(plan.boxes, picks.length), picks.length);
       const boxes = picks.map((x, i) => ({ c: box(x.kit, x.protein).c, n: counts[i] }));
-      const cost = basket(needs(boxes), PRICES, offers);
+      const cost = basket(needs(boxes), P, offers);
       if (!cost) return null;
       const rows = shopping(boxes.flatMap((b) => Array<BoxCalc>(b.n).fill(b.c)));
-      return { n: counts.reduce((s, v) => s + v, 0), cost, pantry: pantryCost(rows, PRICES, offers, cost.store) };
+      return { n: counts.reduce((s, v) => s + v, 0), cost, pantry: pantryCost(rows, P, offers, cost.store) };
     };
     return { offers, box, shop };
   }, [plan, goal, today]);
@@ -81,12 +83,25 @@ const GROUPS: [string, IngrId[]][] = (() => {
 
 /** Every ingredient's price this week, grouped. Green = an offer beats the usual cheapest; proteins ranked by kr per 100 g protein. */
 export function WeekPrices({ offers }: { offers: Offer[] }) {
+  const { plan } = useBatch();
   const byIngr = useMemo(() => new Map(deals(PRICES, offers).map((d) => [d.id, d])), [offers]);
+  const local = forRegion(PRICES, plan.region).stores.filter((s) => s.region).length;
   return (
     <section className="flex flex-col gap-3">
       <div className="flex flex-col gap-1.5">
-        <h2 className="text-lg font-semibold tracking-tight">{t.price.week}</h2>
-        <p className="text-sm text-muted [text-wrap:pretty]">{t.price.weekSub(fmtDay(PRICES.at))}</p>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold tracking-tight">{t.price.week}</h2>
+          {/* Native select: one tap, the phone's own picker. */}
+          <label className="flex items-center gap-2 text-sm text-muted">
+            {t.price.region}
+            <select value={plan.region} onChange={(e) => setRegion(e.target.value as Region)}
+              className="min-h-11 rounded-lg border border-line bg-surface px-2 text-sm text-ink">
+              {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+            </select>
+          </label>
+        </div>
+        <p className="text-sm text-muted [text-wrap:pretty]">{t.price.weekSub(fmtDay(PRICES.at), local, plan.region)}</p>
+        <p className="text-sm text-muted">{t.price.otherCity} <a className="underline" href={`mailto:${t.price.mail}?subject=${encodeURIComponent('Bulk: min stad')}`}>{t.price.tellUs}</a></p>
         <div className="flex flex-col gap-1 text-[12px]">
           <span className="flex items-start gap-2"><span className="mt-px whitespace-nowrap rounded-full bg-deal-bg px-1.5 font-mono text-deal">−20 %</span><span>{t.price.legendGreen}</span></span>
           <span className="flex items-start gap-2"><span className="mt-px whitespace-nowrap rounded-full bg-sunken px-1.5 font-mono text-muted">−20 % rea</span><span>{t.price.legendGrey}</span></span>

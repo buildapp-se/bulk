@@ -12,7 +12,10 @@ export interface Offer {
   ingr: IngrId; chain: Chain; store: string; name: string; brand: string; pack: string;
   krKg: number; ordKrKg?: number; label: string; member: boolean; until: string; // until = last valid day, YYYY-MM-DD
 }
-export interface Store { chain: Chain; name: string }
+/** No region = national (Lidl): shown everywhere. */
+export interface Store { chain: Chain; name: string; region?: Region }
+export const REGIONS = ['Umeå', 'Stockholm', 'Göteborg', 'Malmö'] as const;
+export type Region = (typeof REGIONS)[number];
 export interface Prices { at: string; stores: Store[]; shelf: Record<Chain, Partial<Record<IngrId, Shelf>>>; offers: Offer[] }
 export const PRICES = raw as Prices;
 export const CHAINS: readonly Chain[] = ['Willys', 'ICA', 'Coop', 'Lidl'];
@@ -25,6 +28,17 @@ export function matches(id: IngrId, name: string): boolean {
   const [, re, not] = BUY[id];
   const n = norm(name);
   return new RegExp(re).test(n) && !(not && new RegExp(not).test(n)) && !PET.test(n);
+}
+
+/**
+ * The prices as seen from one region: its own stores plus the national ones, and only their offers. Ordinary prices are
+ * national, so everything else works unchanged on the result. A store with no region in the file counts as Umeå (files
+ * written before regions, 2026-10-03).
+ */
+export function forRegion(P: Prices, region: Region): Prices {
+  const stores = P.stores.filter((s) => s.chain === 'Lidl' || (s.region ?? 'Umeå') === region);
+  const names = new Set(stores.map((s) => s.name));
+  return { ...P, stores, offers: P.offers.filter((o) => names.has(o.store)) };
 }
 
 // ---------- Price per ingredient ----------
