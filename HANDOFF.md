@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-10-03
+reviewedAt: 2026-10-06
 schemaVersion: 1
 status: active
 currentGoal: "Bulk är live på buildapp.se/bulk: matlådeplanering med smakkit, inköp, tillagning och veckans priser i Umeå."
@@ -7,6 +7,15 @@ nextAction: "BACKLOG P1, test på riktig telefon. Filips-kiten ska provlagas och
 blockers: []
 ---
 # Handoff
+
+**2026-10-06, nattbatch på grenen `batch/2026-10-06` (inte mergad, inte deployad):** fem backlogposter, en commit var.
+1. `b09bc02` Lådans ark på 390 px: sidan gick att skrolla 32 px i sidled eftersom den dolda brickan sträcks över arkets huvud (delat `layoutId`) och dess kitbild stack ut. Brickan ritar inte bilden medan dess ark är öppet. `Pill` har `aria-pressed`. Mätt i playwright-cli på 390: scrollWidth 422 -> 390 med arket öppet, 4 valda av 62 knappar bär `aria-pressed=true`.
+2. `0363f5a` `npm audit fix` (sharp 0.35.5, source-map-js): `npm audit` 0 sårbarheter.
+3. `cf1a083` `prices.yml` checkar ut med `persist-credentials: false` och pushar via `gh auth setup-git`. zizmor artipacked 2 -> 0. **Inte verifierat:** själva pushen på GitHub. Kör `prices.yml` en gång med workflow_dispatch efter merge; misslyckas den uteblir bara prisuppdateringen.
+4. `73ef174` `--muted` #6f6a62 -> #6a655d (4,69:1 på `--sunken`). Proteinkortets kryssruta är en knapp överst i kortet, syskon till metodväljaren; hela kortet är fortfarande klickyta. axe 4.13 på 390 px: Välj, Ingredienser och Prepp 0 fel; mellanslag, Enter och klick på kortet växlar en gång, metodväljaren växlar inte kortet.
+5. `8cf6968` `span` i stället för `div` i målknapparna: html-validate `element-permitted-content` 0 på alla fyra byggda sidor.
+
+Check, typecheck och build gröna efter sista ändringen. Nytt fynd, inte åtgärdat (utanför det godkända): Tillagning har 26 kontrastfel och 5 `nested-interactive`, se BACKLOG. zizmor 1.x klagar också på att actions inte är pinnade till hash (7 st, `unpinned-uses`), inte infört i BACKLOG som krav.
 
 **2026-10-03, regioner (`0bb7855`):** Veckans priser har ett regionval (Umeå, Stockholm, Göteborg, Malmö) som styr vilka butiker och erbjudanden som räknas; vanliga priser är nationella. Storstäderna har en Willys, en Maxi och en Stora Coop var, alla gav erbjudanden i första körningen (prices.json 46 -> 57 KB). Raden "Bor du någon annanstans? Säg till" mejlar kontakt@buildapp.se. Verifierat: check (Umeå ser aldrig Stockholms butiker, Stockholms butik vinner där med 20,12 kr, gammal fil = Umeå), typecheck, build, playwright-cli 1280 (Stockholm och Malmö visar bara egna butiker, valet överlever omladdning) och 390 (44 px select, ingen horisontell scroll).
 
