@@ -19,18 +19,20 @@ export function ProteinPicker() {
         const n = INGR[p.ingr].n;
         const methods = Object.keys(p.methods) as MethodId[];
         return (
-          // Whole card is the target. Inner method toggle stops the click so it doesn't also toggle the card.
+          // Whole card is the click target. The checkbox itself is the button at the top, a sibling of the method
+          // toggle (a checkbox may not contain other controls); its click bubbles up to the card. The method toggle
+          // stops the click so it doesn't also toggle the card.
           <motion.div key={p.id} variants={stagger.child} layout transition={spring}
-            role="checkbox" aria-checked={!!sel} tabIndex={0}
             onClick={() => toggleProtein(p.id)}
-            onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleProtein(p.id); } }}
             whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}
-            className={`flex cursor-pointer select-none flex-col gap-1 rounded-xl border p-3 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ink ${sel ? 'border-ink bg-surface shadow-[0_6px_20px_-12px_rgba(35,33,29,.45)]' : 'border-line hover:border-muted'}`}>
-            <span className="flex w-full items-center justify-between gap-2">
-              <span className="font-semibold">{p.name}</span>
-              <Check on={!!sel} />
-            </span>
-            <span className="font-mono text-[11px] text-muted">{nf(n[1], 1)} g P / 100 g</span>
+            className={`flex cursor-pointer select-none flex-col gap-1 rounded-xl border p-3 transition-colors has-[[role=checkbox]:focus-visible]:ring-2 has-[[role=checkbox]:focus-visible]:ring-ink ${sel ? 'border-ink bg-surface shadow-[0_6px_20px_-12px_rgba(35,33,29,.45)]' : 'border-line hover:border-muted'}`}>
+            <button role="checkbox" aria-checked={!!sel} className="flex flex-col gap-1 text-left outline-none">
+              <span className="flex w-full items-center justify-between gap-2">
+                <span className="font-semibold">{p.name}</span>
+                <Check on={!!sel} />
+              </span>
+              <span className="font-mono text-[11px] text-muted">{nf(n[1], 1)} g P / 100 g</span>
+            </button>
             <AnimatePresence initial={false}>
               {sel && methods.length > 1 && (
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring} className="overflow-hidden">

@@ -6,7 +6,7 @@
   --surface: #fdfcfa;
   --sunken: #ebe7e0;
   --ink: #23211d;
-  --muted: #6f6a62;
+  --muted: #6a655d; /* 4.69:1 on --sunken, the darkest surface it sits on (WCAG AA needs 4.5) */
   --line: #e6e2da;
   --line-soft: #efece6;
   --on-ink: #fdfcfa;
