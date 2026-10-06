@@ -37,8 +37,8 @@ export function GoalPanel() {
                   onClick={() => { haptic(); setGoal({ kind: k, proteinBox: null, kcalBox: null }); }}
                   className={`rounded-xl border px-3 py-2.5 text-left transition-colors ${g.kind === k ? 'border-ink bg-ink text-on-ink' : 'border-line hover:border-muted'}`}
                 >
-                  <div className="font-semibold">{GOAL_KINDS[k].label}</div>
-                  <div className={`font-mono text-[11px] ${g.kind === k ? 'opacity-70' : 'text-muted'}`}>{GOAL_KINDS[k].delta > 0 ? '+' : ''}{GOAL_KINDS[k].delta} kcal</div>
+                  <span className="block font-semibold">{GOAL_KINDS[k].label}</span>
+                  <span className={`block font-mono text-[11px] ${g.kind === k ? 'opacity-70' : 'text-muted'}`}>{GOAL_KINDS[k].delta > 0 ? '+' : ''}{GOAL_KINDS[k].delta} kcal</span>
                 </button>
               ))}
             </div>
