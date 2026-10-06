@@ -218,6 +218,22 @@ shareIs('ostronsås 9 g (etikett)', share('krapow', 'ostronsas'), 9 * 0.77, 9 * 
 shareIs('philadelphia 30 g (etikett)', share('filips-marryme', 'philadelphia'), 30 * 1.45, 30 * 0.072); // 43,5 / 2,16
 shareIs('flora 4 % 80 ml (etikett)', share('filips-marryme', 'mildamat'), 80 * 0.6, 80 * 0.011); // 48 / 0,88 (was 49,6 / 2,4)
 shareIs('mini fraiche 33 g (LV 2046)', share('filips-currymango', 'minifraiche'), 33 * 0.84, 33 * 0.038); // 27,72 / 1,254
+// 2026-10-06: fifteen more estimates replaced (LV API and labels on willys.se).
+shareIs('turkisk yoghurt 30 g (LV 6113)', share('kryddbonor', 'yoghurt'), 30 * 1.09, 30 * 0.036); // 32,7 / 1,08 (was 28,5 / 1,05)
+shareIs('ärtor och morötter 75 g (LV 388)', share('shepherd', 'artmorot'), 75 * 0.6, 75 * 0.037); // 45 / 2,775
+shareIs('soltorkade 15 g (LV 4938)', share('toscansk', 'soltorkade'), 15 * 1.67, 15 * 0.094); // 25,05 / 1,41 (was 30 / 0,6)
+shareIs('sirap 10 g (LV 1894)', share('kalpudding', 'sirap'), 10 * 3.23, 0);
+shareIs('lingonsylt 20 g (LV 1798)', share('kalpudding', 'lingon'), 20 * 1.48, 20 * 0.002); // 29,6 (was 36)
+shareIs('lättmjölk 65 ml (LV 151)', share('filips-currymango', 'lattmjolk'), 65 * 0.39, 65 * 0.036);
+shareIs('ajvar 12 g (LV 417)', share('filips-ajvar', 'ajvar'), 12 * 0.7, 12 * 0.012);
+shareIs('mager ost 6 g (LV 95)', share('filips-philly', 'ost'), 6 * 2.87, 6 * 0.304);
+shareIs('grekisk yoghurt 20 g (etikett)', share('gochujang', 'grekisk'), 20 * 0.59, 20 * 0.095); // 11,8 / 1,9
+shareIs('gochujang 15 g (etikett)', share('gochujang', 'gochujang'), 15 * 2.18, 15 * 0.043); // 32,7 / 0,645
+shareIs('chipotlepasta 8 g (etikett)', share('chipotle', 'chipotle'), 8 * 0.43, 8 * 0.018);
+shareIs('sriracha 5 g (etikett)', share('jordnot', 'sriracha'), 5 * 1.39, 5 * 0.023);
+shareIs('röd kebabsås 10 g (etikett)', share('filips-kebab', 'kebabsas'), 10 * 1.7, 10 * 0.016); // 17 / 0,16 (was 12 / 0,1)
+// Estimates left on purpose, see BACKLOG: a new 'est' must be a decision, not a slip.
+eq('remaining estimates', Object.entries(INGR).filter(([, x]) => x.src === 'est').map(([id]) => id), ['coleslaw', 'kesella', 'pbpulver', 'hotsauce']);
 // Every label value names its product.
 for (const [id, x] of Object.entries(INGR)) if (x.src === 'etikett' && !x.label) fails.push(`etikett utan källa: ${id}`);
 
