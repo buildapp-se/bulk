@@ -1,7 +1,7 @@
 // Self-check: `node scripts/check.ts`. Prints one line per failure, exits non-zero on any.
 // Expected numbers are hand-computed from the per-100 g values in data.ts (see comments).
 import { existsSync, readFileSync } from 'node:fs';
-import { INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
+import { DEFAULT_METHOD, INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, migratePlan, partMacro, pickPacks, pruneOverrides, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
@@ -266,6 +266,17 @@ const hel: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'kyckling', method: 'hel' 
 const helSch = schedule(resolveBoxes(hel).map((b) => calcBox(b, hel, null)), hel);
 eq('hel step', helSch.steps.find((s) => s.id === 'prot-kyckling-hel')?.dur, 25);
 eq('hel on trays', helSch.trays, schedule(resolveBoxes(DEFAULT_PLAN).map((b) => calcBox(b, DEFAULT_PLAN, null)), DEFAULT_PLAN).trays);
+// Frying pan (2026-10-06): a stove step that ends with the oven (out at 35, 10 min -> starts at 25), off the trays,
+// with the same oil per gram as the tray. The oven stays the default and the prep tree's choice.
+const pan: Plan = { ...DEFAULT_PLAN, proteins: [{ id: 'kyckling', method: 'ugn' }, { id: 'notfars', method: 'panna' }] };
+const panCalcs = resolveBoxes(pan).map((b) => calcBox(b, pan, null));
+const panSch = schedule(panCalcs, pan);
+const panStep = panSch.steps.find((s) => s.id === 'panna-notfars');
+eq('pan step', [panStep?.track, panStep?.t, panStep?.dur, panStep?.what], ['spis', 25, 10, 'Nötfärs i stekpannan']);
+eq('pan has no oven step', panSch.steps.some((s) => s.id === 'prot-notfars'), false);
+const panBox = panCalcs.find((c) => c.box.protein?.id === 'notfars')!;
+near('pan oil', panBox.parts.filter((x) => x.role === 'olja' && x.q === 175 * (13 / 500)).length, 1, 0);
+eq('pan is never the default', PROTEINS.filter((p) => p.methods.panna).map((p) => [DEFAULT_METHOD(p), protPrep(p).m].includes('panna')), [false, false, false, false, false]);
 
 // Prices, on a fixed table so the weekly fetch never moves the numbers. The same teriyaki box as above:
 // kyckling 175 g, olja 4,55 + 3,64 g, ris 60 g, broccoli 140 g, soja 8 g (base), teriyaki 25 g, edamame 40 g, sesam 3 g.

@@ -210,10 +210,10 @@ export const BUY: Record<IngrId, readonly [q: string, re: string, not?: string]>
 
 // ---------- Cooking ----------
 
-export type MethodId = 'ugn' | 'hel' | 'sousvide' | 'form' | 'gryta';
+export type MethodId = 'ugn' | 'hel' | 'sousvide' | 'form' | 'gryta' | 'panna';
 /** Both go on a tray in the oven session; 'hel' = whole fillets, no knife before, sliced when portioning. */
 export const isOven = (m: MethodId | undefined) => m === 'ugn' || m === 'hel';
-// prep = what to do before cooking; hint = short caveat on the protein card
+// prep = what to do before cooking; hint = short caveat on the protein card; temp 0 = no set temperature (frying pan)
 export interface Method { temp: number; min: number; note: string; sear?: string; prep?: string; hint?: string }
 
 export interface Protein {
@@ -230,15 +230,19 @@ export const PROTEINS: readonly Protein[] = [
     ugn: { temp: 200, min: 20, note: 'Filé i 2–3 cm bitar, ca 18–20 min. Ska vara genomstekt.', prep: 'Skär i 2–3 cm bitar' },
     hel: { temp: 200, min: 25, note: 'Hela filéer på plåt, ca 22–25 min till 72 °C i mitten. Låt vila 5 min och skiva när du portionerar.' },
     sousvide: { temp: 64, min: 120, note: 'Hela filéer i påse med salt, 64 °C i 1,5–4 h (+1 h direkt ur kylen).', sear: 'Bryn 1 min per sida i het panna.', prep: 'Salta hela filéerna och lägg i påse' },
+    panna: { temp: 0, min: 15, note: 'Het panna med lite olja, högst 500 g åt gången. Stek bitarna ca 6–8 min per omgång tills de fått färg och är genomstekta.', prep: 'Skär i 2–3 cm bitar' },
   } },
   { id: 'notfars', name: 'Nötfärs', ingr: 'notfars', raw: 175, methods: {
     ugn: { temp: 200, min: 15, note: 'Smula ut tunt på plåt, bryt isär efter 8 min. Minst 70 °C.' },
+    panna: { temp: 0, min: 10, note: 'Het panna med lite olja, högst 500 g åt gången så att färsen steks och inte kokar. Bryt isär och stek ca 5 min per omgång tills den fått färg. Minst 70 °C.' },
   } },
   { id: 'blandfars', name: 'Blandfärs', ingr: 'blandfars', raw: 175, methods: {
     ugn: { temp: 200, min: 15, note: 'Smula ut tunt på plåt, bryt isär efter 8 min. Minst 70 °C.' },
+    panna: { temp: 0, min: 10, note: 'Het panna med lite olja, högst 500 g åt gången så att färsen steks och inte kokar. Bryt isär och stek ca 5 min per omgång tills den fått färg. Minst 70 °C.' },
   } },
   { id: 'flaskfars', name: 'Fläskfärs', ingr: 'flaskfars', raw: 175, methods: {
     ugn: { temp: 200, min: 15, note: 'Smula ut tunt på plåt, bryt isär efter 8 min. Minst 70 °C.' },
+    panna: { temp: 0, min: 10, note: 'Het panna med lite olja, högst 500 g åt gången så att färsen steks och inte kokar. Bryt isär och stek ca 5 min per omgång tills den fått färg. Minst 70 °C.' },
   } },
   { id: 'flaskkarre', name: 'Pulled fläskkarré', ingr: 'flaskkarre', raw: 190,
     rub: [{ name: 'Spiskummin', q: 1, u: 'tsk' }, { name: 'Oregano', q: 1.5, u: 'tsk' }, { name: 'Vitlöksklyftor, pressade', q: 2, u: 'st' }, { name: 'Salt', q: 1.25, u: 'tsk' }, { name: 'Apelsinjuice', q: 90, u: 'ml' }],
@@ -257,6 +261,7 @@ export const PROTEINS: readonly Protein[] = [
   } },
   { id: 'sojafars', name: 'Sojafärs', ingr: 'sojafars', raw: 175, methods: {
     ugn: { temp: 200, min: 15, note: 'Smula ut fryst på plåt med lite olja, rör om efter 8 min. Behöver inte tinas.' },
+    panna: { temp: 0, min: 8, note: 'Het panna med lite olja, stek färsen fryst ca 6–8 min tills den fått färg. Behöver inte tinas.' },
   } },
   { id: 'halloumi', name: 'Halloumi', ingr: 'halloumi', raw: 120, methods: {
     ugn: { temp: 200, min: 15, note: 'Tärningar på bakplåtspapper, ca 15 min tills kanterna är gyllene. Värm kort i lådan, den blir seg av mycket värme.', prep: 'Skär i 2 cm tärningar' },

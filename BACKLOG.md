@@ -6,7 +6,8 @@
 
 ## P2
 - Firebase Auth + synk av plan mellan enheter (familjehubbens mönster).
-- Stekpanna som tillagningsmetod. Fler sous vide-proteiner (fläskfilé, kalkon).
+- [x] (2026-10-06) Stekpanna som tillagningsmetod (kyckling, nöt-, bland-, fläsk- och sojafärs).
+- Fler sous vide-proteiner (fläskfilé, kalkon). Behöver Patrik: temperatur och tid (som laxens 52 °C) och vilka kit de ska höra till.
 - [x] (2026-10-06) Fler `src: 'est'`: 15 av 19 uppskattningar ersatta med LV eller etikett via willys.se:s produkt-API (`/axfood/rest/p/<kod>`, `nutrientHeaders`).
 - Fyra `src: 'est'` kvar, behöver Patrik: **Vitkålssallad** i BBQ-kitet (uppskattad 90 kcal, köps som coleslaw enligt `BUY`, men butikens coleslaw har 300–340 kcal och 30 g fett; LV 2075 hemlagad coleslaw 88 kcal: vilken är det?), **Lättkesella** (Willys säljer bara Kesella 7 %, 118 kcal; LV 75 kvarg 1 % har 75 kcal: byt produkt eller behåll?), **Frank's RedHot** och **jordnötspulver** (finns inte hos Willys, etikett från annan butik).
 - Riktiga förpackningsstorlekar från ICA/Willys i stället för handskriven tabell.

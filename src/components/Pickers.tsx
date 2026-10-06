@@ -37,13 +37,13 @@ export function ProteinPicker() {
               {sel && methods.length > 1 && (
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring} className="overflow-hidden">
                   <div className="pt-1.5" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
-                    <Segmented id={`m-${p.id}`} small value={sel.method} onChange={(m) => setMethod(p.id, m)}
+                    <Segmented id={`m-${p.id}`} small two={methods.length > 3} value={sel.method} onChange={(m) => setMethod(p.id, m)}
                       options={methods.map((m) => [m, t.method[m]] as const)} />
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
-            {sel && <span className="text-[11px] text-muted">{p.methods[sel.method]!.temp} °C · {fmtMin(p.methods[sel.method]!.min)}</span>}
+            {sel && <span className="text-[11px] text-muted">{p.methods[sel.method]!.temp > 0 && `${p.methods[sel.method]!.temp} °C · `}{fmtMin(p.methods[sel.method]!.min)}</span>}
             {sel && p.methods[sel.method]!.hint && <span className="text-[11px] text-warn">{p.methods[sel.method]!.hint}</span>}
           </motion.div>
         );

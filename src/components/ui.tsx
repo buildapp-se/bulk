@@ -2,19 +2,19 @@
 import { motion } from 'motion/react';
 import { haptic } from '@/lib/haptics';
 
-/** iOS-style segmented control with a sliding pill (shared layoutId per control). */
-export function Segmented<T extends string>({ id, value, onChange, options, small }: {
-  id: string; value: T; onChange: (v: T) => void; options: readonly (readonly [T, React.ReactNode])[]; small?: boolean;
+/** iOS-style segmented control with a sliding pill (shared layoutId per control). `two` = two columns, for four options in a narrow card. */
+export function Segmented<T extends string>({ id, value, onChange, options, small, two }: {
+  id: string; value: T; onChange: (v: T) => void; options: readonly (readonly [T, React.ReactNode])[]; small?: boolean; two?: boolean;
 }) {
   return (
-    <div className="flex gap-0.5 rounded-xl bg-sunken p-[3px]" role="radiogroup">
+    <div className={`${two ? 'grid grid-cols-2' : 'flex'} gap-0.5 rounded-xl bg-sunken p-[3px]`} role="radiogroup">
       {options.map(([v, l]) => (
         <button
           key={v}
           role="radio"
           aria-checked={v === value}
           onClick={() => { haptic(); onChange(v); }}
-          className={`relative flex-1 rounded-lg ${small ? 'px-2 py-1 text-[13px]' : 'px-3 py-2 text-sm'} font-medium transition-colors ${v === value ? 'text-ink' : 'text-muted'}`}
+          className={`relative flex-1 rounded-lg ${small ? `${two ? 'whitespace-nowrap px-1' : 'px-2'} py-1 text-[13px]` : 'px-3 py-2 text-sm'} font-medium transition-colors ${v === value ? 'text-ink' : 'text-muted'}`}
         >
           {v === value && <motion.span layoutId={`seg-${id}`} className="absolute inset-0 rounded-lg bg-surface shadow-[0_1px_2px_rgba(35,33,29,.1)]" transition={{ type: 'spring', stiffness: 500, damping: 38 }} />}
           <span className="relative">{l}</span>

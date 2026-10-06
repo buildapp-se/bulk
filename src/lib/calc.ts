@@ -177,7 +177,7 @@ const sumParts = (parts: Part[]): Macro =>
 /** The one rule for veg: roasted if it can be and the mode says so, or if it is never bought frozen. */
 export const vegRoasted = (v: Veg, mode: Plan['vegMode']) => !!v.oven && !v.frozenOnly && (mode === 'rostade' || !!v.freshOnly);
 const roasted = (b: Box, role: 'protein' | 'carb' | 'veg', vegMode: Plan['vegMode']) =>
-  role === 'protein' ? isOven(b.method) : role === 'carb' ? !!b.carb?.oven : !!b.veg && vegRoasted(b.veg, vegMode);
+  role === 'protein' ? isOven(b.method) || b.method === 'panna' /* fried in the same oil per gram */ : role === 'carb' ? !!b.carb?.oven : !!b.veg && vegRoasted(b.veg, vegMode);
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const r5 = (v: number) => Math.round(v / 5) * 5;
@@ -390,6 +390,8 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   for (const { pr, m } of ovenProt) { const md = pr.methods[m]!; const nm = m === 'hel' ? `${pr.name}, hela filéer` : pr.name; steps.push({ id: m === 'ugn' ? `prot-${pr.id}` : `prot-${pr.id}-${m}`, track: 'ugn', t: E - md.min, dur: md.min, temp: md.temp, title: `${nm} in`, what: `${nm} i ugnen`, details: md.note }); }
   if (ovenVegs.length) steps.push({ id: 'veg', track: 'ugn', t: E - Math.max(...ovenVegs.map((v) => v.oven!)), dur: Math.max(...ovenVegs.map((v) => v.oven!)), temp: 200, title: 'Grönsaker in', what: 'Grönsaker i ugnen', details: ovenVegs.map((v) => v.name).join(' och ') + ' på egen plåt.' });
   for (const { pr } of protMethods.filter((x) => x.m === 'gryta')) { const md = pr.methods.gryta!; steps.push({ id: `gryta-${pr.id}`, track: 'spis', t: Math.max(0, E - md.min), dur: md.min, title: `Koka ${pr.name.toLowerCase()}`, what: `${pr.name} kokar`, details: md.note }); }
+  // Frying pan: on the stove, done when the oven is.
+  for (const { pr } of protMethods.filter((x) => x.m === 'panna')) { const md = pr.methods.panna!; steps.push({ id: `panna-${pr.id}`, track: 'spis', t: Math.max(0, E - md.min), dur: md.min, title: `Stek ${pr.name.toLowerCase()}`, what: `${pr.name} i stekpannan`, details: md.note }); }
   if (stoveCarbs.length) {
     const d = Math.max(...stoveCarbs.map((c) => c.stoveMin ?? 10));
     const names = stoveCarbs.map((c) => c.name.toLowerCase()).join(' och ');
