@@ -184,7 +184,7 @@ function StepRow({ s, when, isNext, done, c, now, onDone, ticked, onTick }: {
             {s.title}
             <motion.span className="absolute inset-x-0 top-1/2 h-px origin-left bg-ink" initial={false} animate={{ scaleX: done ? 1 : 0 }} transition={spring} />
           </span>
-          <span className="rounded-full px-2 py-0.5 font-mono text-[10px] text-white" style={{ background: TRACK_COLOR[s.track] }}>{t.cook.tracks[s.track]}{s.temp ? ` · ${s.temp} °C` : ''}</span>
+          <span className="rounded-full px-2 py-0.5 font-mono text-[10px] text-white" style={{ background: `color-mix(in oklab, ${TRACK_COLOR[s.track]}, black 20%)` /* white text needs 4.5:1; the bars keep the pure colour */ }}>{t.cook.tracks[s.track]}{s.temp ? ` · ${s.temp} °C` : ''}</span>
           {s.dur > 0 && <span className="font-mono text-[11px] text-muted">{fmtMin(s.dur)}</span>}
         </span>
         <AnimatePresence initial={false}>
@@ -235,7 +235,7 @@ function Lines({ rows, keyOf, ticked, onTick }: { rows: StepLine[]; keyOf: (i: n
                 <span className="ml-auto whitespace-nowrap font-mono text-[12px] text-muted">{r.right}</span>
               </span>
               {r.sub && <span className="text-sm text-muted">{r.sub}</span>}
-              {r.note && <span className="text-[12px] text-muted opacity-80 [text-wrap:pretty]">{r.note}</span>}
+              {r.note && <span className="text-[12px] text-muted [text-wrap:pretty]">{r.note}</span>}
             </span>
           </button>
         );
@@ -286,9 +286,11 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, ref }: {
     ? <motion.button whileTap={{ scale: 0.9 }} aria-label={`${t.cook.start}: ${s.what}`} onClick={(e) => { e.stopPropagation(); clocks.start(s); }} onKeyDown={(e) => e.stopPropagation()}
         className="flex h-6 w-6 items-center justify-center rounded-full bg-ink text-[9px] text-on-ink"><span aria-hidden>▶</span></motion.button>
     : <span />);
-  // Rows are divs acting as buttons (they jump to the step), so the play button inside is valid HTML.
-  const rowProps = (s: Step) => ({ role: 'button', tabIndex: 0, onClick: () => jump(s),
-    onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jump(s); } } });
+  // The whole row jumps to its step on click, but only the title is the button (keyboard, screen reader): its click
+  // bubbles to the row. A row with role=button around the play button is nested-interactive (WCAG 4.1.2).
+  const title = (s: Step) => (
+    <button className={`min-h-6 truncate rounded text-left text-[12px] outline-none focus-visible:ring-2 focus-visible:ring-ink ${done[s.id] ? 'text-muted line-through' : ''}`}>{s.title}</button>
+  );
   const fade = (p: number) => (
     // Time that has gone loses its colour; what is left stays full.
     <motion.span className="absolute inset-y-0 left-0 bg-surface/70" initial={false} animate={{ width: `${p * 100}%` }} transition={{ type: 'tween', duration: 0.9, ease: 'linear' }} />
@@ -297,8 +299,8 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, ref }: {
     <div className="flex flex-col gap-1 rounded-2xl border border-line bg-surface p-4">
       <div className="label mb-1">{t.cook.live}</div>
       {long.map((s) => (
-        <div key={s.id} {...rowProps(s)} className={`grid ${cols} cursor-pointer items-start gap-2 rounded-md pb-1 text-left outline-none hover:bg-bg focus-visible:ring-2 focus-visible:ring-ink`}>
-          <span className={`truncate pt-0.5 text-[12px] ${done[s.id] ? 'text-muted line-through' : ''}`}>{s.title}</span>
+        <div key={s.id} onClick={() => jump(s)} className={`grid ${cols} cursor-pointer items-start gap-2 rounded-md pb-1 text-left hover:bg-bg`}>
+          {title(s)}
           <span className="flex min-w-0 flex-col gap-0.5">
             <span className="relative mt-0.5 h-4 overflow-hidden rounded" style={{ background: TRACK_COLOR[s.track] }}>{fade(passed(s))}</span>
             {now > 0 && <span className="truncate font-mono text-[10px] text-muted">{fmtAtStr(at(s.t), now, ref)} → {fmtAtStr(at(s.t + s.dur), now, ref)} · {fmtMin(s.dur)}</span>}
@@ -310,8 +312,8 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, ref }: {
       {long.length > 0 && <div className="my-1 h-px bg-line" />}
       {steps.map((s, i) => (
         // Each row jumps to its step in the list below.
-        <div key={s.id} {...rowProps(s)} className={`grid ${cols} cursor-pointer items-center gap-2 rounded-md text-left outline-none hover:bg-bg focus-visible:ring-2 focus-visible:ring-ink`}>
-          <span className={`truncate text-[12px] ${done[s.id] ? 'text-muted line-through' : ''}`}>{s.title}</span>
+        <div key={s.id} onClick={() => jump(s)} className={`grid ${cols} cursor-pointer items-center gap-2 rounded-md text-left hover:bg-bg`}>
+          {title(s)}
           <span className="relative h-5 rounded-md bg-bg">
             <motion.span className="absolute inset-y-0.5 overflow-hidden rounded" style={{ left: `${x(s.t)}%`, background: TRACK_COLOR[s.track] }}
               initial={{ width: 0 }} animate={{ width: `${Math.max(1.5, (Math.max(s.dur, 2) / span) * 100)}%` }} transition={{ ...spring, delay: 0.03 * i }}>
