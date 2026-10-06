@@ -38,7 +38,7 @@ export function BatchPanel() {
       </div>
 
       <motion.div layout className="grid grid-cols-4 gap-x-1.5 gap-y-3 pt-2.5">
-        {calcs.map((c) => <BoxTile key={c.box.i} c={c} warn={offGoal(c)} onOpen={() => setOpen(c.box.i)} />)}
+        {calcs.map((c) => <BoxTile key={c.box.i} c={c} warn={offGoal(c)} sheet={open === c.box.i} onOpen={() => setOpen(c.box.i)} />)}
       </motion.div>
       <p className="-mt-3 text-[11px] text-muted">{t.box.drag}</p>
 
@@ -142,7 +142,7 @@ function ClearAll() {
   );
 }
 
-function BoxTile({ c, warn, onOpen }: { c: BoxCalc; warn: boolean; onOpen: () => void }) {
+function BoxTile({ c, warn, sheet, onOpen }: { c: BoxCalc; warn: boolean; sheet: boolean; onOpen: () => void }) {
   const drag = useDragControls();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [lifted, setLifted] = useState(false);
@@ -187,7 +187,8 @@ function BoxTile({ c, warn, onOpen }: { c: BoxCalc; warn: boolean; onOpen: () =>
         {(warn || empty) && <span className="h-1.5 w-1.5 rounded-full bg-warn" />}
       </span>
       {/* The bowl sits on the box's corner, a quarter hanging over. 46 px, scaled to 38 on phones where the tile is ~75 px wide. */}
-      {c.box.kit && <span className="pointer-events-none absolute -right-2.5 -top-2.5 origin-top-right scale-[0.83] sm:scale-100"><KitArt kit={c.box.kit} size={46} spin /></span>}
+      {/* Not while this box's sheet is open: the hidden tile is stretched over the sheet's header (shared layoutId) and its art would stick out past a 390 px screen. */}
+      {c.box.kit && !sheet && <span className="pointer-events-none absolute -right-2.5 -top-2.5 origin-top-right scale-[0.83] sm:scale-100"><KitArt kit={c.box.kit} size={46} spin /></span>}
       <span className="flex flex-col leading-[1.1]">
         <span className="flex items-center gap-1 text-[11px] font-semibold">
           {c.box.kit && <span className="kit-bg h-1.5 w-1.5 shrink-0 rounded-full" />}

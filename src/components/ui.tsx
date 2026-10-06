@@ -29,6 +29,7 @@ export function Pill({ on, onClick, children, hue }: { on: boolean; onClick: () 
     <motion.button
       whileTap={{ scale: 0.94 }}
       onClick={onClick}
+      aria-pressed={on}
       style={hue !== undefined ? ({ '--hue': hue } as React.CSSProperties) : undefined}
       className={`shrink-0 rounded-full border px-3 py-1 text-[12px] transition-colors ${on ? 'border-ink bg-ink text-on-ink' : 'border-line hover:border-muted'}`}
     >
