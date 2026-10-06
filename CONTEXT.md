@@ -48,3 +48,12 @@ Design från Claude Design-projektet "Mealprep" (ade1c1e3-d70f-4582-995b-bb751a5
 Kryddning kontrollerad mot högt betygsatta recept 2026-09-24: RecipeTin Eats (grekisk kyckling, chili, qeema, shepherd's pie, moussaka-pilaff, carnitas, teriyaki), ICA (köttfärssås, kålpudding, ugnslax soja/ingefära, pulled pork), Eating Thai Food (pad krapow), Anova/Serious Eats (sous vide carnitas och kyckling), Once Upon a Chef (rostade kikärtor). De lätta krämiga kiten är egna versioner på kvarg-, yoghurt- och kesellabaser (Patrik 2026-09-24: FIH-kokbokens kit var för nära originalen och ersattes). Källor: WellPlated (toscansk), Recipe Runner (paprikash), Skinnytaste (jordnöt-lime, tikka), Just One Cookbook (gochujang), Love and Lemons (chipotle-crema), ICA (dill och citron), RecipeTin Eats (shawarma). **Test (Patrik 2026-09-24):** FIH-kokbokens 8 kit ligger kvar som "Filips …" (id `filips-*`) för att provlagas; behålls eller raderas efter test. Stabilisering: majsstärkelse i yoghurt/kvarg (Ricardo), kalla såser i egen burk. Mängder per låda är egna nedskalningar, inte provlagade.
 
 Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
+
+## Audits
+- Headers (automated): 2026-10-06, fail, 1 targets; 1 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
+- npm audit (automated): 2026-10-06, fail, 1 targets; 1 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
+- Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
+- Actions (automated): 2026-10-06, fail, zizmor 0 high, 1 medium, 0 low (artipacked); evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
+- Markup (automated): 2026-10-06, fail, 1 targets; 1 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a2/bulk.json
+- WCAG 2.2 AA (automated): 2026-10-06, fail, 1 targets; 1 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a2/bulk.json
+
