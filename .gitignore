@@ -42,5 +42,5 @@ next-env.d.ts
 
 # local tooling
 /.playwright-mcp/
-/design/spar/*.log
+/design/spar/
 /design/art/
