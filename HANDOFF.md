@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-10-06
+reviewedAt: 2026-10-07
 schemaVersion: 1
 status: active
 currentGoal: "Bulk är live på buildapp.se/bulk: matlådeplanering med smakkit, inköp, tillagning och veckans priser i Umeå."
@@ -8,10 +8,10 @@ blockers: []
 ---
 # Handoff
 
-**2026-10-06, nattbatch på grenen `batch/2026-10-06` (inte mergad, inte deployad):** åtta backlogposter i två rundor, en commit var.
+**2026-10-06, nattbatch på grenen `batch/2026-10-06` (mergad till `main` och deployad 2026-10-07 på Patriks order):** åtta backlogposter i två rundor, en commit var.
 1. `b09bc02` Lådans ark på 390 px: sidan gick att skrolla 32 px i sidled eftersom den dolda brickan sträcks över arkets huvud (delat `layoutId`) och dess kitbild stack ut. Brickan ritar inte bilden medan dess ark är öppet. `Pill` har `aria-pressed`. Mätt i playwright-cli på 390: scrollWidth 422 -> 390 med arket öppet, 4 valda av 62 knappar bär `aria-pressed=true`.
 2. `0363f5a` `npm audit fix` (sharp 0.35.5, source-map-js): `npm audit` 0 sårbarheter.
-3. `cf1a083` `prices.yml` checkar ut med `persist-credentials: false` och pushar via `gh auth setup-git`. zizmor artipacked 2 -> 0. **Inte verifierat:** själva pushen på GitHub. Kör `prices.yml` en gång med workflow_dispatch efter merge; misslyckas den uteblir bara prisuppdateringen.
+3. `cf1a083` `prices.yml` checkar ut med `persist-credentials: false` och pushar via `gh auth setup-git`. zizmor artipacked 2 -> 0. **Inte verifierat:** själva pushen på GitHub. Ändringen ligger i `main` sedan 2026-10-07, men pushen i Actions är overifierad tills `prices.yml` körts nästa gång (schemalagt, eller en gång med workflow_dispatch); misslyckas den uteblir bara prisuppdateringen.
 4. `73ef174` `--muted` #6f6a62 -> #6a655d (4,69:1 på `--sunken`). Proteinkortets kryssruta är en knapp överst i kortet, syskon till metodväljaren; hela kortet är fortfarande klickyta. axe 4.13 på 390 px: Välj, Ingredienser och Prepp 0 fel; mellanslag, Enter och klick på kortet växlar en gång, metodväljaren växlar inte kortet.
 5. `8cf6968` `span` i stället för `div` i målknapparna: html-validate `element-permitted-content` 0 på alla fyra byggda sidor.
 

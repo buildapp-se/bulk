@@ -26,7 +26,7 @@
 Fynd från den automatiska sviten (aifabriken `tools/audit-suite.ts`: headers, npm audit, secrets, Actions, markup, axe). Mätvärdena står som `(automated)`-rader under `## Audits` i CONTEXT.md.
 
 - [x] (2026-10-06) `[P2]` npm audit: 2 high i produktionsberoenden (sharp <0.35.5, source-map-js). `npm audit fix` löser båda.
-- [x] (2026-10-06) `[P2]` Actions: `.github/workflows/prices.yml:22` checkar ut utan `persist-credentials: false` (zizmor artipacked, medium). Pushen går nu via `gh auth setup-git`; overifierat tills `prices.yml` körts på GitHub efter merge (kör workflow_dispatch en gång).
+- [x] (2026-10-06) `[P2]` Actions: `.github/workflows/prices.yml:22` checkar ut utan `persist-credentials: false` (zizmor artipacked, medium). Pushen går nu via `gh auth setup-git`; mergat till `main` 2026-10-07, pushen overifierad tills `prices.yml` körts på GitHub nästa gång (schemalagt, eller kör workflow_dispatch en gång).
 - [x] (2026-10-06) `[P2]` WCAG: kontrast 4,35:1 (#6f6a62 på #ebe7e0) på 10 element: navlänkarna Ingredienser och Tillagning samt radiogruppen. Kravet är 4,5:1. Dessutom `nested-interactive`: ett `[role=checkbox]`-kort har fokuserbara barn.
 - [x] (2026-10-06) `[P3]` Markup: `<div>` inuti `<button>` på 6 ställen (html-validate `element-permitted-content`). Byt inre `div` mot `span`.
 - [x] (2026-10-06) `[P2]` WCAG, Tillagning (hittat 2026-10-06 med axe 4.13 lokalt på 390 px, sviten mätte bara startsidan): kontrast 3,48:1 på 26 element (`text-muted` med `opacity-80` i stegens listor, `Cook.tsx` `Lines`) och `nested-interactive` på 5 rader i live-läget (rad med ▶-knapp inuti). Välj, Ingredienser och Prepp har 0 fel. Dessutom spårbrickorna (vit text på spårfärgen, 2,71–3,53:1), som axe först såg när de andra felen var borta.
