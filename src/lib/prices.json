@@ -1,5 +1,5 @@
 {
- "at": "2026-10-05",
+ "at": "2026-10-08",
  "stores": [
   {
    "chain": "Willys",
@@ -1065,12 +1065,12 @@
     "code": "8690635030873"
    },
    "kokosmjolk": {
-    "krKg": 61.4,
-    "kr": 24.56,
-    "pack": "400ml",
+    "krKg": 41.4,
+    "kr": 16.56,
+    "pack": "400 MLT",
     "name": "Kokosmjölk",
-    "brand": "Aroy-D",
-    "code": "16229001711"
+    "brand": "Xtra",
+    "code": "7340191176027"
    },
    "grädde": {
     "krKg": 53.28,
@@ -1291,7 +1291,7 @@
    "honung": {
     "krKg": 53.08,
     "kr": 34.5,
-    "pack": "650 g",
+    "pack": "650 G",
     "name": "Honung",
     "brand": "Xtra",
     "code": "7340191188112"
@@ -2698,7 +2698,7 @@
    "brand": "ICA",
    "pack": "150 g",
    "krKg": 119.33,
-   "ordKrKg": 139.69,
+   "ordKrKg": 142.49,
    "label": "17,90 kr/st",
    "member": false,
    "until": "2026-10-11"
@@ -2723,9 +2723,9 @@
    "name": "Sötpotatis",
    "brand": ",",
    "pack": "kg",
-   "krKg": 22,
+   "krKg": 20,
    "ordKrKg": 29.9,
-   "label": "22 kr/kg",
+   "label": "20 kr/kg",
    "member": false,
    "until": "2026-10-11"
   },
@@ -2899,17 +2899,17 @@
    "until": "2026-10-11"
   },
   {
-   "ingr": "ris",
+   "ingr": "kycklingfile",
    "chain": "ICA",
    "store": "ICA Supermarket Teg",
-   "name": "Jasminris",
-   "brand": "ICA",
-   "pack": "2kg",
-   "krKg": 29.98,
-   "ordKrKg": 32.77,
-   "label": "59,95 kr/st",
+   "name": "Kycklingfilé",
+   "brand": "Lönneberga",
+   "pack": "620g",
+   "krKg": 120.89,
+   "ordKrKg": 163.28,
+   "label": "74,95 kr/st",
    "member": false,
-   "until": "2026-10-19"
+   "until": "2026-11-01"
   },
   {
    "ingr": "blandfars",
@@ -2932,7 +2932,7 @@
    "brand": "ICA",
    "pack": "150 g",
    "krKg": 119.33,
-   "ordKrKg": 139.97,
+   "ordKrKg": 142.77,
    "label": "17,90 kr/st",
    "member": false,
    "until": "2026-10-11"
@@ -2984,7 +2984,7 @@
    "brand": "ICA",
    "pack": "150 g",
    "krKg": 119.33,
-   "ordKrKg": 139.69,
+   "ordKrKg": 142.49,
    "label": "17,90 kr/st",
    "member": false,
    "until": "2026-10-11"
@@ -2997,7 +2997,7 @@
    "brand": "ICA",
    "pack": "500 g",
    "krKg": 40,
-   "ordKrKg": 52,
+   "ordKrKg": 52.02,
    "label": "2 för 40 kr",
    "member": false,
    "until": "2026-10-11"
@@ -3051,6 +3051,18 @@
    "until": "2026-10-11"
   },
   {
+   "ingr": "rivenost",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Riven ost",
+   "brand": "Arla Köket",
+   "pack": "150 g.",
+   "krKg": 133.33,
+   "label": "20 kr",
+   "member": true,
+   "until": "2026-10-18"
+  },
+  {
    "ingr": "paprika",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
@@ -3065,7 +3077,7 @@
   {
    "ingr": "rivenost",
    "chain": "Coop",
-   "store": "Stora Coop Ersboda",
+   "store": "Stora Coop Tomtebo",
    "name": "Riven ost",
    "brand": "Arla Köket",
    "pack": "150 g.",
@@ -3097,18 +3109,6 @@
    "label": "22 kr",
    "member": false,
    "until": "2026-10-11"
-  },
-  {
-   "ingr": "rivenost",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Riven ost",
-   "brand": "Arla Köket",
-   "pack": "150 g.",
-   "krKg": 133.33,
-   "label": "20 kr",
-   "member": true,
-   "until": "2026-10-18"
   },
   {
    "ingr": "krossade",
@@ -3171,18 +3171,6 @@
    "until": "2026-10-11"
   },
   {
-   "ingr": "rivenost",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Riven ost",
-   "brand": "Arla Köket",
-   "pack": "150 g.",
-   "krKg": 133.33,
-   "label": "20 kr",
-   "member": true,
-   "until": "2026-10-18"
-  },
-  {
    "ingr": "paprika",
    "chain": "Coop",
    "store": "Stora Coop Bromma",
@@ -3193,6 +3181,18 @@
    "label": "22 kr",
    "member": false,
    "until": "2026-10-11"
+  },
+  {
+   "ingr": "rivenost",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Riven ost",
+   "brand": "Arla Köket",
+   "pack": "150 g.",
+   "krKg": 133.33,
+   "label": "20 kr",
+   "member": true,
+   "until": "2026-10-18"
   },
   {
    "ingr": "rivenost",
@@ -3231,18 +3231,6 @@
    "until": "2026-10-11"
   },
   {
-   "ingr": "rivenost",
-   "chain": "Coop",
-   "store": "Stora Coop Stadion",
-   "name": "Riven ost",
-   "brand": "Arla Köket",
-   "pack": "150 g.",
-   "krKg": 133.33,
-   "label": "20 kr",
-   "member": true,
-   "until": "2026-10-18"
-  },
-  {
    "ingr": "salsa",
    "chain": "Coop",
    "store": "Stora Coop Stadion",
@@ -3267,6 +3255,18 @@
    "until": "2026-10-11"
   },
   {
+   "ingr": "rivenost",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Riven ost",
+   "brand": "Arla Köket",
+   "pack": "150 g.",
+   "krKg": 133.33,
+   "label": "20 kr",
+   "member": true,
+   "until": "2026-10-18"
+  },
+  {
    "ingr": "vitkal",
    "chain": "Lidl",
    "store": "Lidl",
@@ -3276,6 +3276,30 @@
    "krKg": 9.9,
    "ordKrKg": 16.9,
    "label": "9,9 kr/kg",
+   "member": false,
+   "until": "2026-10-11"
+  },
+  {
+   "ingr": "broccoli",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Broccoli",
+   "brand": "",
+   "pack": "500 g",
+   "krKg": 33.8,
+   "label": "16,9 kr",
+   "member": false,
+   "until": "2026-10-11"
+  },
+  {
+   "ingr": "champinjoner",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Champinjoner",
+   "brand": "",
+   "pack": "400 g",
+   "krKg": 37.25,
+   "label": "14,9 kr",
    "member": false,
    "until": "2026-10-11"
   },
@@ -3313,6 +3337,30 @@
    "pack": "200 g",
    "krKg": 349.5,
    "label": "69,9 kr",
+   "member": false,
+   "until": "2026-10-11"
+  },
+  {
+   "ingr": "olja",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Rapsolja",
+   "brand": "VITA D'OR",
+   "pack": "1 l",
+   "krKg": 17.9,
+   "label": "17,9 kr",
+   "member": true,
+   "until": "2026-10-11"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Blandfärs",
+   "brand": "",
+   "pack": "1 kg",
+   "krKg": 89.9,
+   "label": "89,9 kr",
    "member": false,
    "until": "2026-10-11"
   }
