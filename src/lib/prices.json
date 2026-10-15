@@ -1,5 +1,5 @@
 {
- "at": "2026-10-12",
+ "at": "2026-10-15",
  "stores": [
   {
    "chain": "Willys",
@@ -158,8 +158,8 @@
     "code": "101203649_KG"
    },
    "flaskfars": {
-    "krKg": 67.9,
-    "kr": 67.9,
+    "krKg": 65.9,
+    "kr": 65.9,
     "pack": "ca: 1kg",
     "name": "Fläskfärs 20% Sverige",
     "brand": "Garant",
@@ -174,8 +174,8 @@
     "code": "101300146_KG"
    },
    "lax": {
-    "krKg": 189.08,
-    "kr": 94.54,
+    "krKg": 187.8,
+    "kr": 93.9,
     "pack": "4x125g",
     "name": "Laxfilé Fryst",
     "brand": "Omega",
@@ -446,16 +446,16 @@
     "code": "101565032_ST"
    },
    "kokosmjolk": {
-    "krKg": 43.6,
-    "kr": 10.9,
-    "pack": "250ml",
-    "name": "Kokosmjölk 17-18%",
-    "brand": "Garant",
-    "code": "101708173_ST"
+    "krKg": 29.75,
+    "kr": 11.9,
+    "pack": "400ml",
+    "name": "Kokosmjölk 18%",
+    "brand": "Spicefield",
+    "code": "101552948_ST"
    },
    "grädde": {
-    "krKg": 51.6,
-    "kr": 12.9,
+    "krKg": 50,
+    "kr": 12.5,
     "pack": "2,5dl",
     "name": "Matlagnings Grädde Lång Hållbarhet 15%",
     "brand": "Kelda",
@@ -630,8 +630,8 @@
     "code": "101232098_ST"
    },
    "grekisk": {
-    "krKg": 36.9,
-    "kr": 36.9,
+    "krKg": 35.9,
+    "kr": 35.9,
     "pack": "1kg",
     "name": "Naturell Grekisk Yoghurt 0%",
     "brand": "Arla",
@@ -859,7 +859,7 @@
    "sojafars": {
     "krKg": 65.95,
     "kr": 65.95,
-    "pack": "1000 g",
+    "pack": "1000g",
     "name": "Vegofärs",
     "brand": "Coop",
     "code": "7340191189652"
@@ -929,8 +929,8 @@
     "code": "7340191174573"
    },
    "paprika": {
-    "krKg": 56.9,
-    "kr": 56.9,
+    "krKg": 59.9,
+    "kr": 59.9,
     "pack": "200 gram ungefärlig vikt",
     "name": "Paprika Röd",
     "brand": "",
@@ -953,12 +953,12 @@
     "code": "2317305000009"
    },
    "aubergine": {
-    "krKg": 64.78,
-    "kr": 14.9,
+    "krKg": 60.83,
+    "kr": 21.9,
     "pack": "300 gram ungefärlig vikt",
-    "name": "Aubergine",
+    "name": "Aubergine Eko",
     "brand": "",
-    "code": "7340007921629"
+    "code": "7300156593412"
    },
    "spenat": {
     "krKg": 41.02,
@@ -1289,12 +1289,12 @@
     "code": "7311442162755"
    },
    "honung": {
-    "krKg": 53.08,
-    "kr": 34.5,
-    "pack": "650 G",
-    "name": "Honung",
-    "brand": "Xtra",
-    "code": "7340191188112"
+    "krKg": 112.62,
+    "kr": 112.62,
+    "pack": "1000 gr",
+    "name": "Honung Krämig",
+    "brand": "LUNE DE MIEL",
+    "code": "3088541019047"
    },
    "senap": {
     "krKg": 31.24,
@@ -1340,7 +1340,7 @@
     "krKg": 10.33,
     "kr": 15.5,
     "pack": "1.5 L",
-    "name": "Lättmjölk",
+    "name": "Lättmjölk Längre Hållbarhet 0,5%",
     "brand": "Coop",
     "code": "7300156595188"
    },
@@ -1404,19 +1404,6 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "kokosmjolk",
-   "chain": "Willys",
-   "store": "Willys Ersboda",
-   "name": "Kokosmjölk",
-   "brand": "AMPAWA",
-   "pack": "500ml",
-   "krKg": 57.8,
-   "ordKrKg": 65.8,
-   "label": "28,90/st",
-   "member": false,
-   "until": "2026-11-01"
-  },
-  {
    "ingr": "ajvar",
    "chain": "Willys",
    "store": "Willys Ersboda",
@@ -1426,6 +1413,19 @@
    "krKg": 46.23,
    "ordKrKg": 51.97,
    "label": "31,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "kokosmjolk",
+   "chain": "Willys",
+   "store": "Willys Ersboda",
+   "name": "Kokosmjölk",
+   "brand": "AMPAWA",
+   "pack": "500ml",
+   "krKg": 57.8,
+   "ordKrKg": 65.8,
+   "label": "28,90/st",
    "member": false,
    "until": "2026-11-01"
   },
@@ -1495,19 +1495,6 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "kokosmjolk",
-   "chain": "Willys",
-   "store": "Willys Umeå Syd",
-   "name": "Kokosmjölk",
-   "brand": "AMPAWA",
-   "pack": "500ml",
-   "krKg": 57.8,
-   "ordKrKg": 65.8,
-   "label": "28,90/st",
-   "member": false,
-   "until": "2026-11-01"
-  },
-  {
    "ingr": "ajvar",
    "chain": "Willys",
    "store": "Willys Umeå Syd",
@@ -1517,6 +1504,19 @@
    "krKg": 46.23,
    "ordKrKg": 51.97,
    "label": "31,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "kokosmjolk",
+   "chain": "Willys",
+   "store": "Willys Umeå Syd",
+   "name": "Kokosmjölk",
+   "brand": "AMPAWA",
+   "pack": "500ml",
+   "krKg": 57.8,
+   "ordKrKg": 65.8,
+   "label": "28,90/st",
    "member": false,
    "until": "2026-11-01"
   },
@@ -1586,19 +1586,6 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "kokosmjolk",
-   "chain": "Willys",
-   "store": "Willys Klockarbäcken",
-   "name": "Kokosmjölk",
-   "brand": "AMPAWA",
-   "pack": "500ml",
-   "krKg": 57.8,
-   "ordKrKg": 65.8,
-   "label": "28,90/st",
-   "member": false,
-   "until": "2026-11-01"
-  },
-  {
    "ingr": "ajvar",
    "chain": "Willys",
    "store": "Willys Klockarbäcken",
@@ -1608,6 +1595,19 @@
    "krKg": 46.23,
    "ordKrKg": 51.97,
    "label": "31,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "kokosmjolk",
+   "chain": "Willys",
+   "store": "Willys Klockarbäcken",
+   "name": "Kokosmjölk",
+   "brand": "AMPAWA",
+   "pack": "500ml",
+   "krKg": 57.8,
+   "ordKrKg": 65.8,
+   "label": "28,90/st",
    "member": false,
    "until": "2026-11-01"
   },
@@ -1703,19 +1703,6 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "kokosmjolk",
-   "chain": "Willys",
-   "store": "Willys Port 73",
-   "name": "Kokosmjölk",
-   "brand": "AMPAWA",
-   "pack": "500ml",
-   "krKg": 57.8,
-   "ordKrKg": 65.8,
-   "label": "28,90/st",
-   "member": false,
-   "until": "2026-11-01"
-  },
-  {
    "ingr": "ajvar",
    "chain": "Willys",
    "store": "Willys Port 73",
@@ -1725,6 +1712,19 @@
    "krKg": 46.23,
    "ordKrKg": 51.97,
    "label": "31,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "kokosmjolk",
+   "chain": "Willys",
+   "store": "Willys Port 73",
+   "name": "Kokosmjölk",
+   "brand": "AMPAWA",
+   "pack": "500ml",
+   "krKg": 57.8,
+   "ordKrKg": 65.8,
+   "label": "28,90/st",
    "member": false,
    "until": "2026-11-01"
   },
@@ -1794,19 +1794,6 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "kokosmjolk",
-   "chain": "Willys",
-   "store": "Willys Gamlestaden",
-   "name": "Kokosmjölk",
-   "brand": "AMPAWA",
-   "pack": "500ml",
-   "krKg": 57.8,
-   "ordKrKg": 65.8,
-   "label": "28,90/st",
-   "member": false,
-   "until": "2026-11-01"
-  },
-  {
    "ingr": "ajvar",
    "chain": "Willys",
    "store": "Willys Gamlestaden",
@@ -1816,6 +1803,19 @@
    "krKg": 46.23,
    "ordKrKg": 51.97,
    "label": "31,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "kokosmjolk",
+   "chain": "Willys",
+   "store": "Willys Gamlestaden",
+   "name": "Kokosmjölk",
+   "brand": "AMPAWA",
+   "pack": "500ml",
+   "krKg": 57.8,
+   "ordKrKg": 65.8,
+   "label": "28,90/st",
    "member": false,
    "until": "2026-11-01"
   },
@@ -1885,19 +1885,6 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "kokosmjolk",
-   "chain": "Willys",
-   "store": "Willys Mobilia",
-   "name": "Kokosmjölk",
-   "brand": "AMPAWA",
-   "pack": "500ml",
-   "krKg": 57.8,
-   "ordKrKg": 65.8,
-   "label": "28,90/st",
-   "member": false,
-   "until": "2026-11-01"
-  },
-  {
    "ingr": "ajvar",
    "chain": "Willys",
    "store": "Willys Mobilia",
@@ -1907,6 +1894,19 @@
    "krKg": 46.23,
    "ordKrKg": 51.97,
    "label": "31,90/st",
+   "member": false,
+   "until": "2026-11-01"
+  },
+  {
+   "ingr": "kokosmjolk",
+   "chain": "Willys",
+   "store": "Willys Mobilia",
+   "name": "Kokosmjölk",
+   "brand": "AMPAWA",
+   "pack": "500ml",
+   "krKg": 57.8,
+   "ordKrKg": 65.8,
+   "label": "28,90/st",
    "member": false,
    "until": "2026-11-01"
   },
@@ -2009,7 +2009,7 @@
    "brand": "ICA",
    "pack": "200 g",
    "krKg": 98.33,
-   "ordKrKg": 132,
+   "ordKrKg": 134.5,
    "label": "3 för 59 kr",
    "member": false,
    "until": "2026-10-18"
@@ -2026,19 +2026,6 @@
    "label": "10 kr/st",
    "member": false,
    "until": "2026-10-18"
-  },
-  {
-   "ingr": "pasta",
-   "chain": "ICA",
-   "store": "ICA Kvantum Kronoparken",
-   "name": "Spaghetti",
-   "brand": "Barilla",
-   "pack": "1,8kg",
-   "krKg": 13.89,
-   "ordKrKg": 17.18,
-   "label": "25 kr/st",
-   "member": false,
-   "until": "2026-10-12"
   },
   {
    "ingr": "feta",
@@ -2126,7 +2113,7 @@
    "brand": "ICA",
    "pack": "200 g",
    "krKg": 98.33,
-   "ordKrKg": 136.95,
+   "ordKrKg": 137.95,
    "label": "3 för 59 kr",
    "member": false,
    "until": "2026-10-18"
@@ -2262,28 +2249,15 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "vitkal",
-   "chain": "ICA",
-   "store": "Maxi ICA Malmö",
-   "name": "Svensk vitkål",
-   "brand": "",
-   "pack": "",
-   "krKg": 10,
-   "ordKrKg": 16.9,
-   "label": "10 kr/kg",
-   "member": false,
-   "until": "2026-10-18"
-  },
-  {
-   "ingr": "notfars",
+   "ingr": "pasta",
    "chain": "Coop",
    "store": "Stora Coop Avion",
-   "name": "Nötfärs",
-   "brand": "John's Selection",
+   "name": "Spaghetti",
+   "brand": "Zeta",
    "pack": "500 g.",
-   "krKg": 99,
-   "label": "2 för 99 kr",
-   "member": true,
+   "krKg": 20,
+   "label": "2 för 20 kr",
+   "member": false,
    "until": "2026-10-18"
   },
   {
@@ -2299,15 +2273,15 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "pasta",
+   "ingr": "notfars",
    "chain": "Coop",
    "store": "Stora Coop Avion",
-   "name": "Spaghetti",
-   "brand": "Zeta",
+   "name": "Nötfärs",
+   "brand": "John's Selection",
    "pack": "500 g.",
-   "krKg": 20,
-   "label": "2 för 20 kr",
-   "member": false,
+   "krKg": 99,
+   "label": "2 för 99 kr",
+   "member": true,
    "until": "2026-10-18"
   },
   {
@@ -2320,6 +2294,18 @@
    "krKg": 78.67,
    "label": "59 kr",
    "member": false,
+   "until": "2026-10-18"
+  },
+  {
+   "ingr": "rivenost",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Riven ost",
+   "brand": "Arla Köket",
+   "pack": "150 g.",
+   "krKg": 133.33,
+   "label": "20 kr",
+   "member": true,
    "until": "2026-10-18"
   },
   {
@@ -2347,27 +2333,15 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "rivenost",
-   "chain": "Coop",
-   "store": "Stora Coop Avion",
-   "name": "Riven ost",
-   "brand": "Arla Köket",
-   "pack": "150 g.",
-   "krKg": 133.33,
-   "label": "20 kr",
-   "member": true,
-   "until": "2026-10-18"
-  },
-  {
-   "ingr": "notfars",
+   "ingr": "pasta",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
-   "name": "Nötfärs",
-   "brand": "John's Selection",
+   "name": "Spaghetti",
+   "brand": "Zeta",
    "pack": "500 g.",
-   "krKg": 99,
-   "label": "2 för 99 kr",
-   "member": true,
+   "krKg": 20,
+   "label": "2 för 20 kr",
+   "member": false,
    "until": "2026-10-18"
   },
   {
@@ -2383,15 +2357,15 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "pasta",
+   "ingr": "notfars",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
-   "name": "Spaghetti",
-   "brand": "Zeta",
+   "name": "Nötfärs",
+   "brand": "John's Selection",
    "pack": "500 g.",
-   "krKg": 20,
-   "label": "2 för 20 kr",
-   "member": false,
+   "krKg": 99,
+   "label": "2 för 99 kr",
+   "member": true,
    "until": "2026-10-18"
   },
   {
@@ -2479,6 +2453,18 @@
    "until": "2026-10-18"
   },
   {
+   "ingr": "rivenost",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Riven ost",
+   "brand": "Arla Köket",
+   "pack": "150 g.",
+   "krKg": 133.33,
+   "label": "20 kr",
+   "member": true,
+   "until": "2026-10-18"
+  },
+  {
    "ingr": "olivolja",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
@@ -2487,18 +2473,6 @@
    "pack": "750 ml.",
    "krKg": 78.67,
    "label": "59 kr",
-   "member": false,
-   "until": "2026-10-18"
-  },
-  {
-   "ingr": "flaskkarre",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Fläskkarré",
-   "brand": "Nybergs Deli",
-   "pack": "Ca 1200 g.",
-   "krKg": 58.25,
-   "label": "69.9 kr",
    "member": false,
    "until": "2026-10-18"
   },
@@ -2515,14 +2489,26 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "rivenost",
+   "ingr": "flaskkarre",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
-   "name": "Riven ost",
-   "brand": "Arla Köket",
-   "pack": "150 g.",
-   "krKg": 133.33,
-   "label": "20 kr",
+   "name": "Fläskkarré",
+   "brand": "Nybergs Deli",
+   "pack": "Ca 1200 g.",
+   "krKg": 58.25,
+   "label": "69.9 kr",
+   "member": false,
+   "until": "2026-10-18"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Coop City Umeå",
+   "name": "Kycklingbröstfiléer",
+   "brand": "Guldfågeln",
+   "pack": "1 kg.",
+   "krKg": 79.5,
+   "label": "2 för 159 kr",
    "member": true,
    "until": "2026-10-18"
   },
@@ -2539,18 +2525,6 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Coop City Umeå",
-   "name": "Kycklingbröstfiléer",
-   "brand": "Guldfågeln",
-   "pack": "1 kg.",
-   "krKg": 79.5,
-   "label": "2 för 159 kr",
-   "member": true,
-   "until": "2026-10-18"
-  },
-  {
    "ingr": "rivenost",
    "chain": "Coop",
    "store": "Coop City Umeå",
@@ -2563,6 +2537,18 @@
    "until": "2026-10-18"
   },
   {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Kycklingbröstfiléer",
+   "brand": "Guldfågeln",
+   "pack": "1 kg.",
+   "krKg": 79.5,
+   "label": "2 för 159 kr",
+   "member": true,
+   "until": "2026-10-18"
+  },
+  {
    "ingr": "pasta",
    "chain": "Coop",
    "store": "Stora Coop Bromma",
@@ -2583,42 +2569,6 @@
    "pack": "500 g.",
    "krKg": 99,
    "label": "2 för 99 kr",
-   "member": true,
-   "until": "2026-10-18"
-  },
-  {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Kycklingbröstfiléer",
-   "brand": "Guldfågeln",
-   "pack": "1 kg.",
-   "krKg": 79.5,
-   "label": "2 för 159 kr",
-   "member": true,
-   "until": "2026-10-18"
-  },
-  {
-   "ingr": "flaskkarre",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Fläskkarré",
-   "brand": "Nybergs Deli",
-   "pack": "Ca 1200 g.",
-   "krKg": 58.25,
-   "label": "69.9 kr",
-   "member": false,
-   "until": "2026-10-18"
-  },
-  {
-   "ingr": "rivenost",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Riven ost",
-   "brand": "Arla Köket",
-   "pack": "150 g.",
-   "krKg": 133.33,
-   "label": "20 kr",
    "member": true,
    "until": "2026-10-18"
   },
@@ -2647,15 +2597,39 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "pasta",
+   "ingr": "flaskkarre",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Fläskkarré",
+   "brand": "Nybergs Deli",
+   "pack": "Ca 1200 g.",
+   "krKg": 58.25,
+   "label": "69.9 kr",
+   "member": false,
+   "until": "2026-10-18"
+  },
+  {
+   "ingr": "rivenost",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Riven ost",
+   "brand": "Arla Köket",
+   "pack": "150 g.",
+   "krKg": 133.33,
+   "label": "20 kr",
+   "member": true,
+   "until": "2026-10-18"
+  },
+  {
+   "ingr": "notfars",
    "chain": "Coop",
    "store": "Stora Coop Backaplan",
-   "name": "Spaghetti",
-   "brand": "Zeta",
+   "name": "Nötfärs",
+   "brand": "John's Selection",
    "pack": "500 g.",
-   "krKg": 20,
-   "label": "2 för 20 kr",
-   "member": false,
+   "krKg": 99,
+   "label": "2 för 99 kr",
+   "member": true,
    "until": "2026-10-18"
   },
   {
@@ -2671,15 +2645,15 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "notfars",
+   "ingr": "pasta",
    "chain": "Coop",
    "store": "Stora Coop Backaplan",
-   "name": "Nötfärs",
-   "brand": "John's Selection",
+   "name": "Spaghetti",
+   "brand": "Zeta",
    "pack": "500 g.",
-   "krKg": 99,
-   "label": "2 för 99 kr",
-   "member": true,
+   "krKg": 20,
+   "label": "2 för 20 kr",
+   "member": false,
    "until": "2026-10-18"
   },
   {
@@ -2707,18 +2681,6 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "aubergine",
-   "chain": "Coop",
-   "store": "Stora Coop Backaplan",
-   "name": "Aubergine",
-   "brand": "Coop.",
-   "pack": "Ca 230 g.",
-   "krKg": 54.35,
-   "label": "2 för 25 kr",
-   "member": false,
-   "until": "2026-10-18"
-  },
-  {
    "ingr": "olivolja",
    "chain": "Coop",
    "store": "Stora Coop Backaplan",
@@ -2731,15 +2693,15 @@
    "until": "2026-10-18"
   },
   {
-   "ingr": "kycklingfile",
+   "ingr": "aubergine",
    "chain": "Coop",
-   "store": "Stora Coop Stadion",
-   "name": "Kycklingbröstfiléer",
-   "brand": "Guldfågeln",
-   "pack": "1 kg.",
-   "krKg": 79.5,
-   "label": "2 för 159 kr",
-   "member": true,
+   "store": "Stora Coop Backaplan",
+   "name": "Aubergine",
+   "brand": "Coop.",
+   "pack": "Ca 230 g.",
+   "krKg": 54.35,
+   "label": "2 för 25 kr",
+   "member": false,
    "until": "2026-10-18"
   },
   {
@@ -2767,6 +2729,18 @@
    "until": "2026-10-18"
   },
   {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Kycklingbröstfiléer",
+   "brand": "Guldfågeln",
+   "pack": "1 kg.",
+   "krKg": 79.5,
+   "label": "2 för 159 kr",
+   "member": true,
+   "until": "2026-10-18"
+  },
+  {
    "ingr": "aubergine",
    "chain": "Coop",
    "store": "Stora Coop Stadion",
@@ -2776,18 +2750,6 @@
    "krKg": 54.35,
    "label": "2 för 25 kr",
    "member": false,
-   "until": "2026-10-18"
-  },
-  {
-   "ingr": "rivenost",
-   "chain": "Coop",
-   "store": "Stora Coop Stadion",
-   "name": "Riven ost",
-   "brand": "Arla Köket",
-   "pack": "150 g.",
-   "krKg": 133.33,
-   "label": "20 kr",
-   "member": true,
    "until": "2026-10-18"
   },
   {
@@ -2812,6 +2774,18 @@
    "krKg": 58.25,
    "label": "69.9 kr",
    "member": false,
+   "until": "2026-10-18"
+  },
+  {
+   "ingr": "rivenost",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Riven ost",
+   "brand": "Arla Köket",
+   "pack": "150 g.",
+   "krKg": 133.33,
+   "label": "20 kr",
+   "member": true,
    "until": "2026-10-18"
   },
   {
@@ -2859,6 +2833,18 @@
    "pack": "100 g",
    "krKg": 249,
    "label": "24,9 kr",
+   "member": false,
+   "until": "2026-10-18"
+  },
+  {
+   "ingr": "notfars",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Nötfärs",
+   "brand": "",
+   "pack": "",
+   "krKg": 119,
+   "label": "119 kr/kg",
    "member": false,
    "until": "2026-10-18"
   }
