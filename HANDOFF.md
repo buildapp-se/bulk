@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-10-07
+reviewedAt: 2026-10-17
 schemaVersion: 1
 status: active
 currentGoal: "Bulk är live på buildapp.se/bulk: matlådeplanering med smakkit, inköp, tillagning och veckans priser i Umeå."
@@ -7,6 +7,8 @@ nextAction: "BACKLOG P1, test på riktig telefon. Filips-kiten ska provlagas och
 blockers: []
 ---
 # Handoff
+
+**2026-10-17, beroenden (lokala commits, inte pushade; push till `main` deployar via `deploy.yml`):** next 16.3.6 -> 16.4.2 (sex high-advisories, `npm audit fix` utan `--force` nådde inte den exakta pinnen), react och react-dom 19.3.1, motion 14 (tar bara bort interna API:er), `@types/node` 24 (matchar Node 24 i Actions, inte senaste 26), TypeScript 7 (Next 16.4 typkontrollerar med den; ett inlagt typfel fälldes av både `tsc` och `next build`). `npm audit` 1 high -> 0. check, typecheck och build gröna före och efter; de fyra byggda sidorna laddar i Chromium utan sidfel (404:orna på `__next.*.txt` är den kända Windows-buggen). Åtta knappar per sida klickade utan sidfel efter motion 14; inte provat på telefon.
 
 **2026-10-06, nattbatch på grenen `batch/2026-10-06` (mergad till `main` och deployad 2026-10-07 på Patriks order):** åtta backlogposter i två rundor, en commit var.
 1. `b09bc02` Lådans ark på 390 px: sidan gick att skrolla 32 px i sidled eftersom den dolda brickan sträcks över arkets huvud (delat `layoutId`) och dess kitbild stack ut. Brickan ritar inte bilden medan dess ark är öppet. `Pill` har `aria-pressed`. Mätt i playwright-cli på 390: scrollWidth 422 -> 390 med arket öppet, 4 valda av 62 knappar bär `aria-pressed=true`.
