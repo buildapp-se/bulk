@@ -3,7 +3,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { DEFAULT_METHOD, INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
-import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, migratePlan, partMacro, pickPacks, pruneOverrides, recipes, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
+import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, migratePlan, partMacro, pickPacks, pruneOverrides, recipes, resolveBoxes, schedule, shopping, spare, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
 import { basket, boxCost, deals, forRegion, krPerProtein, live, matches, pantryCost, PRICES, type Prices, type Region } from '../src/lib/price.ts';
 import type { ShopRow } from '../src/lib/calc.ts';
@@ -117,6 +117,11 @@ eq('split kram: svampsås row', schedule(kramC, svMarry).steps.find((s) => s.id 
   '10 av 20 lådors bas · + flora matlagning 4 % 5 dl, lättmjölk 7,5 dl, kalvfond 5 msk, japansk soja 5 msk, dijonsenap 2,5 tsk');
 // Recipe per dish: Philadelphia 25 g × 10.
 eq('recipes: two dishes, base scaled', recipes(kramC).map((r) => [r.n, r.rows.find((x) => x.name === 'Philadelphia light')?.right]), [[10, '250 g'], [10, '250 g']]);
+// Spare meat: taking "Gör N lådor" uses the karré already bought and needs no extra pack.
+const sp = spare(kramC)[0];
+const more: Plan = { ...svMarry, boxes: svMarry.boxes + (sp?.extra ?? 0) };
+const spMore = shopping(resolveBoxes(more).map((b) => calcBox(b, more, null))).find((r) => r.key === 'flaskkarre')!;
+eq('spare: more boxes, same karré bought', [sp?.extra > 0, spMore.packs.reduce((s, x) => s + x.n * x.size, 0)], [true, sp?.bought]);
 
 // Clock times (local time, as on the phone). Default batch + karré i form: form -225, prep -45, potatis 0, klart 60.
 // Klart 18:00 -> minute 0 = 17:00 -> form 17:00 - 3 h 45 = 13:15, prep 16:15.

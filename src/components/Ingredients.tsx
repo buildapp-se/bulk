@@ -10,7 +10,7 @@ import { useBatch } from '@/lib/useBatch';
 import { setCook, useCook } from '@/lib/store';
 import { haptic } from '@/lib/haptics';
 import { Num } from './Num';
-import { Check } from './Pickers';
+import { BoxCount, Check } from './Pickers';
 import { spring, stagger } from './ui';
 import { KitArt } from './KitArt';
 
@@ -33,6 +33,7 @@ export function Ingredients() {
         <p className="text-muted">{t.ing.sub}</p>
         {incomplete.length > 0 && <Link href="/" transitionTypes={['nav-back']} className="text-[13px] text-warn underline">{t.missing(incomplete.length)}</Link>}
       </div>
+      <div className="flex max-w-[520px] flex-col gap-2"><div className="label">{t.sec.boxes}</div><BoxCount /></div>
 
       {bases.length > 0 && (
         <motion.div variants={stagger.parent} initial="hidden" animate="show" className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))]">

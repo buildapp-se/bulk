@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Fragment } from 'react';
 import { t } from '@/i18n/sv';
 import { BASES, KITS, PROTEINS, INGR, CARBS, VEGS, byId, DEFAULT_METHOD, type Base, type Kit, type KitItem, type MethodId } from '@/lib/data';
-import { calcBox, fmtMin, fmtQty, nf, split } from '@/lib/calc';
+import { calcBox, fmtG, fmtMin, fmtQty, nf, spare, split } from '@/lib/calc';
 import { setBoxes, setMethod, setVegMode, toggleKit, toggleProtein } from '@/lib/actions';
 import { useBatch } from '@/lib/useBatch';
 import { Num } from './Num';
@@ -53,9 +53,11 @@ export function ProteinPicker() {
 }
 
 export function BoxCount() {
-  const { plan } = useBatch();
+  const { plan, calcs } = useBatch();
   const n = plan.boxes;
+  const left = spare(calcs.filter((c) => !c.missing.length));
   return (
+    <div className="flex flex-col gap-2">
     <div className="flex items-stretch gap-2">
       {[4, 8, 12].map((v) => (
         <motion.button key={v} whileTap={{ scale: 0.95 }} onClick={() => setBoxes(v)}
@@ -69,6 +71,14 @@ export function BoxCount() {
         <Num v={n} className="text-[22px] font-semibold" />
         <motion.button whileTap={{ scale: 0.85 }} onClick={() => setBoxes(n + 1)} className="h-11 w-11 rounded-lg text-xl" aria-label="Fler">+</motion.button>
       </div>
+    </div>
+    {/* Whole pieces (karré) are bought in packs: say how far the meat stretches, so the count can go up to use it. */}
+    {left.map((x) => (
+      <p key={x.name} className="flex flex-wrap items-baseline gap-x-2 text-[13px] text-muted">
+        <span>{t.spare(x.name, fmtG(x.bought), fmtG(x.need), x.extra)}</span>
+        <button className="underline" onClick={() => setBoxes(n + x.extra)}>{t.spareUse(n + x.extra)}</button>
+      </p>
+    ))}
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { fmtAt, fmtAtStr, leftMs, MIN, ringing, running, zeroAt, type Clock } fr
 import { useBatch } from '@/lib/useBatch';
 import { FRESH_COOK, setCook, useCook } from '@/lib/store';
 import { haptic } from '@/lib/haptics';
-import { Check } from './Pickers';
+import { BoxCount, Check } from './Pickers';
 import { Segmented, spring } from './ui';
 import { ClockPanel, Digits, clocks, useNow } from './Timers';
 
@@ -89,6 +89,7 @@ export function Cook() {
         <p className="text-muted">{t.cook.summary(sched.trays, fmtMin(sched.total))}</p>
         {sched.warnings.map((w) => <p key={w} className="text-[13px] text-warn">{w}</p>)}
       </div>
+      <div className="flex flex-col gap-2"><div className="label">{t.sec.boxes}</div><BoxCount /></div>
 
       {now > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-surface p-4">

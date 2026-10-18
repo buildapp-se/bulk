@@ -257,6 +257,18 @@ export function shopping(calcs: BoxCalc[]): ShopRow[] {
   return [...rows.values()].map((r) => ({ ...r, packs: INGR[r.key as IngrId]?.packs ? pickPacks(r.need, INGR[r.key as IngrId].packs ?? []) : [] }));
 }
 
+/**
+ * Protein bought in whole packs beyond what the boxes use, and about how many more boxes of it that is.
+ * ponytail: per protein at its current box size; more boxes spread over every protein, so with several it is a guide.
+ */
+export function spare(calcs: BoxCalc[]): { name: string; bought: number; need: number; extra: number }[] {
+  return shopping(calcs).filter((r) => r.role === 'protein' && r.packs.length).map((r) => {
+    const bought = r.packs.reduce((s, x) => s + x.n * x.size, 0);
+    const n = calcs.filter((c) => c.box.protein && c.box.protein.ingr === r.key).length;
+    return { name: r.name, bought, need: r.need, extra: Math.floor((n * (bought - r.need)) / r.need) };
+  }).filter((x) => x.extra > 0);
+}
+
 /** Boxes grouped by identical recipe (kit + protein + carb + veg), first box of each group as the sample. */
 export function boxTypes(calcs: BoxCalc[]): { c: BoxCalc; n: number }[] {
   const m = new Map<string, { c: BoxCalc; n: number }>();

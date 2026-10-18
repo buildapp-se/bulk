@@ -5,6 +5,8 @@ export const sv = {
   summary: (boxes: number, kits: number, kcal: string) => `${boxes} lådor · ${kits} smaker · ø ${kcal} kcal`,
   hero: { title: 'Laga en bas. Byt smak per låda.', sub: 'Välj protein, antal lådor och smakkit. Mängder, macros, inköp och ugnsschema räknas ut direkt.' },
   sec: { goal: 'Mål', protein: 'Protein', boxes: 'Antal lådor', kits: 'Smakkit', veg: 'Grönsaker' },
+  spare: (name: string, bought: string, need: string, extra: number) => `${name}: du köper ${bought}, lådorna tar ${need}. Räcker till ca ${extra} ${extra === 1 ? 'låda' : 'lådor'} till.`,
+  spareUse: (n: number) => `Gör ${n} lådor`,
   goal: {
     off: 'Av', simple: 'Enkel', advanced: 'Avancerad',
     offHint: 'Standardportioner: ca 130 g tillagat protein och 160 g kolhydrat per låda.',
