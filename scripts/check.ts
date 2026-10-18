@@ -3,7 +3,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { DEFAULT_METHOD, INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
-import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, migratePlan, partMacro, pickPacks, pruneOverrides, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
+import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, migratePlan, partMacro, pickPacks, pruneOverrides, recipes, resolveBoxes, schedule, shopping, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
 import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
 import { basket, boxCost, deals, forRegion, krPerProtein, live, matches, pantryCost, PRICES, type Prices, type Region } from '../src/lib/price.ts';
 import type { ShopRow } from '../src/lib/calc.ts';
@@ -108,6 +108,15 @@ eq('sous vide starts before oven', svSch.steps.find((s) => s.id === 'sv-kyckling
 const k6: Plan = { ...DEFAULT_PLAN, boxes: 6, proteins: [{ id: 'flaskkarre', method: 'form' }] };
 eq('karré rub for 1,5 kg', schedule(resolveBoxes(k6).map((b) => calcBox(b, k6, null)), k6).steps.find((s) => s.id === 'form-flaskkarre')?.rows?.map((r) => r.right),
   ['1,5 kg', '1,5 tsk', '2,5 tsk', '3 st', '2 tsk', '1,4 dl']);
+
+// Splitting a base names each kit's share and its twist scaled to its boxes. 20 karré boxes, two krämiga kit -> 10 each.
+// Svampsås per box: 50 ml Flora, 75 ml mjölk, ½ msk fond, ½ msk soja, ¼ tsk dijon; ×10.
+const svMarry: Plan = { ...DEFAULT_PLAN, boxes: 20, kits: ['filips-svampsas', 'filips-marryme'], proteins: [{ id: 'flaskkarre', method: 'form' }] };
+const kramC = resolveBoxes(svMarry).map((b) => calcBox(b, svMarry, null));
+eq('split kram: svampsås row', schedule(kramC, svMarry).steps.find((s) => s.id === 'split-kram')?.rows?.[0].sub,
+  '10 av 20 lådors bas · + flora matlagning 4 % 5 dl, lättmjölk 7,5 dl, kalvfond 5 msk, japansk soja 5 msk, dijonsenap 2,5 tsk');
+// Recipe per dish: Philadelphia 25 g × 10.
+eq('recipes: two dishes, base scaled', recipes(kramC).map((r) => [r.n, r.rows.find((x) => x.name === 'Philadelphia light')?.right]), [[10, '250 g'], [10, '250 g']]);
 
 // Clock times (local time, as on the phone). Default batch + karré i form: form -225, prep -45, potatis 0, klart 60.
 // Klart 18:00 -> minute 0 = 17:00 -> form 17:00 - 3 h 45 = 13:15, prep 16:15.

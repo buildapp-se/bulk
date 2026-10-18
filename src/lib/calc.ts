@@ -406,17 +406,19 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   steps.push({ id: 'out', track: 'ugn', t: E, dur: 5, title: 'Ta ut allt', details: 'Låt ånga av.' });
   let T = E + 5;
   // Split each base between its kits, then the sauce kits that have no base. One row per kit.
-  const kitRow = (kit: Kit): StepLine => {
+  // Amounts scaled to the kit's boxes; when a base is split, how much of it this kit takes.
+  const kitRow = (kit: Kit, share?: string): StepLine => {
     const n = calcs.filter((c) => c.box.kit?.id === kit.id).length;
-    return { name: kit.name, right: `×${n}`, sub: kit.mix.length ? '+ ' + kit.mix.map((x) => x.name.toLowerCase()).join(', ') : undefined, note: kit.tip, hue: kit.hue };
+    const mix = kit.mix.map((x) => `${x.name.toLowerCase()} ${fmtQty(x.q * n, x.u)}`);
+    return { name: kit.name, right: `×${n}`, sub: [share, mix.length ? '+ ' + mix.join(', ') : ''].filter(Boolean).join(' · ') || undefined, note: kit.tip, hue: kit.hue };
   };
   const splitDur = batches.length ? Math.max(...batches.map((x) => (x.kits.some((k) => k.kit.sauce) ? 10 : 5))) : 0;
-  for (const { base, kits } of batches) {
+  for (const { base, n, kits } of batches) {
     steps.push({ id: `split-${base.id}`, track: 'spis', t: T, dur: splitDur, title: kits.length > 1 ? `Dela ${base.def} i ${kits.length}` : `Smaksätt ${base.def}`,
-      details: '', rows: kits.map(({ kit }) => kitRow(kit)) });
+      details: '', rows: kits.map(({ kit, n: k }) => kitRow(kit, kits.length > 1 ? `${k} av ${n} lådors bas` : undefined)) });
   }
   const sauceKits = used((b) => (b.kit?.sauce && !b.kit.base ? b.kit : undefined));
-  if (sauceKits.length) steps.push({ id: 'sauce', track: 'spis', t: T, dur: 10, title: 'Koka ihop såserna', details: '', rows: sauceKits.map(kitRow) });
+  if (sauceKits.length) steps.push({ id: 'sauce', track: 'spis', t: T, dur: 10, title: 'Koka ihop såserna', details: '', rows: sauceKits.map((k) => kitRow(k)) });
   T += Math.max(splitDur, sauceKits.length ? 10 : 0);
   // What goes in each box, by box type: cooked weights (what goes on the scale), frozen veg as is, toppings on the side.
   const perKit = (id: string) => calcs.filter((c) => c.box.kit?.id === id).length;
@@ -434,6 +436,16 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   steps.push({ id: 'store', track: 'klar', t: T, dur: 0, title: 'Märk och kyl', details: 'Håller 3–4 dagar i kylen, lax 2 dagar. Ät de känsligaste först och frys resten.' });
 
   return { steps: steps.sort((a, b) => a.t - b.t), trays, total: T - Math.min(...steps.map((s) => s.t)), warnings };
+}
+
+const ROLE_NOTE: Partial<Record<Role, string>> = { bas: 'bas', topp: 'egen burk' };
+/** The whole recipe per box type, every part times its boxes: raw weights, with cooked weight where there is a yield. */
+export function recipes(calcs: BoxCalc[]): { name: string; n: number; hue: number; rows: StepLine[] }[] {
+  return boxTypes(calcs).filter(({ c }) => c.box.kit && !c.missing.length).map(({ c, n }) => ({
+    name: `${c.box.kit!.name} med ${c.box.protein!.name.toLowerCase()}`, n, hue: c.box.kit!.hue,
+    rows: c.parts.map((x) => ({ name: x.name, right: fmtQty(x.q * n, x.u),
+      sub: [x.cooked ? `ca ${fmtG(x.cooked * n)} tillagat` : '', ROLE_NOTE[x.role] ?? ''].filter(Boolean).join(' · ') || undefined })),
+  }));
 }
 
 // ---------- Formatting (sv-SE: decimal comma, space thousands) ----------

@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { t } from '@/i18n/sv';
-import { fmtMin, isLong, type Step, type StepLine } from '@/lib/calc';
+import { fmtMin, isLong, recipes, type Step, type StepLine } from '@/lib/calc';
 import { fmtAt, fmtAtStr, leftMs, MIN, ringing, running, zeroAt, type Clock } from '@/lib/clock';
 import { useBatch } from '@/lib/useBatch';
 import { FRESH_COOK, setCook, useCook } from '@/lib/store';
@@ -145,6 +145,7 @@ export function Cook() {
         ))}
       </div>
 
+      <Recipes />
       <Labels />
       <p className="text-[12px] text-muted">{t.cook.disclaimer}</p>
     </div>
@@ -334,6 +335,34 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, ref }: {
         </span>
         <span />
         <span />
+      </div>
+    </div>
+  );
+}
+
+/** Each dish's full recipe at batch scale, for cooking by the list instead of the steps. */
+function Recipes() {
+  const { calcs } = useBatch();
+  const list = recipes(calcs);
+  if (!list.length) return null;
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="label">{t.cook.recipes}</div>
+      <p className="text-[13px] text-muted">{t.cook.recipesSub}</p>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {list.map((r) => (
+          <div key={r.name} className="flex flex-col gap-1 rounded-xl border border-line bg-surface p-3" style={{ '--hue': r.hue } as React.CSSProperties}>
+            <span className="flex items-baseline gap-1.5 text-sm font-semibold">
+              <span className="kit-bg h-2 w-2 shrink-0 rounded-sm" />{r.name}<span className="ml-auto font-mono text-[12px] font-normal text-muted">×{r.n}</span>
+            </span>
+            {r.rows.map((x, i) => (
+              <span key={i} className="flex items-baseline gap-2 text-[13px]">
+                <span>{x.name}{x.sub && <span className="text-muted"> · {x.sub}</span>}</span>
+                <span className="ml-auto whitespace-nowrap font-mono text-[12px] text-muted">{x.right}</span>
+              </span>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ export const sv = {
     reset: 'Nollställ', start: 'Starta', stop: 'Stoppa', done: 'Klar', pause: 'Paus', resume: 'Fortsätt', paused: 'pausad', ack: 'Kvittera', plus: 'En minut till', minus: 'En minut mindre',
     live: 'Live-läge', notify: 'Aviseringar', notifyOn: 'Aviseringar på', notifyHint: 'På iPhone: lägg till på hemskärmen först.',
     awake: 'Skärmen hålls vaken', tracks: { prep: 'Förberedelse', ugn: 'Ugn', spis: 'Spis', sousvide: 'Sous vide', form: 'Långkok', klar: 'Klart' } as Record<string, string>,
-    labels: 'Etiketter', heat: 'Värm', disclaimer: 'Näringsvärden är beräknade på rå vikt. Kontrollera viktiga siffror mot förpackningen.',
+    labels: 'Etiketter', recipes: 'Recept för hela batchen', recipesSub: 'Allt per rätt, uppräknat till dess lådor. Rå vikt om inget annat står.', heat: 'Värm', disclaimer: 'Näringsvärden är beräknade på rå vikt. Kontrollera viktiga siffror mot förpackningen.',
     notifDone: (s: string) => `Klart: ${s}`,
     nowLabel: 'Klockan nu', startNow: 'Börja nu', readyAt: 'Klart kl', follows: 'följer timern',
     plan: (start: string, end: string) => `Start ${start} · klart ${end}`,
