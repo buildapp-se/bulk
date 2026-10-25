@@ -56,4 +56,6 @@ Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
 - Actions (automated): 2026-10-06, fail, zizmor 0 high, 1 medium, 0 low (artipacked); evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
 - Markup (automated): 2026-10-06, fail, 1 targets; 1 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a2/bulk.json
 - WCAG 2.2 AA (automated): 2026-10-06, fail, 1 targets; 1 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a2/bulk.json
+- OG image: 2026-10-25, fail, no og:image tag on https://buildapp.se/bulk/
+- Database: 2026-10-25, none, localStorage
 
