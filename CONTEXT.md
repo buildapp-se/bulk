@@ -59,4 +59,5 @@ Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
 - WCAG 2.2 AA (automated): 2026-10-06, fail, 1 targets; 1 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a2/bulk.json
 - OG image: 2026-10-25, fail, no og:image tag on https://buildapp.se/bulk/
 - Database: 2026-10-25, none, localStorage
+- ZAP baseline: 2026-10-27, n/a, static site on GitHub Pages with no server, cookies or forms; headers, TLS and markup are covered by their own columns, so a passive ZAP scan would repeat them
 
