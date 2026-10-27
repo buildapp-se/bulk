@@ -13,6 +13,15 @@ export const metadata: Metadata = {
   manifest: '/bulk/manifest.webmanifest',
   appleWebApp: { capable: true, title: 'Bulk.', statusBarStyle: 'default' },
   icons: { icon: '/bulk/icon-192.png', apple: '/bulk/apple-icon.png' },
+  openGraph: {
+    type: 'website',
+    title: 'Bulk.',
+    description: 'Laga en bas, byt smak per låda. Mealprep med macros, inköpslista och ugnsschema.',
+    url: 'https://buildapp.se/bulk/',
+    locale: 'sv_SE',
+    images: [{ url: 'https://buildapp.se/bulk/og.png', width: 1200, height: 630, alt: 'Bulk: välj protein, lådor och smakkit, med batchen och dess macros till höger' }],
+  },
+  twitter: { card: 'summary_large_image' },
 };
 
 export const viewport: Viewport = {
