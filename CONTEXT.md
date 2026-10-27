@@ -50,7 +50,7 @@ Kryddning kontrollerad mot högt betygsatta recept 2026-09-24: RecipeTin Eats (g
 Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
 
 ## Audits
-- Headers (automated): 2026-10-06, fail, 1 targets; 1 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
+- Headers (automated): 2026-10-27, pass, 6 of 6 on buildapp.se/bulk, Observatory B+ on buildapp.se
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
 - OWASP Top 10: 2026-10-26, pass, code review only (Gemini 3.8 Flash, verified by Claude), static Next export with no server; 0 high, 0 medium open; the one low (unpinned actions) fixed the same day
 - Actions: 2026-10-26, pass, zizmor 1.31.1 0 high, 0 medium, 0 low after pinning 7 actions to commit SHA (artipacked already closed by persist-credentials: false)
