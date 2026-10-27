@@ -51,7 +51,6 @@ Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
 
 ## Audits
 - Headers (automated): 2026-10-06, fail, 1 targets; 1 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
-- npm audit (automated): 2026-10-06, fail, 1 targets; 1 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
 - OWASP Top 10: 2026-10-26, pass, code review only (Gemini 3.8 Flash, verified by Claude), static Next export with no server; 0 high, 0 medium open; the one low (unpinned actions) fixed the same day
 - Actions: 2026-10-26, pass, zizmor 1.31.1 0 high, 0 medium, 0 low after pinning 7 actions to commit SHA (artipacked already closed by persist-credentials: false)
@@ -60,4 +59,5 @@ Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
 - OG image: 2026-10-25, fail, no og:image tag on https://buildapp.se/bulk/
 - Database: 2026-10-25, none, localStorage
 - ZAP baseline: 2026-10-27, n/a, static site on GitHub Pages with no server, cookies or forms; headers, TLS and markup are covered by their own columns, so a passive ZAP scan would repeat them
+- npm audit: 2026-10-27, pass, 0 in production, 0 in the dev chain
 
