@@ -56,7 +56,7 @@ Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
 - Actions: 2026-10-26, pass, zizmor 1.31.1 0 high, 0 medium, 0 low after pinning 7 actions to commit SHA (artipacked already closed by persist-credentials: false)
 - Markup (automated): 2026-10-27, pass, 1 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-27-markup-w/bulk.json
 - WCAG 2.2 AA (automated): 2026-10-27, needs-review, axe 4.14.0 0 violations on buildapp.se/bulk (mobile, one page); manual keyboard pass not done
-- OG image: 2026-10-25, fail, no og:image tag on https://buildapp.se/bulk/
+- OG image: 2026-10-27, pass, 1200x630 PNG, https://buildapp.se/bulk/og.png, screenshot of the top of the page, checked live and by eye
 - Database: 2026-10-25, none, localStorage
 - ZAP baseline: 2026-10-27, n/a, static site on GitHub Pages with no server, cookies or forms; headers, TLS and markup are covered by their own columns, so a passive ZAP scan would repeat them
 - npm audit: 2026-10-27, pass, 0 in production, 0 in the dev chain
