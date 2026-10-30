@@ -61,4 +61,5 @@ Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
 - ZAP baseline: 2026-10-27, n/a, static site on GitHub Pages with no server, cookies or forms; headers, TLS and markup are covered by their own columns, so a passive ZAP scan would repeat them
 - npm audit: 2026-10-27, pass, 0 in production, 0 in the dev chain
 - Dependabot: 2026-10-29, pass, 0 open alerts
+- UX (automated): 2026-10-30, warn, 5 of 6 script checks pass on buildapp.se/bulk (no --interact): warn Fitts targets; screenshot review not done
 
