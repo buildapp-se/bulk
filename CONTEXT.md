@@ -52,7 +52,7 @@ Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
 ## Audits
 - Headers (automated): 2026-10-27, pass, 6 of 6 on buildapp.se/bulk, Observatory B+ on buildapp.se
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/bulk.json
-- OWASP Top 10: 2026-10-26, pass, code review only (Gemini 3.8 Flash, verified by Claude), static Next export with no server; 0 high, 0 medium open; the one low (unpinned actions) fixed the same day
+- OWASP Top 10: 2026-10-30, pass, code review (Mistral Large; Claude read only the verdict line, lows unread), no live probe; 0 high, 0 medium reported
 - Actions: 2026-10-26, pass, zizmor 1.31.1 0 high, 0 medium, 0 low after pinning 7 actions to commit SHA (artipacked already closed by persist-credentials: false)
 - Markup (automated): 2026-10-27, pass, 1 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-27-markup-w/bulk.json
 - WCAG 2.2 AA (automated): 2026-10-27, needs-review, axe 4.14.0 0 violations on buildapp.se/bulk (mobile, one page); manual keyboard pass not done
