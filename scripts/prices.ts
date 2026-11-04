@@ -112,7 +112,9 @@ for (const [store, storeName] of WILLYS) {
 }
 
 for (const [slug, storeName] of ICA) {
-  const h: string = await get(`https://www.ica.se/erbjudanden/${slug}/`, false);
+  // ponytail: ICA's offer pages answer 403 to scripts since 2026-10-29 (bot wall, not worked around); skip the store so the rest still updates.
+  const h: string | null = await get(`https://www.ica.se/erbjudanden/${slug}/`, false).catch((e) => { console.log(`ICA ${storeName}: ${e.message}, hoppar över`); return null; });
+  if (h === null) continue;
   const i = h.indexOf('window.__INITIAL_DATA__');
   if (i < 0) { console.log(`inga erbjudanden hittades: ${storeName}`); continue; }
   const s = h.slice(h.indexOf('{', i), h.indexOf('</script>', i));
