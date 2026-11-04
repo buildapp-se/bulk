@@ -4,14 +4,50 @@ Modulär mealprep-planerare: laga neutrala baser (protein, kolhydrat, grönt) i 
 
 Design från Claude Design-projektet "Mealprep" (ade1c1e3-d70f-4582-995b-bb751a52182b), filerna `Mealprep App.dc.html` och `Mealprep Översikt.dc.html`. Formen och tonen därifrån, logiken omskriven.
 
+## Architecture
+
+Statisk export utan server. Planen bor i webbläsaren, priserna byggs in vid varje deploy.
+
+```mermaid
+graph LR
+  USER[Webbläsare eller PWA]
+
+  subgraph WEB["buildapp.se/bulk"]
+    APP[Next.js statisk export]
+    LS[(localStorage plan)]
+    SW[public/sw.js]
+  end
+
+  subgraph GHA["GitHub Actions"]
+    PRICES[prices.yml mån och tor]
+    DEPLOY[deploy.yml till Pages]
+  end
+
+  SHOPS[Willys, Coop, ICA, Lidl]
+  JSON[src/lib/prices.json]
+
+  USER --> APP
+  APP --> LS
+  APP --> SW
+  PRICES --> SHOPS
+  PRICES --> JSON
+  JSON --> DEPLOY
+  PRICES --> DEPLOY
+  DEPLOY --> APP
+```
+
 ## Stack
 
-- Next.js 16 (App Router), `output: 'export'`, `basePath: '/bulk'`, `trailingSlash: true`. Ingen server.
-- React 19 `<ViewTransition>` för riktade sidbyten, Motion 13 (`motion/react`) för springs, layout-animationer, drag.
-- Tailwind 4, tokens i `src/app/globals.css` (ljust + mörkt läge).
-- TypeScript strict. `src/lib/*.ts` importerar med `.ts`-ändelse så att `node scripts/check.ts` kör samma kod som appen.
+- Ramverk: Next.js 16 (App Router), `output: 'export'`, `basePath: '/bulk'`, `trailingSlash: true`. Ingen server.
+- Animation: React 19 `<ViewTransition>` för riktade sidbyten, Motion 14 (`motion/react`) för springs, layout-animationer, drag.
+- Stil: Tailwind 4, tokens i `src/app/globals.css` (ljust + mörkt läge).
+- Kod: TypeScript strict. `src/lib/*.ts` importerar med `.ts`-ändelse så att `node scripts/check.ts` kör samma kod som appen.
 - PWA: `src/app/manifest.ts`, `public/sw.js` (network-first för sidor, cache-first för hashade assets), ikoner från `scripts/icons.mjs`.
+- Data: planen i localStorage (`src/lib/store.ts`), matdata och priser byggs in från `src/lib/`
+- Priser: `scripts/prices.ts` körs av `.github/workflows/prices.yml` måndag och torsdag 04:00 UTC och skriver `src/lib/prices.json`
+- Tester: `npm run check` (`scripts/check.ts`) och `npm run typecheck`
 - Deploy: `.github/workflows/deploy.yml` bygger på Ubuntu och publicerar `out/` till GitHub Pages. Repot är publikt av det skälet (Pages från privat repo kräver Pro). buildapp-se-orgens user-site gör att repot hamnar på buildapp.se/bulk.
+- Hosting: GitHub Pages, buildapp.se/bulk
 
 ## Filer
 
