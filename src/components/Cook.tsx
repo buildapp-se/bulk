@@ -94,7 +94,7 @@ export function Cook() {
       {now > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-surface p-4">
           <div className="flex flex-col gap-1.5">
-            <span className="font-mono text-[34px] font-semibold leading-none tabular-nums" aria-label={t.cook.nowLabel}>{fmtAt(now, now).time}</span>
+            <span className="font-mono text-[34px] font-semibold leading-none tabular-nums"><span className="sr-only">{t.cook.nowLabel} </span>{fmtAt(now, now).time}</span>
             <span className={`text-[13px] ${late ? 'text-warn' : 'text-muted'}`}>
               {late ? t.cook.late(fmtAtStr(now + (last - first) * MIN, now)) : t.cook.plan(fmtAtStr(at(first), now), fmtAtStr(end, now))}
               {pinned !== null && ` · ${t.cook.follows}`}
@@ -119,9 +119,9 @@ export function Cook() {
           <div className="flex items-center gap-3">
             {awake && <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[color:var(--p)]" />{t.cook.awake}</span>}
             {perm !== 'na' && perm !== 'granted' && (
-              <button className="underline" onClick={async () => setPerm(await Notification.requestPermission())} title={t.cook.notifyHint}>{t.cook.notify}</button>
+              <button className="hit underline" onClick={async () => setPerm(await Notification.requestPermission())} title={t.cook.notifyHint}>{t.cook.notify}</button>
             )}
-            <button className="underline" onClick={() => { haptic(); setCook((c) => ({ ...c, ...FRESH_COOK })); }}>{t.cook.reset}</button>
+            <button className="hit underline" onClick={() => { haptic(); setCook((c) => ({ ...c, ...FRESH_COOK })); }}>{t.cook.reset}</button>
           </div>
         </div>
         <div className="h-1 overflow-hidden rounded-full bg-line">
@@ -280,7 +280,7 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, ref }: {
     const c = cl[s.id];
     if (c && !done[s.id]) return ringing(c, now)
       ? <motion.span className="font-mono" animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
-      : <Digits ms={leftMs(c, now)} className={running(c) ? '' : 'opacity-40'} />;
+      : <Digits ms={leftMs(c, now)} className={running(c) ? '' : 'text-muted'} />;
     return now > 0 ? <When w={fmtAt(at(s.t), now, ref)} /> : null;
   };
   // Start a step's timer straight from the overview; same clock as the list's button.

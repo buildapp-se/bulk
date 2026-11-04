@@ -76,7 +76,7 @@ export function BoxCount() {
     {left.map((x) => (
       <p key={x.name} className="flex flex-wrap items-baseline gap-x-2 text-[13px] text-muted">
         <span>{t.spare(x.name, fmtG(x.bought), fmtG(x.need), x.extra)}</span>
-        <button className="underline" onClick={() => setBoxes(n + x.extra)}>{t.spareUse(n + x.extra)}</button>
+        <button className="hit underline" onClick={() => setBoxes(n + x.extra)}>{t.spareUse(n + x.extra)}</button>
       </p>
     ))}
     </div>
