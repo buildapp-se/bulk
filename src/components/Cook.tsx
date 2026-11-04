@@ -280,7 +280,7 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, ref }: {
     const c = cl[s.id];
     if (c && !done[s.id]) return ringing(c, now)
       ? <motion.span className="font-mono" animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
-      : <Digits ms={leftMs(c, now)} className={running(c) ? '' : 'opacity-40'} />;
+      : <Digits ms={leftMs(c, now)} className={running(c) ? '' : 'text-muted'} />;
     return now > 0 ? <When w={fmtAt(at(s.t), now, ref)} /> : null;
   };
   // Start a step's timer straight from the overview; same clock as the list's button.

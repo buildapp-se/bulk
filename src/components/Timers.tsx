@@ -113,7 +113,7 @@ export function ClockPanel({ s, c, now }: { s: Step; c: Clock; now: number }) {
   const run = running(c);
   return (
     <div className={`flex flex-col items-center gap-3 rounded-2xl px-4 py-5 transition-colors ${ring ? 'bg-ink text-on-ink' : 'bg-surface ring-1 ring-line'}`}>
-      <motion.div className={`text-[clamp(56px,17vw,104px)] font-semibold leading-none tracking-tight ${!run && !ring ? 'opacity-40' : ''}`}
+      <motion.div className={`text-[clamp(56px,17vw,104px)] font-semibold leading-none tracking-tight ${!run && !ring ? 'text-muted' : ''}`}
         animate={ring ? { scale: [1, 1.06, 1] } : { scale: 1 }} transition={ring ? { repeat: Infinity, duration: 1 } : spring}>
         {ring ? t.cook.done : <Digits ms={leftMs(c, now)} />}
       </motion.div>
@@ -190,7 +190,7 @@ export function TimerDock() {
                     <Link href={`/tillagning#step-${s.id}`} className="flex items-center gap-2">
                       {ring
                         ? <motion.span className="font-mono text-[15px] font-semibold" animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
-                        : <Digits ms={left} className={`text-[15px] font-semibold ${running(c) ? '' : 'opacity-40'}`} />}
+                        : <Digits ms={left} className={`text-[15px] font-semibold ${running(c) ? '' : 'text-muted'}`} />}
                       <span className="max-w-[16ch] truncate text-[12px] opacity-70">{s.what ?? s.title}</span>
                     </Link>
                     {ring
