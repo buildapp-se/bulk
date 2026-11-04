@@ -44,3 +44,7 @@ next-env.d.ts
 /.playwright-mcp/
 /design/spar/
 /design/art/
+
+# Stryker (mutation test), run locally
+/reports/
+/.stryker-tmp/

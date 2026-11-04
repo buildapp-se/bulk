@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": "Mutationstest av logiken i src/lib (audit-kolumnen Mutation). Kör: npm i --no-save @stryker-mutator/core@9 && npx stryker run. UI (src/app, src/components) muteras inte. TypeScript 7 saknar API:t Stryker använder för tsconfig, därför pekar tsconfigFile på en fil som inte finns.",
+  "testRunner": "command",
+  "commandRunner": { "command": "node scripts/check.ts" },
+  "coverageAnalysis": "off",
+  "mutate": ["src/lib/calc.ts", "src/lib/prep.ts", "src/lib/price.ts", "src/lib/clock.ts"],
+  "tsconfigFile": "tsconfig.stryker-none.json",
+  "ignorePatterns": ["out", ".next", "reports", "design"],
+  "reporters": ["clear-text", "progress", "html", "json"],
+  "htmlReporter": { "fileName": "reports/mutation/mutation.html" },
+  "jsonReporter": { "fileName": "reports/mutation/mutation.json" },
+  "concurrency": 4,
+  "timeoutMS": 10000
+}

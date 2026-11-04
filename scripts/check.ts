@@ -1,11 +1,11 @@
 // Self-check: `node scripts/check.ts`. Prints one line per failure, exits non-zero on any.
 // Expected numbers are hand-computed from the per-100 g values in data.ts (see comments).
 import { existsSync, readFileSync } from 'node:fs';
-import { DEFAULT_METHOD, INGR, KITS, PROTEINS, CARBS, VEGS, byId } from '../src/lib/data.ts';
-import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, start, zeroAt } from '../src/lib/clock.ts';
-import { baseBatches, calcBox, DEFAULT_PLAN, fmtQty, isLong, migratePlan, partMacro, pickPacks, pruneOverrides, recipes, resolveBoxes, schedule, shopping, spare, split, targets, type Box, type Plan } from '../src/lib/calc.ts';
-import { cost, kitJobs, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
-import { basket, boxCost, deals, forRegion, krPerProtein, live, matches, pantryCost, PRICES, type Prices, type Region } from '../src/lib/price.ts';
+import { DEFAULT_METHOD, INGR, KITS, PROTEINS, CARBS, VEGS, byId, type Protein } from '../src/lib/data.ts';
+import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, running, start, zeroAt } from '../src/lib/clock.ts';
+import { baseBatches, boxShare, calcBox, DEFAULT_PLAN, fmtMin, fmtPacks, fmtQty, isLong, migratePlan, missing, partMacro, pickPacks, pruneOverrides, recipes, resolveBoxes, schedule, shopping, spare, split, targets, vegRoasted, type Box, type BoxCalc, type Plan, type Step } from '../src/lib/calc.ts';
+import { cost, kitJobs, nearZero, noun, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
+import { atStore, basket, boxCost, CHAINS, deals, forRegion, krPerProtein, live, matches, needs, norm, pantryCost, PRICES, regular, unit, type Prices, type Region } from '../src/lib/price.ts';
 import type { ShopRow } from '../src/lib/calc.ts';
 
 const fails: string[] = [];
@@ -13,7 +13,7 @@ const eq = (name: string, got: unknown, want: unknown) => {
   if (JSON.stringify(got) !== JSON.stringify(want)) fails.push(`${name}: got ${JSON.stringify(got)}, want ${JSON.stringify(want)}`);
 };
 const near = (name: string, got: number, want: number, tol = 0.5) => {
-  if (Math.abs(got - want) > tol) fails.push(`${name}: got ${got.toFixed(2)}, want ${want} ±${tol}`);
+  if (!(Math.abs(got - want) <= tol)) fails.push(`${name}: got ${got.toFixed(2)}, want ${want} ±${tol}`);
 };
 
 // Distribution
@@ -359,6 +359,141 @@ eq('match', [matches('notfars', 'Nötfärs Bitar i Gelé Kattmat Våt'), matches
 for (const [chain, rows] of Object.entries(PRICES.shelf)) for (const [id, r] of Object.entries(rows)) if (!(id in INGR) || !(r!.krKg >= 3)) fails.push(`prices.json: dålig hyllrad ${chain} ${id}`);
 for (const o of PRICES.offers) if (!PRICES.stores.some((st) => st.name === o.store)) fails.push(`prices.json: okänd butik ${o.store}`);
 for (const o of PRICES.offers) if (!(o.ingr in INGR) || !(o.krKg > 0) || !/^\d{4}-\d\d-\d\d$/.test(o.until)) fails.push(`prices.json: dåligt erbjudande ${o.store} ${o.name}`);
+
+// ---------- Mutation test 2026-11-04: boundaries and tie-breaks Stryker showed unchecked ----------
+// Clock: paused clocks keep their ms, nudge on a paused clock never goes below zero.
+eq('leftMs running/paused', [leftMs({ end: 100 }, 40), leftMs({ left: 5 }, 999)], [60, 5]);
+eq('running', [running({ end: 1 }), running({ left: 1 })], [true, false]);
+eq('nudge paused', [nudge({ left: 1000 }, 500, 0), nudge({ left: 1000 }, -2000, 0)], [{ left: 1500 }, { left: 0 }]);
+// "Klart kl 18:00" asked at exactly 18:00 is now, not tomorrow; 17:00 asks for later today.
+const at18 = new Date(2026, 8, 24, 18, 0).getTime();
+eq('readyAt now is today', [readyAt('18:00', at18), readyAt('18:00', at18 - 60 * MIN)], [at18, at18]);
+// Day word when the step is today but the reference (first step) was yesterday: 17:00 and later is "i kväll".
+const day24 = (h: number, m = 0) => new Date(2026, 8, 24, h, m).getTime();
+eq('i kväll from 17', [fmtAtStr(day24(17), day24(12), day24(-1)), fmtAtStr(day24(16, 59), day24(12), day24(-1))], ['i kväll 17:00', 'i dag 16:59']);
+
+// Prices.
+eq('chains', CHAINS, ['Willys', 'ICA', 'Coop', 'Lidl']);
+eq('norm', [norm('Färska Svenska Kycklingfilé '), norm('Fryst lax'), norm('Kyckling färsk lårfilé')], ['kycklingfile', 'lax', 'kyckling farsk larfile']);
+eq('offer valid on its last day', live(FIX, '2026-09-27').map((o) => o.ingr), ['broccoli', 'kycklingfile']);
+eq('region filters offers, Lidl is national', [forRegion(reg, 'Stockholm').offers.map((o) => o.store), forRegion(reg, 'Stockholm').stores.map((s) => s.name)], [['S'], ['S', 'L']]);
+eq('a regionless Coop is Umeå', forRegion({ ...FIX, stores: [{ chain: 'Coop', name: 'C' }] }, 'Umeå').stores.length, 1);
+// Usual cheapest: Coop's 90 beats Willys' 100; a tie keeps the first chain; a chain missing from the file is skipped.
+const partial = { ...FIX, shelf: { Coop: FIX.shelf.Coop } } as unknown as Prices;
+eq('regular', [regular(FIX, 'kycklingfile'), regular(FIX, 'broccoli'), regular(partial, 'gochujang'), regular(FIX, 'kokosmjolk')],
+  [{ krKg: 90, chain: 'Coop' }, { krKg: 30, chain: 'Willys' }, { krKg: 200, chain: 'Coop' }, null]);
+const o80 = offer('kycklingfile', 'Willys', 'A', 80, '2026-09-27'), o95 = offer('kycklingfile', 'Willys', 'A', 95, '2026-09-27');
+const kk = offer('kokosmjolk', 'ICA', 'I', 40, '2026-09-27');
+eq('unit: offer only when cheaper than usual', [unit(FIX, 'kycklingfile', [o80])?.krKg, unit(FIX, 'kycklingfile', [o95])?.krKg, unit(FIX, 'kycklingfile', [kk])?.krKg,
+  unit(FIX, 'kokosmjolk', [kk])?.chain, unit(FIX, 'kokosmjolk', [])], [80, 90, 90, 'ICA', null]);
+eq('unit: an equal offer is not a deal', unit(FIX, 'kycklingfile', [offer('kycklingfile', 'Coop', 'C', 90, '2026-09-27')])?.offer, undefined);
+const storeA = FIX.stores[0], storeB = FIX.stores[1], storeI = FIX.stores[3];
+const o100 = offer('kycklingfile', 'Willys', 'A', 100, '2026-09-27');
+eq('atStore: chain missing from the file', atStore(partial, storeA, 'kycklingfile', []), null);
+eq('atStore', [atStore(FIX, storeA, 'kycklingfile', [o80])?.krKg, atStore(FIX, storeB, 'kycklingfile', [o80])?.krKg, atStore(FIX, storeA, 'kycklingfile', [o100])?.offer,
+  atStore(FIX, storeI, 'kokosmjolk', [kk])?.krKg, atStore(FIX, storeI, 'kokosmjolk', [])], [80, 100, undefined, 40, null]);
+// needs: grams and ml summed × n per box, pieces and unweighed items left out.
+const fakeCalc = (parts: { ingr?: string; q: number; u: string }[]) => ({ parts }) as unknown as BoxCalc;
+eq('needs', needs([{ c: fakeCalc([{ ingr: 'ris', q: 100, u: 'g' }, { ingr: 'soja', q: 10, u: 'ml' }, { ingr: 'lime', q: 1, u: 'st' }, { q: 5, u: 'g' }]), n: 2 },
+  { c: fakeCalc([{ ingr: 'ris', q: 50, u: 'g' }]), n: 1 }]), [{ ingr: 'ris', g: 250 }, { ingr: 'soja', g: 20 }]);
+// Basket: fewest gaps beats a cheaper store; an equal price keeps the first store; unsold items are named in missing.
+// The cheaper Coop with a gap comes last, so a later cheaper store cannot win on price alone.
+const gap: Prices = { ...FIX, stores: [{ chain: 'Willys', name: 'A' }, { chain: 'Willys', name: 'B' }, { chain: 'Coop', name: 'C' }],
+  shelf: { ...FIX.shelf, Coop: shelfOf({ kycklingfile: 10 }) } };
+const bk = basket([{ ingr: 'kycklingfile', g: 1000 }, { ingr: 'ris', g: 1000 }, { ingr: 'kokosmjolk', g: 400 }], gap, [])!;
+eq('basket gaps first, tie keeps first', [bk.store.name, bk.kr, bk.elsewhere, bk.missing], ['A', 120, [], [INGR.kokosmjolk.name]]);
+eq('basket gap priced elsewhere', basket([{ ingr: 'ris', g: 1000 }], { ...gap, stores: [gap.stores[2]] }, [])!.elsewhere, [INGR.ris.name]);
+eq('no basket at a chain without ordinary prices', basket([{ ingr: 'ris', g: 1000 }], { ...FIX, stores: [FIX.stores[3]] }, []), null);
+// Pantry: rows not in INGR or with no price anywhere are skipped, a missing store price falls back to the usual cheapest.
+const pRows = [
+  { key: 'gochujang', need: 100, cat: 'skafferi', role: 'kit', packs: [] },
+  { key: 'kokosmjolk', need: 400, cat: 'skafferi', role: 'kit', packs: [] },
+  { key: 'Lime|st', need: 1, cat: 'skafferi', role: 'topp', packs: [] },
+  { key: 'soja', need: 100, cat: 'skafferi', role: 'protein', packs: [] },
+  { key: 'teriyaki', need: 100, cat: 'kylvara', role: 'kit', packs: [] },
+  { key: 'olja', need: 100, cat: 'skafferi', role: 'carb', packs: [] },
+] as unknown as ShopRow[];
+eq('pantry fallback and skips', pantryCost(pRows, FIX, [], storeA), { kr: 20, n: 1 });
+const dNo = deals(FIX, [kk])[0];
+eq('deal without usual or ordinary price', [dNo.vsShelf, dNo.vsOrd], [undefined, undefined]);
+
+// Prep.
+eq('noun', [noun('Riven ingefära'), noun('Vitlöksklyftor, pressade'), noun('Gullök'), noun('Rödlök')], ['ingefära', 'vitlök', 'gul lök', 'rödlök']);
+eq('job label ends with the noun', kitJobs(byId(KITS, 'keema')).every((j) => j.label.endsWith(' ' + j.key) && j.label.length > j.key.length + 1), true);
+eq('protein job labels', [protPrep(kyc).job?.label, protPrep(byId(PROTEINS, 'lax')).job?.label], ['Skiva kyckling efter', 'Skär i portionsbitar (lax)']);
+// No knife and not whole: no job (kikärtor rinse, linser in a sieve). Only kyckling counts whole in sous vide.
+eq('no-knife prep is free', [protPrep(byId(PROTEINS, 'kikartor')).job, protPrep(byId(PROTEINS, 'linser')).job], [undefined, undefined]);
+const svOnly = { ...byId(PROTEINS, 'lax'), id: 'x', methods: { sousvide: { ...byId(PROTEINS, 'lax').methods.sousvide!, prep: 'Salta' } } } as Protein;
+eq('sous vide whole only for kyckling', protPrep(svOnly).job, undefined);
+eq('cost: two bases two pots, empty is zero', [cost([{ kit: byId(KITS, 'teriyaki'), protein: kyc }, { kit: byId(KITS, 'keema'), protein: kyc }]).pots, cost([])],
+  [2, { jobs: [], knife: 0, ingr: 0, pots: 0 }]);
+// Near zero: one row per kit, its cheapest protein (same count as cost()), cheapest first, ties by name.
+const easy = nearZero();
+eq('nearZero one per kit', easy.map((e) => e.kit.id).sort(), KITS.map((k) => k.id).sort());
+for (const e of easy) {
+  const best = Math.min(...e.kit.protein.map((id) => cost([{ kit: e.kit, protein: byId(PROTEINS, id) }]).knife));
+  // A tie keeps the first protein listed for the kit.
+  const first = e.kit.protein.find((id) => cost([{ kit: e.kit, protein: byId(PROTEINS, id) }]).knife === best);
+  if (e.protein.id !== first) fails.push(`nearZero ${e.kit.id}: ${e.protein.id}, want first cheapest ${first}`);
+  if (e.cost !== best || e.jobs.reduce((s, j) => s + j.w, 0) !== e.cost || cost([{ kit: e.kit, protein: e.protein }]).knife !== best || protPrep(e.protein).m !== e.m) fails.push(`nearZero ${e.kit.id}: cost ${e.cost}, best ${best}`);
+}
+for (let i = 1; i < easy.length; i++) {
+  const a = easy[i - 1], b = easy[i];
+  if (a.cost > b.cost || (a.cost === b.cost && a.kit.name.localeCompare(b.kit.name, 'sv') > 0)) fails.push(`nearZero order: ${a.kit.id} before ${b.kit.id}`);
+}
+// Tree: branches biggest first, every node's n is its kits plus its branches' kits.
+const walk = (n: PNode): void => {
+  for (let i = 1; i < n.kids.length; i++) if (n.kids[i - 1].n < n.kids[i].n) fails.push(`prep tree ${n.id}: branches out of order`);
+  if (n.n !== n.kits.length + n.kids.reduce((s, k) => s + k.n, 0)) fails.push(`prep tree ${n.id}: n ${n.n}`);
+  n.kids.forEach(walk);
+};
+for (const p of PROTEINS) walk(prepTree(p));
+
+// Goals: Mifflin-St Jeor in advanced mode. 80 kg, 180 cm, 30 år, PAL 1,5, bulk (+400), 3 lådor/dag = 20 % per låda.
+// Man: (800 + 1125 - 150 + 5) × 1,5 + 400 = 3070 -> 614 -> 610 kcal; 80 × 2,0 × 0,2 = 32 g. Kvinna: -161 -> 2821 -> 560.
+const adv = { ...DEFAULT_PLAN.goal, mode: 'advanced' as const, kind: 'bulk' as const, weight: 80, height: 180, age: 30, activity: 1.5, perDay: 3 };
+const tm = targets(adv)!, tk = targets({ ...adv, sex: 'k' })!;
+eq('advanced targets', [tm.dailyKcal, tm.kcal, tm.protein, tk.dailyKcal, tk.kcal], [3070, 610, 32, 2821, 560]);
+eq('simple ignores boxes per day', targets({ ...DEFAULT_PLAN.goal, mode: 'simple', kind: 'bulk', weight: 80, perDay: 3 })!.kcal, 910);
+eq('overrides and off', [targets({ ...adv, kcalBox: 700, proteinBox: 50 }), targets({ ...adv, mode: 'off' })], [{ dailyKcal: 3070, dailyProtein: 160, kcal: 700, protein: 50 }, null]);
+eq('box share', [boxShare(0), boxShare(1), boxShare(2), boxShare(4)], [0.35, 0.35, 0.3, 0.15]);
+
+// Packs: equal total keeps fewer packs whichever size is listed first; nothing to buy -> none.
+eq('packs tie, big first', pickPacks(1000, [1000, 500]), [{ size: 1000, n: 1 }]);
+eq('packs none', [pickPacks(-5, [500]), pickPacks(100, [])], [[], []]);
+
+// Formatting boundaries.
+eq('fmtQty', [fmtQty(1000, 'g'), fmtQty(21, 'g'), fmtQty(0.2, 'g'), fmtQty(100, 'ml'), fmtQty(99, 'ml'), fmtQty(5, 'krm'), fmtQty(4, 'krm'), fmtQty(3, 'tsk'),
+  fmtQty(1.2, 'st'), fmtQty(2, ''), fmtQty(1.2, 'msk')], ['1 kg', '20 g', '1 g', '1 dl', '100 ml', '1 tsk', '4 krm', '1 msk', '1,5 st', 'efter smak', '1 msk']);
+eq('fmtMin', [fmtMin(119), fmtMin(120), fmtMin(150)], ['119 min', '2 h', '2,5 h']);
+eq('fmtPacks', fmtPacks([{ size: 500, n: 2 }, { size: 1000, n: 1 }]), '2 × 500 g + 1 × 1 kg');
+const stp = (track: Step['track'], dur: number) => ({ id: '', track, t: 0, dur, title: '', details: '' });
+eq('isLong', [isLong(stp('sousvide', 120)), isLong(stp('form', 119)), isLong(stp('ugn', 300))], [true, false, false]);
+// Shopping: oil is not a shopping row, unweighed items are keyed by name and unit, cooked weight is summed.
+const shop = shopping(calcs);
+const row = (k: string) => shop.find((r) => r.key === k);
+eq('shopping rows', [shop.some((r) => r.role === 'olja'), [row('kycklingfile')?.need, row('kycklingfile')?.cooked, row('kycklingfile')?.packs],
+  [row('Vitlöksklyfta|st')?.need, row('Vitlöksklyfta|st')?.cooked, row('Vitlöksklyfta|st')?.packs]], [false, [700, 520, [{ size: 900, n: 1 }]], [3, undefined, []]]);
+// Spare protein: 8 boxes, 4 × 175 g each, 900 g and 1000 g bought -> 1 more box of each. 3 boxes: kyckling 2 × 175 in a
+// 500 g pack leaves 150 g, less than a box, so only nötfärs (1 × 175, 325 g over) is listed; 4 boxes list none.
+const spareAt = (n: number) => { const p = { ...DEFAULT_PLAN, boxes: n }; return spare(resolveBoxes(p).map((b) => calcBox(b, p, null))).map((x) => [x.name, x.extra]); };
+eq('spare', [spareAt(8), spareAt(3), spareAt(4)], [[['Kycklingfilé', 1], ['Nötfärs 10 %', 1]], [['Nötfärs 10 %', 1]], []]);
+eq('partMacro only for weighed parts', [partMacro({ role: 'kit', ingr: 'ris', name: '', q: 100, u: 'st' }), partMacro({ role: 'kit', ingr: 'soja', name: '', q: 100, u: 'ml' }) !== null], [null, true]);
+const vg = (id: string) => byId(VEGS, id);
+eq('vegRoasted', [vegRoasted(vg('broccoli'), 'rostade'), vegRoasted(vg('broccoli'), 'frysta'), vegRoasted(vg('aubergine'), 'frysta'), vegRoasted(vg('wokmix'), 'rostade')], [true, false, true, false]);
+eq('missing slots', missing({ i: 0, id: '', kit: byId(KITS, 'teriyaki'), protein: kyc }), ['carb', 'veg']);
+
+// Schedule warnings. 6 boxes fill exactly 3 trays and do not warn; the default 8 need 4 and do. 4 proteins and 4 kits warn
+// about both, 3 and 3 do not.
+const six: Plan = { ...DEFAULT_PLAN, boxes: 6 };
+const sixS = schedule(resolveBoxes(six).map((b) => calcBox(b, six, null)), six);
+const dfltS = schedule(calcs, DEFAULT_PLAN);
+eq('trays at the limit', [sixS.trays, sixS.warnings, dfltS.trays, dfltS.warnings], [3, [], 4, ['4 plåtar ryms inte på en gång. Kör två omgångar eller flytta ett protein till sous vide.']]);
+const busy: Plan = { ...DEFAULT_PLAN, proteins: [...DEFAULT_PLAN.proteins, { id: 'lax', method: 'ugn' }, { id: 'halloumi', method: 'ugn' }], kits: [...DEFAULT_PLAN.kits, 'pesto'] };
+const busyW = schedule(resolveBoxes(busy).map((b) => calcBox(b, busy, null)), busy).warnings;
+eq('4 proteins and 4 kits warn', ['Fler än 3 proteiner gör schemat rörigt.', 'Fler än 3 smakkit: fler kastruller samtidigt.'].map((w) => busyW.includes(w)), [true, true]);
+const three: Plan = { ...DEFAULT_PLAN, proteins: [...DEFAULT_PLAN.proteins, { id: 'lax', method: 'ugn' }] };
+eq('3 proteins and 3 kits do not warn', schedule(resolveBoxes(three).map((b) => calcBox(b, three, null)), three).warnings.filter((w) => w.startsWith('Fler än')), []);
 
 // Drift vs grammat (only where the sibling repo exists, i.e. locally).
 const gpath = new URL('../../recept/nutrients.json', import.meta.url);

@@ -63,4 +63,5 @@ Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
 - npm audit: 2026-10-27, pass, 0 in production, 0 in the dev chain
 - Dependabot: 2026-10-29, pass, 0 open alerts
 - UX (automated): 2026-10-30, warn, 5 of 6 script checks pass on buildapp.se/bulk (no --interact): warn Fitts targets; screenshot review not done
+- Mutation: 2026-11-04, Stryker 79,06 % on src/lib calc, prep, price, clock (65,56 % before, 1 652 mutants); survivors reviewed, 232 of 346 in schedule step texts
 
