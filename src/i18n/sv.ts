@@ -71,7 +71,7 @@ export const sv = {
     dishes: (n: number) => `${n} ${n === 1 ? 'rätt' : 'rätter'}`, nothing: 'Inget nytt knivjobb',
     plus: (k: string, i: number) => `+${k} ✂ · +${i} ingr.`,
     marked: (n: number) => `${n} markerade`, clear: 'Rensa', send: 'Skicka till 01 Välj',
-    mark: 'Markera', unmark: 'Avmarkera', markOne: (kit: string) => `Markera ${kit}`, close: 'Stäng',
+    mark: 'Markera', unmark: 'Avmarkera', markOne: (kit: string) => `Markera ${kit}`, close: 'Stäng', recipe: 'Recept',
     perBox: 'Per låda', noKnife: 'Ingen kniv', heat: 'Värm',
     empty: 'Tryck på ett kit för att se receptet här.',
     easy: 'Nästan noll prepp', easySub: 'Varje kit med det protein som kräver minst kniv. Burkar, kryddor och en plåt i ugnen.',

@@ -94,7 +94,7 @@ export function Cook() {
       {now > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-surface p-4">
           <div className="flex flex-col gap-1.5">
-            <span className="font-mono text-[34px] font-semibold leading-none tabular-nums" aria-label={t.cook.nowLabel}>{fmtAt(now, now).time}</span>
+            <span className="font-mono text-[34px] font-semibold leading-none tabular-nums"><span className="sr-only">{t.cook.nowLabel} </span>{fmtAt(now, now).time}</span>
             <span className={`text-[13px] ${late ? 'text-warn' : 'text-muted'}`}>
               {late ? t.cook.late(fmtAtStr(now + (last - first) * MIN, now)) : t.cook.plan(fmtAtStr(at(first), now), fmtAtStr(end, now))}
               {pinned !== null && ` · ${t.cook.follows}`}

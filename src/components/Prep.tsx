@@ -55,12 +55,12 @@ export function Prep() {
       </div>
 
       {/* Week prices: own column left of the page width on wide screens (own scroll), under the tree otherwise. */}
-      <aside className="min-w-0 [grid-area:prices] min-[1500px]:sticky min-[1500px]:top-24 min-[1500px]:max-h-[calc(100vh-7rem)] min-[1500px]:overflow-y-auto min-[1500px]:pr-1">
+      <aside aria-label={t.price.week} className="min-w-0 [grid-area:prices] min-[1500px]:sticky min-[1500px]:top-24 min-[1500px]:max-h-[calc(100vh-7rem)] min-[1500px]:overflow-y-auto min-[1500px]:pr-1">
         <WeekPrices offers={pr.offers} />
       </aside>
 
       {/* Wide screens: the open recipe sits to the right. Phones open it in place under the row instead. */}
-      <aside className="hidden [grid-area:recipe] lg:sticky lg:top-24 lg:block">
+      <aside aria-label={t.prep.recipe} className="hidden [grid-area:recipe] lg:sticky lg:top-24 lg:block">
         {shown ? (
           <Recipe key={`${shown.kit.id}:${shown.p.id}`} kit={shown.kit} p={shown.p} {...c} onClose={() => setView(null)} />
         ) : (
