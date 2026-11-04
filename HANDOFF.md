@@ -81,3 +81,7 @@ Sett men inte åtgärdat: axe markerar två saker som "kan inte avgöras" på Ti
 ## Automated audit batch, 2026-10-06
 
 Cross-project run from elwyn-dash with aifabriken `tools/audit-suite.ts` (headers, npm audit, secrets, Actions, markup, axe at one mobile viewport; TLS and Lighthouse not run). Results are the `(automated)` lines under `## Audits` in CONTEXT.md, findings under `## Granskning 2026-10-06` in BACKLOG.md. Markup fail (div inside button), axe fail (contrast on 10 nodes, one nested-interactive), npm audit fail (2 high in production dependencies), Actions fail (one medium). Headers fail is the shared buildapp.se CSP without `script-src` (zone Transform Rule, owned by elwyn-dash `docs/security.md` §Open 11), not something this repository can fix. No application code or deployment changed. `reviewedAt` was left alone: the goal and next action above were not reviewed.
+
+## 2026-11-04: prisjobbet föll på ICA 403
+
+`prices.yml` föll 2026-10-29 och 2026-11-02: ICA:s erbjudandesidor svarar 403 mot GitHubs runners (bot-spärr, kringgås inte enligt repots regel). En butik som svarar fel hoppas nu över med en loggrad (`b1937c4`), så Willys och Coop uppdateras ändå. Körning 41911189784 grön: ICA 0 erbjudanden, 117 totalt. Hemifrån svarar ICA fortfarande till Nodes `fetch` (30 erbjudanden 2026-11-04), så spärren gäller runnerns IP. ICA-erbjudanden saknas därför i veckokörningarna tills vidare.
