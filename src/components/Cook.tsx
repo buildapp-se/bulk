@@ -119,9 +119,9 @@ export function Cook() {
           <div className="flex items-center gap-3">
             {awake && <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[color:var(--p)]" />{t.cook.awake}</span>}
             {perm !== 'na' && perm !== 'granted' && (
-              <button className="underline" onClick={async () => setPerm(await Notification.requestPermission())} title={t.cook.notifyHint}>{t.cook.notify}</button>
+              <button className="hit underline" onClick={async () => setPerm(await Notification.requestPermission())} title={t.cook.notifyHint}>{t.cook.notify}</button>
             )}
-            <button className="underline" onClick={() => { haptic(); setCook((c) => ({ ...c, ...FRESH_COOK })); }}>{t.cook.reset}</button>
+            <button className="hit underline" onClick={() => { haptic(); setCook((c) => ({ ...c, ...FRESH_COOK })); }}>{t.cook.reset}</button>
           </div>
         </div>
         <div className="h-1 overflow-hidden rounded-full bg-line">

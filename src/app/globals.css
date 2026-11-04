@@ -59,6 +59,10 @@
 html, body { background: var(--bg); color: var(--ink); }
 body { -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
+/* Small text links and buttons: a 44 px hit area around them without moving anything (WCAG 2.5.8, Fitts). Only on
+   elements with room around them, or the neighbours' areas overlap. */
+.hit { position: relative; }
+.hit::after { content: ''; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); }
 .num { font-variant-numeric: tabular-nums; }
 .label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 /* Prepp: the tree and recipe keep the page's normal width. Week prices go under the tree, and on screens wide enough

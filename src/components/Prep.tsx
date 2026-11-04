@@ -210,7 +210,7 @@ function Leaf({ kit, ...c }: PCtx & { kit: Kit }) {
 function MarkButton({ on, label, onClick }: { on: boolean; label: string; onClick: () => void }) {
   return (
     <motion.button whileTap={{ scale: 0.85 }} onClick={onClick} aria-pressed={on} aria-label={label}
-      className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border text-[13px] transition-colors ${on ? 'border-ink bg-ink text-on-ink' : 'border-line text-muted hover:border-ink hover:text-ink'}`}>
+      className={`hit grid h-8 w-8 shrink-0 place-items-center rounded-full border text-[13px] transition-colors ${on ? 'border-ink bg-ink text-on-ink' : 'border-line text-muted hover:border-ink hover:text-ink'}`}>
       {on ? '✓' : '+'}
     </motion.button>
   );

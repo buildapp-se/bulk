@@ -101,7 +101,7 @@ export function WeekPrices({ offers }: { offers: Offer[] }) {
           </label>
         </div>
         <p className="text-sm text-muted [text-wrap:pretty]">{t.price.weekSub(fmtDay(PRICES.at), local, plan.region)}</p>
-        <p className="text-sm text-muted">{t.price.otherCity} <a className="underline" href={`mailto:${t.price.mail}?subject=${encodeURIComponent('Bulk: min stad')}`}>{t.price.tellUs}</a></p>
+        <p className="text-sm text-muted">{t.price.otherCity} <a className="hit underline" href={`mailto:${t.price.mail}?subject=${encodeURIComponent('Bulk: min stad')}`}>{t.price.tellUs}</a></p>
         <div className="flex flex-col gap-1 text-[12px]">
           <span className="flex items-start gap-2"><span className="mt-px whitespace-nowrap rounded-full bg-deal-bg px-1.5 font-mono text-deal">−20 %</span><span>{t.price.legendGreen}</span></span>
           <span className="flex items-start gap-2"><span className="mt-px whitespace-nowrap rounded-full bg-sunken px-1.5 font-mono text-muted">−20 % rea</span><span>{t.price.legendGrey}</span></span>
@@ -130,7 +130,7 @@ function Group({ g, ids, byIngr, offers }: { g: string; ids: IngrId[]; byIngr: M
       <div className="flex items-baseline justify-between gap-3 px-1">
         <div className="label">{t.price.groups[g]}</div>
         {more > 0 && (
-          <button onClick={() => { haptic(); setAll(!all); }} aria-expanded={all} className="text-[12px] text-muted underline">
+          <button onClick={() => { haptic(); setAll(!all); }} aria-expanded={all} className="hit text-[12px] text-muted underline">
             {all ? t.price.fewer : t.price.more(more)}
           </button>
         )}
