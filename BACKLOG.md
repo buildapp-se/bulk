@@ -30,3 +30,14 @@ Fynd från den automatiska sviten (aifabriken `tools/audit-suite.ts`: headers, n
 - [x] (2026-10-06) `[P2]` WCAG: kontrast 4,35:1 (#6f6a62 på #ebe7e0) på 10 element: navlänkarna Ingredienser och Tillagning samt radiogruppen. Kravet är 4,5:1. Dessutom `nested-interactive`: ett `[role=checkbox]`-kort har fokuserbara barn.
 - [x] (2026-10-06) `[P3]` Markup: `<div>` inuti `<button>` på 6 ställen (html-validate `element-permitted-content`). Byt inre `div` mot `span`.
 - [x] (2026-10-06) `[P2]` WCAG, Tillagning (hittat 2026-10-06 med axe 4.13 lokalt på 390 px, sviten mätte bara startsidan): kontrast 3,48:1 på 26 element (`text-muted` med `opacity-80` i stegens listor, `Cook.tsx` `Lines`) och `nested-interactive` på 5 rader i live-läget (rad med ▶-knapp inuti). Välj, Ingredienser och Prepp har 0 fel. Dessutom spårbrickorna (vit text på spårfärgen, 2,71–3,53:1), som axe först såg när de andra felen var borta.
+
+## Förbättringsrunda 2026-11-04
+
+PR #1 (`claude/forbattringar-2026-11-04`), väntar på Patriks genomklickning.
+
+- [x] (2026-11-04) `[P2]` WCAG: Prepps två `aside` utan namn (`landmark-unique` på 1280 px), klockans `aria-label` på `span`.
+- [x] (2026-11-04) `[P2]` UX: små länkar och textknappar under 44 px fick osynlig träffyta (`.hit`).
+- [x] (2026-11-04) `[P2]` WCAG: pausade timersiffror 2,42:1 (opacity-40), nu `text-muted`.
+- [x] (2026-11-04) `[P3]` 404-sidan var Nexts engelska standard, nu svensk.
+- `[P3]` Tryckytor kvar under 44 px (klarar 24 px): segmentväljarna (Börja nu/Klart kl 27 px, målväljaren 36 px, metodväljaren 27 px), live-radernas titlar och ▶ (24 px), Kopiera lista (33 px). Kräver att layouten ändras, därför inte gjort.
+- `[P3]` CSP via `<meta http-equiv>`: inte infört, Nexts export har inline-skript (kräver `unsafe-inline` eller hashar per bygge).

@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-10-18
+reviewedAt: 2026-11-04
 schemaVersion: 1
 status: active
 currentGoal: "Bulk är live på buildapp.se/bulk: matlådeplanering med smakkit, inköp, tillagning och veckans priser i Umeå."
@@ -7,6 +7,14 @@ nextAction: "BACKLOG P1, test på riktig telefon. Filips-kiten ska provlagas och
 blockers: []
 ---
 # Handoff
+
+**2026-11-04, förbättringsrunda (gren `claude/forbattringar-2026-11-04`, draft-PR #1, inte mergad eller deployad):** bara förbättringar, inga nya funktioner.
+1. `5243081` Prepps två `aside` har namn (Veckans priser, Recept): axe `landmark-unique` på 1280 px 1 -> 0. Klockan i Tillagning hade `aria-label` på en `span` (axe `aria-prohibited-attr`, nämnt 2026-10-06 som "kan inte avgöras"), nu en `sr-only`-etikett före tiden.
+2. `3496830` Klassen `.hit` i globals.css: osynlig 44 px träffyta runt små länkar och textknappar utan att något flyttas (loggan, Utforska, stegflikarna, Gör N lådor, Aviseringar, Nollställ, visa alla/färre, Säg till, Prepps markeringsknappar). Kontrollerat med `elementFromPoint` på 390 och 1280 px: ingen annan knapps mitt hamnar under en utökad yta, ingen horisontell scroll.
+3. `859ef91` Pausade timersiffror (docka, klockpanel, Tillagnings lista) `text-muted` i stället för `opacity-40`: 2,42:1 -> minst 4,5:1 i ljust läge (3,45:1 i mörkt före). Skärmbild: pausad grå, gående svart.
+4. `123676d` `src/app/not-found.tsx`: 404 på svenska. GitHub Pages visade Nexts engelska standardsida för alla saknade adresser under /bulk/ (kontrollerat live).
+
+Verifierat: check, typecheck och build gröna efter varje steg; axe-core 4.10.3 via Playwright på alla fyra sidor plus 404, 390 och 1280 px, ljust och mörkt, med gående och pausad timer och markerat kit i Prepp: 0 fel. Tab genom alla sidor: fokusring vid varje stopp. **Inte verifierat:** riktig skärmläsare, riktig telefon. **Inte gjort:** CSP (Next lägger inline-skript i exporten, kräver `unsafe-inline` eller hashar per bygge; inte värt risken utan att kunna prova på Pages), segmentväljarna (27 till 36 px höga) och live-radernas knappar (24 px, tätt staplade) är kvar under 44 px eftersom de inte kan växa utan att layouten ändras; de klarar WCAG 2.5.8 (24 px).
 
 **2026-10-18, mängder i Tillagning (Patrik lagade 3 kg karré delat på svampsås och Marry me):** Smaksätt/Dela-stegets kitrader visade bara namnen på twistens ingredienser. Nu mängd × kitets lådor, och vid delning hur stor del av basen kitet tar ("10 av 20 lådors bas"). Ny sektion "Recept för hela batchen" längst ner: varje rätt (kit + protein) med alla delar uppräknade till dess lådor, rå vikt plus tillagad där utbyte finns (`recipes` i calc.ts). Verifierat: check (svampsåsens rad för 10 av 20 lådor, Philadelphia 250 g per rätt), typecheck, build, och sidan i Chromium med den planen. Inte sett på telefon.
 Samma dag: lådväljaren (`BoxCount`) även överst på Ingredienser och Tillagning, så batchen kan skalas från alla tre sidor. Under den en rad per protein som köps i hela förpackningar och räcker till fler lådor: "du köper 2,5 kg, lådorna tar 2,4 kg, ca 1 låda till" plus en knapp som sätter antalet (`spare` i calc.ts; per protein, så med flera proteiner är det en riktlinje). Appen vet inte vad man redan har hemma, bara vad den själv köper. Check: knappens antal kräver ingen ny förpackning. Sett i Chromium på 390, ingen sidledsscroll.
