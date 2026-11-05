@@ -1,5 +1,5 @@
 {
- "at": "2026-11-04",
+ "at": "2026-11-05",
  "stores": [
   {
    "chain": "Willys",
@@ -2448,18 +2448,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "flaskkarre",
-   "chain": "Coop",
-   "store": "Stora Coop Avion",
-   "name": "Färsk fläskkarré",
-   "brand": "Scan",
-   "pack": "Ca 1100 g.",
-   "krKg": 81.28,
-   "label": "89 kr",
-   "member": false,
-   "until": "2026-11-08"
-  },
-  {
    "ingr": "vitkal",
    "chain": "Coop",
    "store": "Stora Coop Avion",
@@ -2468,6 +2456,30 @@
    "pack": "",
    "krKg": 9,
    "label": "9 kr",
+   "member": false,
+   "until": "2026-11-08"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Kycklingbröstfilé",
+   "brand": "Xtra",
+   "pack": "900 g.",
+   "krKg": 55,
+   "label": "2 för 99 kr",
+   "member": true,
+   "until": "2026-11-08"
+  },
+  {
+   "ingr": "krossade",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Krossade tomater",
+   "brand": "Cirio",
+   "pack": "390 g.",
+   "krKg": 32.05,
+   "label": "2 för 25 kr",
    "member": false,
    "until": "2026-11-08"
   },
@@ -2496,27 +2508,39 @@
    "until": "2026-11-08"
   },
   {
-   "ingr": "krossade",
+   "ingr": "flaskkarre",
    "chain": "Coop",
    "store": "Stora Coop Avion",
-   "name": "Krossade tomater",
-   "brand": "Cirio",
-   "pack": "390 g.",
-   "krKg": 32.05,
-   "label": "2 för 25 kr",
+   "name": "Färsk fläskkarré",
+   "brand": "Scan",
+   "pack": "Ca 1100 g.",
+   "krKg": 81.28,
+   "label": "89 kr",
    "member": false,
    "until": "2026-11-08"
   },
   {
    "ingr": "kycklingfile",
    "chain": "Coop",
-   "store": "Stora Coop Avion",
+   "store": "Stora Coop Ersboda",
    "name": "Kycklingbröstfilé",
    "brand": "Xtra",
    "pack": "900 g.",
    "krKg": 55,
    "label": "2 för 99 kr",
    "member": true,
+   "until": "2026-11-08"
+  },
+  {
+   "ingr": "kebabsas",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Kebabsås",
+   "brand": "Schysst Käk",
+   "pack": "250 ml.",
+   "krKg": 84,
+   "label": "2 för 42 kr",
+   "member": false,
    "until": "2026-11-08"
   },
   {
@@ -2532,18 +2556,6 @@
    "until": "2026-11-08"
   },
   {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Ersboda",
-   "name": "Kycklingbröstfilé",
-   "brand": "Xtra",
-   "pack": "900 g.",
-   "krKg": 55,
-   "label": "2 för 99 kr",
-   "member": true,
-   "until": "2026-11-08"
-  },
-  {
    "ingr": "blandfars",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
@@ -2556,14 +2568,14 @@
    "until": "2026-11-08"
   },
   {
-   "ingr": "kebabsas",
+   "ingr": "flaskkarre",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
-   "name": "Kebabsås",
-   "brand": "Schysst Käk",
-   "pack": "250 ml.",
-   "krKg": 84,
-   "label": "2 för 42 kr",
+   "name": "Färsk fläskkarré",
+   "brand": "Scan",
+   "pack": "Ca 1100 g.",
+   "krKg": 81.28,
+   "label": "89 kr",
    "member": false,
    "until": "2026-11-08"
   },
@@ -2582,7 +2594,7 @@
   {
    "ingr": "flaskkarre",
    "chain": "Coop",
-   "store": "Stora Coop Ersboda",
+   "store": "Stora Coop Tomtebo",
    "name": "Färsk fläskkarré",
    "brand": "Scan",
    "pack": "Ca 1100 g.",
@@ -2604,6 +2616,18 @@
    "until": "2026-11-08"
   },
   {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Blandfärs",
+   "brand": "Scan",
+   "pack": "1000 g.",
+   "krKg": 99,
+   "label": "99 kr",
+   "member": false,
+   "until": "2026-11-08"
+  },
+  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
@@ -2613,18 +2637,6 @@
    "krKg": 55,
    "label": "2 för 99 kr",
    "member": true,
-   "until": "2026-11-08"
-  },
-  {
-   "ingr": "kebabsas",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Kebabsås",
-   "brand": "Schysst Käk",
-   "pack": "250 ml.",
-   "krKg": 84,
-   "label": "2 för 42 kr",
-   "member": false,
    "until": "2026-11-08"
   },
   {
@@ -2640,26 +2652,14 @@
    "until": "2026-11-08"
   },
   {
-   "ingr": "blandfars",
+   "ingr": "kebabsas",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
-   "name": "Blandfärs",
-   "brand": "Scan",
-   "pack": "1000 g.",
-   "krKg": 99,
-   "label": "99 kr",
-   "member": false,
-   "until": "2026-11-08"
-  },
-  {
-   "ingr": "flaskkarre",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Färsk fläskkarré",
-   "brand": "Scan",
-   "pack": "Ca 1100 g.",
-   "krKg": 81.28,
-   "label": "89 kr",
+   "name": "Kebabsås",
+   "brand": "Schysst Käk",
+   "pack": "250 ml.",
+   "krKg": 84,
+   "label": "2 för 42 kr",
    "member": false,
    "until": "2026-11-08"
   },
@@ -2688,18 +2688,6 @@
    "until": "2026-11-08"
   },
   {
-   "ingr": "flaskkarre",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Färsk fläskkarré",
-   "brand": "Scan",
-   "pack": "Ca 1100 g.",
-   "krKg": 81.28,
-   "label": "89 kr",
-   "member": false,
-   "until": "2026-11-08"
-  },
-  {
    "ingr": "vitkal",
    "chain": "Coop",
    "store": "Stora Coop Bromma",
@@ -2712,26 +2700,14 @@
    "until": "2026-11-08"
   },
   {
-   "ingr": "krossade",
+   "ingr": "flaskkarre",
    "chain": "Coop",
    "store": "Stora Coop Bromma",
-   "name": "Krossade tomater",
-   "brand": "Cirio",
-   "pack": "390 g.",
-   "krKg": 32.05,
-   "label": "2 för 25 kr",
-   "member": false,
-   "until": "2026-11-08"
-  },
-  {
-   "ingr": "blandfars",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Blandfärs",
+   "name": "Färsk fläskkarré",
    "brand": "Scan",
-   "pack": "1000 g.",
-   "krKg": 99,
-   "label": "99 kr",
+   "pack": "Ca 1100 g.",
+   "krKg": 81.28,
+   "label": "89 kr",
    "member": false,
    "until": "2026-11-08"
   },
@@ -2748,6 +2724,30 @@
    "until": "2026-11-08"
   },
   {
+   "ingr": "krossade",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Krossade tomater",
+   "brand": "Cirio",
+   "pack": "390 g.",
+   "krKg": 32.05,
+   "label": "2 för 25 kr",
+   "member": false,
+   "until": "2026-11-08"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Blandfärs",
+   "brand": "Scan",
+   "pack": "1000 g.",
+   "krKg": 99,
+   "label": "99 kr",
+   "member": false,
+   "until": "2026-11-08"
+  },
+  {
    "ingr": "vitkal",
    "chain": "Coop",
    "store": "Stora Coop Backaplan",
@@ -2772,18 +2772,6 @@
    "until": "2026-11-08"
   },
   {
-   "ingr": "blandfars",
-   "chain": "Coop",
-   "store": "Stora Coop Backaplan",
-   "name": "Blandfärs",
-   "brand": "Scan",
-   "pack": "1000 g.",
-   "krKg": 99,
-   "label": "99 kr",
-   "member": false,
-   "until": "2026-11-08"
-  },
-  {
    "ingr": "flaskkarre",
    "chain": "Coop",
    "store": "Stora Coop Backaplan",
@@ -2798,7 +2786,7 @@
   {
    "ingr": "blandfars",
    "chain": "Coop",
-   "store": "Stora Coop Stadion",
+   "store": "Stora Coop Backaplan",
    "name": "Blandfärs",
    "brand": "Scan",
    "pack": "1000 g.",
@@ -2816,6 +2804,42 @@
    "pack": "Ca 1100 g.",
    "krKg": 81.28,
    "label": "89 kr",
+   "member": false,
+   "until": "2026-11-08"
+  },
+  {
+   "ingr": "krossade",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Krossade tomater",
+   "brand": "Cirio",
+   "pack": "390 g.",
+   "krKg": 32.05,
+   "label": "2 för 25 kr",
+   "member": false,
+   "until": "2026-11-08"
+  },
+  {
+   "ingr": "blandfars",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Blandfärs",
+   "brand": "Scan",
+   "pack": "1000 g.",
+   "krKg": 99,
+   "label": "99 kr",
+   "member": false,
+   "until": "2026-11-08"
+  },
+  {
+   "ingr": "vitkal",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Vitkål",
+   "brand": "Tyskland",
+   "pack": "",
+   "krKg": 9,
+   "label": "9 kr",
    "member": false,
    "until": "2026-11-08"
   },
@@ -2828,30 +2852,6 @@
    "pack": "250 ml.",
    "krKg": 84,
    "label": "2 för 42 kr",
-   "member": false,
-   "until": "2026-11-08"
-  },
-  {
-   "ingr": "vitkal",
-   "chain": "Coop",
-   "store": "Stora Coop Stadion",
-   "name": "Vitkål",
-   "brand": "Tyskland",
-   "pack": "",
-   "krKg": 9,
-   "label": "9 kr",
-   "member": false,
-   "until": "2026-11-08"
-  },
-  {
-   "ingr": "krossade",
-   "chain": "Coop",
-   "store": "Stora Coop Stadion",
-   "name": "Krossade tomater",
-   "brand": "Cirio",
-   "pack": "390 g.",
-   "krKg": 32.05,
-   "label": "2 för 25 kr",
    "member": false,
    "until": "2026-11-08"
   }
