@@ -1,5 +1,5 @@
 {
- "at": "2026-11-09",
+ "at": "2026-11-12",
  "stores": [
   {
    "chain": "Willys",
@@ -925,8 +925,8 @@
     "code": "7340191174573"
    },
    "paprika": {
-    "krKg": 56.9,
-    "kr": 56.9,
+    "krKg": 69.9,
+    "kr": 69.9,
     "pack": "200 gram ungefärlig vikt",
     "name": "Paprika Röd",
     "brand": "",
@@ -1189,16 +1189,16 @@
     "code": "5000111041065"
    },
    "apelsin": {
-    "krKg": 21.72,
-    "kr": 21.72,
+    "krKg": 22.5,
+    "kr": 22.5,
     "pack": "1000 MLT",
     "name": "Apelsinjuice",
     "brand": "Coop",
     "code": "7340191150843"
    },
    "gurka": {
-    "krKg": 53.21,
-    "kr": 14.9,
+    "krKg": 49.64,
+    "kr": 13.9,
     "pack": "280 g",
     "name": "Gurka",
     "brand": "",
@@ -1364,6 +1364,19 @@
    "ingr": "lax",
    "chain": "Willys",
    "store": "Willys Ersboda",
+   "name": "Färsk Laxfilé",
+   "brand": "FALKENBERG",
+   "pack": "Ca 1,4kg",
+   "krKg": 119,
+   "ordKrKg": 169,
+   "label": "119/kg",
+   "member": true,
+   "until": "2026-11-15"
+  },
+  {
+   "ingr": "lax",
+   "chain": "Willys",
+   "store": "Willys Ersboda",
    "name": "Laxfilé 4-pack",
    "brand": "OMEGA",
    "pack": "4x125g",
@@ -1494,6 +1507,19 @@
    "ingr": "lax",
    "chain": "Willys",
    "store": "Willys Umeå Syd",
+   "name": "Färsk Laxfilé",
+   "brand": "FALKENBERG",
+   "pack": "Ca 1,4kg",
+   "krKg": 119,
+   "ordKrKg": 169,
+   "label": "119/kg",
+   "member": true,
+   "until": "2026-11-15"
+  },
+  {
+   "ingr": "lax",
+   "chain": "Willys",
+   "store": "Willys Umeå Syd",
    "name": "Laxfilé 4-pack",
    "brand": "OMEGA",
    "pack": "4x125g",
@@ -1619,6 +1645,19 @@
    "label": "20,90/st",
    "member": false,
    "until": "2026-11-29"
+  },
+  {
+   "ingr": "lax",
+   "chain": "Willys",
+   "store": "Willys Klockarbäcken",
+   "name": "Färsk Laxfilé",
+   "brand": "FALKENBERG",
+   "pack": "Ca 1,4kg",
+   "krKg": 119,
+   "ordKrKg": 169,
+   "label": "119/kg",
+   "member": true,
+   "until": "2026-11-15"
   },
   {
    "ingr": "lax",
@@ -1806,6 +1845,19 @@
    "ingr": "lax",
    "chain": "Willys",
    "store": "Willys Port 73",
+   "name": "Färsk Laxfilé",
+   "brand": "FALKENBERG",
+   "pack": "Ca 1,4kg",
+   "krKg": 119,
+   "ordKrKg": 169,
+   "label": "119/kg",
+   "member": true,
+   "until": "2026-11-15"
+  },
+  {
+   "ingr": "lax",
+   "chain": "Willys",
+   "store": "Willys Port 73",
    "name": "Laxfilé 4-pack",
    "brand": "OMEGA",
    "pack": "4x125g",
@@ -1936,6 +1988,19 @@
    "ingr": "lax",
    "chain": "Willys",
    "store": "Willys Gamlestaden",
+   "name": "Färsk Laxfilé",
+   "brand": "FALKENBERG",
+   "pack": "Ca 1,4kg",
+   "krKg": 119,
+   "ordKrKg": 169,
+   "label": "119/kg",
+   "member": true,
+   "until": "2026-11-15"
+  },
+  {
+   "ingr": "lax",
+   "chain": "Willys",
+   "store": "Willys Gamlestaden",
    "name": "Laxfilé 4-pack",
    "brand": "OMEGA",
    "pack": "4x125g",
@@ -2061,6 +2126,19 @@
    "label": "20,90/st",
    "member": false,
    "until": "2026-11-29"
+  },
+  {
+   "ingr": "lax",
+   "chain": "Willys",
+   "store": "Willys Mobilia",
+   "name": "Färsk Laxfilé",
+   "brand": "FALKENBERG",
+   "pack": "Ca 1,4kg",
+   "krKg": 119,
+   "ordKrKg": 169,
+   "label": "119/kg",
+   "member": true,
+   "until": "2026-11-15"
   },
   {
    "ingr": "lax",
@@ -2205,18 +2283,6 @@
    "until": "2026-11-15"
   },
   {
-   "ingr": "paprika",
-   "chain": "Coop",
-   "store": "Stora Coop Avion",
-   "name": "Paprikamix 3-pack",
-   "brand": "Coop",
-   "pack": "400 g.",
-   "krKg": 50,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-15"
-  },
-  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Avion",
@@ -2225,6 +2291,18 @@
    "pack": "450 g.",
    "krKg": 104.22,
    "label": "46.9 kr",
+   "member": false,
+   "until": "2026-11-15"
+  },
+  {
+   "ingr": "paprika",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Paprikamix 3-pack",
+   "brand": "Coop",
+   "pack": "400 g.",
+   "krKg": 50,
+   "label": "20 kr",
    "member": false,
    "until": "2026-11-15"
   },
@@ -2277,18 +2355,6 @@
    "until": "2026-11-15"
   },
   {
-   "ingr": "paprika",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Paprikamix 3-pack",
-   "brand": "Coop",
-   "pack": "400 g.",
-   "krKg": 50,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-15"
-  },
-  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
@@ -2297,6 +2363,18 @@
    "pack": "450 g.",
    "krKg": 104.22,
    "label": "46.9 kr",
+   "member": false,
+   "until": "2026-11-15"
+  },
+  {
+   "ingr": "paprika",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Paprikamix 3-pack",
+   "brand": "Coop",
+   "pack": "400 g.",
+   "krKg": 50,
+   "label": "20 kr",
    "member": false,
    "until": "2026-11-15"
   },
@@ -2373,18 +2451,6 @@
    "until": "2026-11-15"
   },
   {
-   "ingr": "paprika",
-   "chain": "Coop",
-   "store": "Stora Coop Backaplan",
-   "name": "Paprikamix 3-pack",
-   "brand": "Coop",
-   "pack": "400 g.",
-   "krKg": 50,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-15"
-  },
-  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Backaplan",
@@ -2393,6 +2459,18 @@
    "pack": "450 g.",
    "krKg": 104.22,
    "label": "46.9 kr",
+   "member": false,
+   "until": "2026-11-15"
+  },
+  {
+   "ingr": "paprika",
+   "chain": "Coop",
+   "store": "Stora Coop Backaplan",
+   "name": "Paprikamix 3-pack",
+   "brand": "Coop",
+   "pack": "400 g.",
+   "krKg": 50,
+   "label": "20 kr",
    "member": false,
    "until": "2026-11-15"
   },
