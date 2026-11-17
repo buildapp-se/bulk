@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-11-04
+reviewedAt: 2026-11-17
 schemaVersion: 1
 status: active
 currentGoal: "Bulk är live på buildapp.se/bulk: matlådeplanering med smakkit, inköp, tillagning och veckans priser i Umeå."
@@ -7,6 +7,8 @@ nextAction: "BACKLOG P1, test på riktig telefon. Filips-kiten ska provlagas och
 blockers: []
 ---
 # Handoff
+
+**Beroenden 2026-11-17:** next 16.4.2 till 16.4.6 (två moderata cacheläckor, GHSA-mfr8-8qww-v76h och GHSA-vc7v-qv4w-wrv8) plus `npm update` inom intervallen. typecheck, check och build gröna. @types/node 26 ligger som P3.
 
 **2026-11-04, förbättringsrunda (gren `claude/forbattringar-2026-11-04`, PR #1, mergad 2026-11-04):** bara förbättringar, inga nya funktioner.
 1. `5243081` Prepps två `aside` har namn (Veckans priser, Recept): axe `landmark-unique` på 1280 px 1 -> 0. Klockan i Tillagning hade `aria-label` på en `span` (axe `aria-prohibited-attr`, nämnt 2026-10-06 som "kan inte avgöras"), nu en `sr-only`-etikett före tiden.
