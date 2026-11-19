@@ -1,5 +1,5 @@
 {
- "at": "2026-11-16",
+ "at": "2026-11-19",
  "stores": [
   {
    "chain": "Willys",
@@ -170,12 +170,12 @@
     "code": "101300146_KG"
    },
    "lax": {
-    "krKg": 169,
-    "kr": 169,
-    "pack": "ca: 1.4kg",
-    "name": "Laxfilè C-trim",
-    "brand": "Falkenberg",
-    "code": "101751386_KG"
+    "krKg": 199.8,
+    "kr": 99.9,
+    "pack": "4x125g",
+    "name": "Laxfilé Fryst",
+    "brand": "Omega",
+    "code": "101804336_ST"
    },
    "kikartor": {
     "krKg": 47.8,
@@ -949,12 +949,12 @@
     "code": "2317305000009"
    },
    "aubergine": {
-    "krKg": 63.61,
-    "kr": 22.9,
+    "krKg": 60.43,
+    "kr": 13.9,
     "pack": "300 gram ungefärlig vikt",
-    "name": "Aubergine Eko",
+    "name": "Aubergine",
     "brand": "",
-    "code": "7300156593412"
+    "code": "7340007921629"
    },
    "spenat": {
     "krKg": 39.89,
@@ -1141,12 +1141,12 @@
     "code": "5010338404406"
    },
    "ostronsas": {
-    "krKg": 78.78,
-    "kr": 47.27,
-    "pack": "600ML",
+    "krKg": 132.5,
+    "kr": 26.5,
+    "pack": "200 ml",
     "name": "Ostronsås",
-    "brand": "Mae Krua",
-    "code": "8850038400080"
+    "brand": "Santa Maria",
+    "code": "7311312005298"
    },
    "pesto": {
     "krKg": 155.26,
@@ -1157,12 +1157,12 @@
     "code": "7350027796091"
    },
    "soltorkade": {
-    "krKg": 175.61,
-    "kr": 49.17,
-    "pack": "280 g",
-    "name": "Soltorkade Tomater",
-    "brand": "Saclá",
-    "code": "8001060003880"
+    "krKg": 190.63,
+    "kr": 30.5,
+    "pack": "160g",
+    "name": "Tomater Soltorkade Örtmarinade",
+    "brand": "Ridderheims",
+    "code": "7392555006914"
    },
    "coleslaw": {
     "krKg": 78.75,
@@ -1197,8 +1197,8 @@
     "code": "7340191150843"
    },
    "gurka": {
-    "krKg": 53.21,
-    "kr": 14.9,
+    "krKg": 49.64,
+    "kr": 13.9,
     "pack": "280 g",
     "name": "Gurka",
     "brand": "",
@@ -1221,12 +1221,12 @@
     "code": "7300156596734"
    },
    "kvarg": {
-    "krKg": 45.56,
-    "kr": 20.5,
-    "pack": "450 g",
-    "name": "Kvarg Naturell",
-    "brand": "Ehrmann",
-    "code": "4002971196009"
+    "krKg": 27.8,
+    "kr": 13.9,
+    "pack": "500 G",
+    "name": "Kvarg Naturell 0,3%",
+    "brand": "Xtra",
+    "code": "6414893393004"
    },
    "grekisk": {
     "krKg": 39.28,
@@ -1311,7 +1311,7 @@
    "majsstarkelse": {
     "krKg": 34.3,
     "kr": 13.72,
-    "pack": "400 g",
+    "pack": "400 G",
     "name": "Majsstärkelse",
     "brand": "Coop",
     "code": "7340191177659"
@@ -1369,19 +1369,6 @@
  },
  "offers": [
   {
-   "ingr": "notfars",
-   "chain": "Willys",
-   "store": "Willys Ersboda",
-   "name": "Svensk nötfärs",
-   "brand": "GARANT",
-   "pack": "500g",
-   "krKg": 139.8,
-   "ordKrKg": 157.8,
-   "label": "69,90/st",
-   "member": true,
-   "until": "2026-11-18"
-  },
-  {
    "ingr": "parmesan",
    "chain": "Willys",
    "store": "Willys Ersboda",
@@ -1525,19 +1512,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "notfars",
-   "chain": "Willys",
-   "store": "Willys Umeå Syd",
-   "name": "Svensk nötfärs",
-   "brand": "GARANT",
-   "pack": "500g",
-   "krKg": 139.8,
-   "ordKrKg": 157.8,
-   "label": "69,90/st",
-   "member": true,
-   "until": "2026-11-18"
-  },
-  {
    "ingr": "parmesan",
    "chain": "Willys",
    "store": "Willys Umeå Syd",
@@ -1679,19 +1653,6 @@
    "label": "20,90/st",
    "member": false,
    "until": "2026-11-29"
-  },
-  {
-   "ingr": "notfars",
-   "chain": "Willys",
-   "store": "Willys Klockarbäcken",
-   "name": "Svensk nötfärs",
-   "brand": "GARANT",
-   "pack": "500g",
-   "krKg": 139.8,
-   "ordKrKg": 157.8,
-   "label": "69,90/st",
-   "member": true,
-   "until": "2026-11-18"
   },
   {
    "ingr": "parmesan",
@@ -1889,19 +1850,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "notfars",
-   "chain": "Willys",
-   "store": "Willys Port 73",
-   "name": "Svensk nötfärs",
-   "brand": "GARANT",
-   "pack": "500g",
-   "krKg": 139.8,
-   "ordKrKg": 157.8,
-   "label": "69,90/st",
-   "member": true,
-   "until": "2026-11-18"
-  },
-  {
    "ingr": "parmesan",
    "chain": "Willys",
    "store": "Willys Port 73",
@@ -2045,19 +1993,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "notfars",
-   "chain": "Willys",
-   "store": "Willys Gamlestaden",
-   "name": "Svensk nötfärs",
-   "brand": "GARANT",
-   "pack": "500g",
-   "krKg": 139.8,
-   "ordKrKg": 157.8,
-   "label": "69,90/st",
-   "member": true,
-   "until": "2026-11-18"
-  },
-  {
    "ingr": "parmesan",
    "chain": "Willys",
    "store": "Willys Gamlestaden",
@@ -2199,19 +2134,6 @@
    "label": "20,90/st",
    "member": false,
    "until": "2026-11-29"
-  },
-  {
-   "ingr": "notfars",
-   "chain": "Willys",
-   "store": "Willys Mobilia",
-   "name": "Svensk nötfärs",
-   "brand": "GARANT",
-   "pack": "500g",
-   "krKg": 139.8,
-   "ordKrKg": 157.8,
-   "label": "69,90/st",
-   "member": true,
-   "until": "2026-11-18"
   },
   {
    "ingr": "parmesan",
@@ -2429,18 +2351,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "flaskkarre",
-   "chain": "Coop",
-   "store": "Stora Coop Ersboda",
-   "name": "Färsk fläskkarré",
-   "brand": "Scan",
-   "pack": "Ca 1100 g.",
-   "krKg": 79.9,
-   "label": "79.9 kr",
-   "member": false,
-   "until": "2026-11-22"
-  },
-  {
    "ingr": "flaskfars",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
@@ -2449,6 +2359,18 @@
    "pack": "Ca 500 g.",
    "krKg": 69.9,
    "label": "69.9 kr",
+   "member": false,
+   "until": "2026-11-22"
+  },
+  {
+   "ingr": "flaskkarre",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Färsk fläskkarré",
+   "brand": "Scan",
+   "pack": "Ca 1100 g.",
+   "krKg": 79.9,
+   "label": "79.9 kr",
    "member": false,
    "until": "2026-11-22"
   },
@@ -2497,6 +2419,18 @@
    "pack": "Ca 1100 g.",
    "krKg": 79.9,
    "label": "79.9 kr",
+   "member": false,
+   "until": "2026-11-22"
+  },
+  {
+   "ingr": "kokosmjolk",
+   "chain": "Coop",
+   "store": "Coop City Umeå",
+   "name": "Kokosmjölk",
+   "brand": "Santa Maria",
+   "pack": "250 ml.",
+   "krKg": 60,
+   "label": "2 för 30 kr",
    "member": false,
    "until": "2026-11-22"
   },
@@ -2525,18 +2459,6 @@
    "until": "2026-11-22"
   },
   {
-   "ingr": "kokosmjolk",
-   "chain": "Coop",
-   "store": "Coop City Umeå",
-   "name": "Kokosmjölk",
-   "brand": "Santa Maria",
-   "pack": "250 ml.",
-   "krKg": 60,
-   "label": "2 för 30 kr",
-   "member": false,
-   "until": "2026-11-22"
-  },
-  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Bromma",
@@ -2561,18 +2483,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "flaskkarre",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Färsk fläskkarré",
-   "brand": "Scan",
-   "pack": "Ca 1100 g.",
-   "krKg": 79.9,
-   "label": "79.9 kr",
-   "member": false,
-   "until": "2026-11-22"
-  },
-  {
    "ingr": "flaskfars",
    "chain": "Coop",
    "store": "Stora Coop Bromma",
@@ -2581,6 +2491,18 @@
    "pack": "Ca 500 g.",
    "krKg": 69.9,
    "label": "69.9 kr",
+   "member": false,
+   "until": "2026-11-22"
+  },
+  {
+   "ingr": "flaskkarre",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Färsk fläskkarré",
+   "brand": "Scan",
+   "pack": "Ca 1100 g.",
+   "krKg": 79.9,
+   "label": "79.9 kr",
    "member": false,
    "until": "2026-11-22"
   },
@@ -2609,18 +2531,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "flaskfars",
-   "chain": "Coop",
-   "store": "Stora Coop Backaplan",
-   "name": "Fläskfärs",
-   "brand": "Scan",
-   "pack": "Ca 500 g.",
-   "krKg": 69.9,
-   "label": "69.9 kr",
-   "member": false,
-   "until": "2026-11-22"
-  },
-  {
    "ingr": "flaskkarre",
    "chain": "Coop",
    "store": "Stora Coop Backaplan",
@@ -2629,6 +2539,18 @@
    "pack": "Ca 1100 g.",
    "krKg": 79.9,
    "label": "79.9 kr",
+   "member": false,
+   "until": "2026-11-22"
+  },
+  {
+   "ingr": "flaskfars",
+   "chain": "Coop",
+   "store": "Stora Coop Backaplan",
+   "name": "Fläskfärs",
+   "brand": "Scan",
+   "pack": "Ca 500 g.",
+   "krKg": 69.9,
+   "label": "69.9 kr",
    "member": false,
    "until": "2026-11-22"
   },
