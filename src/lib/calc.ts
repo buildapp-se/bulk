@@ -401,14 +401,14 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
   for (const c of ovenCarbs) steps.push({ id: `carb-${c.id}`, track: 'ugn', t: E - c.oven!, dur: c.oven!, temp: 200, title: `${c.name} in`, what: `${c.name} i ugnen`, details: 'Ett lager på bakplåtspapper. Vänd halvvägs.' });
   // Whole fillets get their own id, so kyckling in bitar and hel can share one oven session.
   for (const { pr, m } of ovenProt) { const md = pr.methods[m]!; const nm = m === 'hel' ? `${pr.name}, hela filéer` : pr.name; steps.push({ id: m === 'ugn' ? `prot-${pr.id}` : `prot-${pr.id}-${m}`, track: 'ugn', t: E - md.min, dur: md.min, temp: md.temp, title: `${nm} in`, what: `${nm} i ugnen`, details: md.note }); }
-  if (ovenVegs.length) steps.push({ id: 'veg', track: 'ugn', t: E - Math.max(...ovenVegs.map((v) => v.oven!)), dur: Math.max(...ovenVegs.map((v) => v.oven!)), temp: 200, title: 'Grönsaker in', what: 'Grönsaker i ugnen', details: ovenVegs.map((v) => v.name).join(' och ') + ' på egen plåt.' });
+  if (ovenVegs.length) steps.push({ id: 'veg', track: 'ugn', t: E - Math.max(...ovenVegs.map((v) => v.oven!)), dur: Math.max(...ovenVegs.map((v) => v.oven!)), temp: 200, title: 'Grönsaker in', what: 'Grönsaker i ugnen', details: cap(and(ovenVegs.map((v) => v.name))) + ' på egen plåt.' });
   for (const { pr } of protMethods.filter((x) => x.m === 'gryta')) { const md = pr.methods.gryta!; steps.push({ id: `gryta-${pr.id}`, track: 'spis', t: Math.max(0, E - md.min), dur: md.min, title: `Koka ${pr.name.toLowerCase()}`, what: `${pr.name} kokar`, details: md.note }); }
   // Frying pan: on the stove, done when the oven is.
   for (const { pr } of protMethods.filter((x) => x.m === 'panna')) { const md = pr.methods.panna!; steps.push({ id: `panna-${pr.id}`, track: 'spis', t: Math.max(0, E - md.min), dur: md.min, title: `Stek ${pr.name.toLowerCase()}`, what: `${pr.name} i stekpannan`, details: md.note }); }
   if (stoveCarbs.length) {
     const d = Math.max(...stoveCarbs.map((c) => c.stoveMin ?? 10));
-    const names = stoveCarbs.map((c) => c.name.toLowerCase()).join(' och ');
-    steps.push({ id: 'stove', track: 'spis', t: Math.max(0, E - d), dur: d, title: 'Koka ' + names, what: names.replace(/^./, (m) => m.toUpperCase()) + ' på spisen', details: stoveCarbs.map((c) => c.stove).join('. ') + '.' });
+    const names = and(stoveCarbs.map((c) => c.name));
+    steps.push({ id: 'stove', track: 'spis', t: Math.max(0, E - d), dur: d, title: 'Koka ' + names, what: cap(names) + ' på spisen', details: stoveCarbs.map((c) => c.stove).join('. ') + '.' });
   }
   // Each shared base is cooked once for all its boxes while the oven runs.
   for (const { base, n } of batches) {
@@ -444,7 +444,7 @@ export function schedule(calcs: BoxCalc[], p: Plan): Schedule {
     return { name: kit.name, right: `×${n}`, hue: kit.hue, sub: main.join(' · '), note: top.length ? `Egen burk: ${top.join(', ')}` : undefined };
   });
   steps.push({ id: 'portion', track: 'klar', t: T, dur: 15, title: 'Kyl ner och portionera', rows: portionRows,
-    details: `Låt allt svalna först.${frozen.length ? ` ${frozen.map((v) => v.name).join(', ')} läggs frysta direkt i lådan.` : ''} Toppings i separata burkar.` });
+    details: `Låt allt svalna först.${frozen.length ? ` ${cap(and(frozen.map((v) => v.name)))} läggs frysta direkt i lådan.` : ''} Toppings i separata burkar.` });
   T += 15;
   steps.push({ id: 'store', track: 'klar', t: T, dur: 0, title: 'Märk och kyl', details: 'Håller 3–4 dagar i kylen, lax 2 dagar. Ät de känsligaste först och frys resten.' });
 
@@ -463,6 +463,9 @@ export function recipes(calcs: BoxCalc[]): { name: string; n: number; hue: numbe
 
 // ---------- Formatting (sv-SE: decimal comma, space thousands) ----------
 
+/** Names in running text: lower case, the last two joined by och ("pasta, ris och mos"). cap() for the start of a sentence. */
+const and = (xs: string[]) => xs.map((x) => x.toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' och $1');
+const cap = (x: string) => x[0].toUpperCase() + x.slice(1);
 export const nf = (v: number, d = 0) => v.toLocaleString('sv-SE', { maximumFractionDigits: d, minimumFractionDigits: 0 });
 // Small amounts (sesame, feta) in whole grams; larger ones to the nearest 5.
 export const fmtG = (g: number) => (g >= 1000 ? nf(g / 1000, 1) + ' kg' : g < 20 ? nf(Math.max(1, Math.round(g))) + ' g' : nf(r5(g)) + ' g');
