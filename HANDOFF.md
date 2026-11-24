@@ -8,6 +8,14 @@ blockers: []
 ---
 # Handoff
 
+## 2026-11-24, funktionspass (gren `feat/2026-11-24`, worktree `C:/dev/_wt/bulk-1124f`)
+
+Klart:
+1. `914f130` Bugg: Lidl-erbjudandena var borta sedan körningen 2026-11-04 (sista 2026-10-26). Lidl tog bort veckosidorna `/c/<slug>/a<id>`; erbjudandena ligger nu på matkategorisidorna under menyns Mat & dryck, som prices.ts läser. Styckpris ("/st") räknas om med ny styckvikt `Ingr.st` (gurka 280 g, aubergine 300 g, från Willys och Coops hyllrader). Lokal körning av prices.ts: 0 -> 4 Lidl-erbjudanden, Lidls gurka 9,90 kr/st = 35,36 kr/kg syns i Prepps prisöversikt (lokalt bygge, Playwright). Den lokala prices.json committades inte.
+2. `6afc0d7` Matchning: "Gul lök" och "Röd paprika" (Lidl, ICA "Gul lök i nät") matchade inte, BUY krävde Willys ordföljd. Lokal körning: Lidl 4 -> 6 erbjudanden, hyllpriserna för lök och paprika oförändrade hos Willys och Coop.
+
+check, typecheck och build gröna. Lidl från GitHubs runner: se nästa rad när prices.yml körts.
+
 ## 2026-11-24, djuppass (gren `deep/2026-11-24`, worktree `C:devulk-deep-1124`)
 
 Klart, pushat till main:
