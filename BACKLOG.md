@@ -42,3 +42,10 @@ PR #1 (`claude/forbattringar-2026-11-04`), väntar på Patriks genomklickning.
 - [x] (2026-11-04) `[P3]` 404-sidan var Nexts engelska standard, nu svensk.
 - `[P3]` Tryckytor kvar under 44 px (klarar 24 px): segmentväljarna (Börja nu/Klart kl 27 px, målväljaren 36 px, metodväljaren 27 px), live-radernas titlar och ▶ (24 px), Tillagnings stegrubriker (38 px) och delrader (30 px), proteinkort och dropdowns i Din batch (42 px), Ingrediensers rader (43 px). Kräver att layouten ändras (raderna står tätt, en osynlig yta skulle täcka grannen), därför inte gjort. Kopiera lista, Rensa allt, Utforska preppträdet och målreglagen fick 44 px 2026-11-24 (`6f14601`, `f2845f6`).
 - `[P3]` CSP via `<meta http-equiv>`: inte infört, Nexts export har inline-skript (kräver `unsafe-inline` eller hashar per bygge).
+
+## Buggjakt 2026-11-24
+
+- [x] (2026-11-24) `[P2]` Tangentbord: lådrutorna gick inte att öppna, arket tog inte fokus, proteinkorten hade dubbla tabbstopp (`6a8b229`, Playwright 390 och 1440 px).
+- [x] (2026-11-24) `[P2]` Tillagning med tom plan visade ett schema för ingenting; ofullständiga lådor syntes inte där. Plural för 1 låda, smak och plåt (`c9f7e2a`, check + Playwright).
+- [x] (2026-11-24) `[P2]` Offline: bara besökta sidor öppnades, djuplänk och appens länkar till Tillagning visade Välj (`d8dbd11`, Playwright offline lokalt).
+- `[P3]` Planen synkas inte mellan två flikar (eller PWA och flik) samtidigt: `store.ts` lyssnar inte på `storage`-händelsen, så den flik som skriver sist skriver över den andras ändringar. Sett i koden, inte återskapat.
