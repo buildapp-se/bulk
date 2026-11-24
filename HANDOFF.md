@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-11-17
+reviewedAt: 2026-11-24
 schemaVersion: 1
 status: active
 currentGoal: "Bulk är live på buildapp.se/bulk: matlådeplanering med smakkit, inköp, tillagning och veckans priser i Umeå."
@@ -7,6 +7,16 @@ nextAction: "BACKLOG P1, test på riktig telefon. Filips-kiten ska provlagas och
 blockers: []
 ---
 # Handoff
+
+## 2026-11-24, djuppass (gren `deep/2026-11-24`, worktree `C:devulk-deep-1124`)
+
+Klart, pushat till main:
+1. `4ca382f` Bugg: frysta grönsaker fick rostningens utbyte i portionering och recept (broccoli 140 g som "ca 100 g"). Frysta läggs i lådan som de är, så de saknar nu tillagad vikt. Check fäller den gamla koden.
+2. `6f14601`, `f2845f6` Träffytor: Kopiera lista, Rensa allt och Utforska preppträdet fick `.hit`, målreglagen (protein och kcal per låda) är 44 px höga utan att layouten flyttas. Kontrollerat i Playwright på 390 och 1280 px på alla fyra sidor: ingen knapps mitt täcks av en annan yta, ingen sidledsscroll.
+3. `f78c554` Uppräkningar i Tillagning med gemener och "och" ("Spenat, haricots verts och broccoli läggs frysta").
+4. `22a69e2`, `75a78c1` Mutationstest: Stryker muterar nu även `actions.ts` och `store.ts`. 79,06 % -> 96,16 % (1 847 mutanter). Nytt i check: knapparnas plan-ändringar och lagringen mot en localStorage i minnet, ett gyllene schema för två planer (`scripts/check-schedule.txt`, uppdateras med `node scripts/check.ts --golden`), prepträdets giriga delning (första grenen = jobbet flest kit behöver, unika syskon-id) och ingrediensräkningen ("Torkad oregano" = "Oregano"). De 71 som överlever är likvärdiga med datat.
+
+UX-granskning (ux-audit, lokalt bygge, 390 px, `--interact`): 6 av 7 skriptkontroller gröna, Fitts varnar. Skriptet läser bara elementets ruta och ser inte `.hit`; räknat med `.hit` är 63 mål under 44 px kvar (67 före), alla tätt staplade rader och segmentväljare (BACKLOG P3). Skärmbildsgenomgång av Välj och Tillagning: inga andra fynd. Inte gjort: riktig telefon, skärmläsare.
 
 **Beroenden 2026-11-17:** next 16.4.2 till 16.4.6 (två moderata cacheläckor, GHSA-mfr8-8qww-v76h och GHSA-vc7v-qv4w-wrv8) plus `npm update` inom intervallen. typecheck, check och build gröna. @types/node 26 ligger som P3.
 

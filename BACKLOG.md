@@ -40,5 +40,5 @@ PR #1 (`claude/forbattringar-2026-11-04`), väntar på Patriks genomklickning.
 - [x] (2026-11-04) `[P2]` UX: små länkar och textknappar under 44 px fick osynlig träffyta (`.hit`).
 - [x] (2026-11-04) `[P2]` WCAG: pausade timersiffror 2,42:1 (opacity-40), nu `text-muted`.
 - [x] (2026-11-04) `[P3]` 404-sidan var Nexts engelska standard, nu svensk.
-- `[P3]` Tryckytor kvar under 44 px (klarar 24 px): segmentväljarna (Börja nu/Klart kl 27 px, målväljaren 36 px, metodväljaren 27 px), live-radernas titlar och ▶ (24 px), Kopiera lista (33 px). Kräver att layouten ändras, därför inte gjort.
+- `[P3]` Tryckytor kvar under 44 px (klarar 24 px): segmentväljarna (Börja nu/Klart kl 27 px, målväljaren 36 px, metodväljaren 27 px), live-radernas titlar och ▶ (24 px), Tillagnings stegrubriker (38 px) och delrader (30 px), proteinkort och dropdowns i Din batch (42 px), Ingrediensers rader (43 px). Kräver att layouten ändras (raderna står tätt, en osynlig yta skulle täcka grannen), därför inte gjort. Kopiera lista, Rensa allt, Utforska preppträdet och målreglagen fick 44 px 2026-11-24 (`6f14601`, `f2845f6`).
 - `[P3]` CSP via `<meta http-equiv>`: inte infört, Nexts export har inline-skript (kräver `unsafe-inline` eller hashar per bygge).

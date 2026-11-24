@@ -98,6 +98,6 @@ Livsmedelsverkets livsmedelsdatabas, CC BY 4.0. Källan visas i appen.
 - ZAP baseline: 2026-10-27, n/a, static site on GitHub Pages with no server, cookies or forms; headers, TLS and markup are covered by their own columns, so a passive ZAP scan would repeat them
 - npm audit: 2026-10-27, pass, 0 in production, 0 in the dev chain
 - Dependabot: 2026-10-29, pass, 0 open alerts
-- UX (automated): 2026-10-30, warn, 5 of 6 script checks pass on buildapp.se/bulk (no --interact): warn Fitts targets; screenshot review not done
-- Mutation: 2026-11-04, Stryker 79,06 % on src/lib calc, prep, price, clock (65,56 % before, 1 652 mutants); survivors reviewed, 232 of 346 in schedule step texts
+- UX: 2026-11-24, warn, 6 of 7 script checks pass on a local build (--interact, 4 routes): warn Fitts targets, 63 distinct targets under 44 px with the .hit extension counted (67 before), all rows and segment controls that cannot grow without a layout change; review: no other finding
+- Mutation: 2026-11-24, Stryker 96,16 % on src/lib calc, prep, price, clock, actions, store (79,06 % on four files, 1 847 mutants); actions, clock, price, store 100 %, calc 94,65 %, prep 95,76 %; the 71 survivors are equivalent with the data (optional chaining on fields always set, pickPacks guards and sort that cannot change the result, the greedy tree already ordered by size)
 
