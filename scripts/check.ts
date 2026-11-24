@@ -451,6 +451,21 @@ const walk = (n: PNode): void => {
   n.kids.forEach(walk);
 };
 for (const p of PROTEINS) walk(prepTree(p));
+// Greedy split: the first branch opens on the job most of the remaining kits still need; sibling ids are unique (React keys).
+const greedy = (n: PNode, done: ReadonlySet<string>): void => {
+  const d = new Set([...done, ...n.jobs.map((j) => j.key)]);
+  const count = new Map<string, number>();
+  for (const k of leaves(n).filter((id) => !n.kits.some((x) => x.id === id)).map((id) => byId(KITS, id)))
+    for (const key of new Set(kitJobs(k).map((j) => j.key).filter((x) => !d.has(x)))) count.set(key, (count.get(key) ?? 0) + 1);
+  if (count.size && n.kids[0]?.n !== Math.max(...count.values())) fails.push(`prep tree ${n.id}: first branch ${n.kids[0]?.n}, top job ${Math.max(...count.values())}`);
+  if (new Set(n.kids.map((x) => x.id)).size !== n.kids.length) fails.push(`prep tree ${n.id}: duplicate branch ids`);
+  n.kids.forEach((x) => greedy(x, d));
+};
+for (const p of PROTEINS) greedy(prepTree(p), new Set());
+// Ingredients: a second protein is one more; "Torkad oregano" (moussaka) is chili's "Oregano", so moussaka adds kanel and feta only.
+const ci = (...xs: [string, string][]) => cost(xs.map(([k, p]) => ({ kit: byId(KITS, k), protein: byId(PROTEINS, p) }))).ingr;
+eq('cost ingr: protein and torkad', [ci(['teriyaki', 'kyckling'], ['teriyaki', 'lax']) - ci(['teriyaki', 'kyckling']), ci(['chili', 'notfars'], ['moussaka', 'notfars']) - ci(['chili', 'notfars'])], [1, 2]);
+eq('noun strips only a leading word and a trailing klyfta', [noun('Chili färsk röd'), noun('Vitlöksklyftor hela')], ['chili färsk röd', 'vitlöksklyftor hela']);
 
 // Goals: Mifflin-St Jeor in advanced mode. 80 kg, 180 cm, 30 år, PAL 1,5, bulk (+400), 3 lådor/dag = 20 % per låda.
 // Man: (800 + 1125 - 150 + 5) × 1,5 + 400 = 3070 -> 614 -> 610 kcal; 80 × 2,0 × 0,2 = 32 g. Kvinna: -161 -> 2821 -> 560.
