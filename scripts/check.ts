@@ -358,6 +358,9 @@ near('kr per protein', krPerProtein('kycklingfile', 100), 43.29, 0.01);
 // Matching: pet food and flavoured tomatoes out, 18 % coconut milk in, "Färsk" prefix ignored.
 eq('match', [matches('notfars', 'Nötfärs Bitar i Gelé Kattmat Våt'), matches('notfars', 'Färsk nötfärs'), matches('krossade', 'Smaksatta krossade tomater'),
   matches('kokosmjolk', 'Kokosmjölk 18%'), matches('kokosmjolk', 'Kokosmjölk 7%')], [false, true, false, true, false]);
+// Lidl puts the colour first ("Gul lök", "Röd paprika"), Willys last ("Lök Gul", "Paprika Röd Klass 1").
+eq('match colour first', [matches('gullok', 'Gul lök'), matches('gullok', 'Lök Gul'), matches('gullok', 'Gul lök hackad'), matches('paprika', 'Röd paprika'), matches('paprika', 'Paprika Röd Klass 1'), matches('paprika', 'Röd paprikapulver')],
+  [true, true, false, true, true, false]);
 // The fetched file has the shape the app reads (every shelf price positive, every offer on a known ingredient).
 for (const [chain, rows] of Object.entries(PRICES.shelf)) for (const [id, r] of Object.entries(rows)) if (!(id in INGR) || !(r!.krKg >= 3)) fails.push(`prices.json: dålig hyllrad ${chain} ${id}`);
 for (const o of PRICES.offers) if (!PRICES.stores.some((st) => st.name === o.store)) fails.push(`prices.json: okänd butik ${o.store}`);
