@@ -163,7 +163,7 @@ function ShoppingList({ measured, spices }: { measured: ShopRow[]; spices: ShopR
     <section className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold tracking-tight">Inköpslista</h2>
-        <motion.button whileTap={{ scale: 0.95 }} onClick={copy} className="rounded-full border border-line px-3 py-1.5 text-[13px]">
+        <motion.button whileTap={{ scale: 0.95 }} onClick={copy} className="hit rounded-full border border-line px-3 py-1.5 text-[13px]">
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span key={String(copied)} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="block">{copied ? t.ing.copied : t.ing.copy}</motion.span>
           </AnimatePresence>
