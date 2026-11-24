@@ -184,7 +184,8 @@ const r5 = (v: number) => Math.round(v / 5) * 5;
 
 export function calcBox(b: Box, p: Plan, t: Targets | null): BoxCalc {
   const mk = (role: 'protein' | 'carb' | 'veg', ingr: IngrId, name: string, q: number): Part[] => {
-    const y = INGR[ingr].y;
+    // Frozen veg goes into the box as it is, so only cooked parts get a cooked weight.
+    const y = role === 'veg' && !roasted(b, 'veg', p.vegMode) ? undefined : INGR[ingr].y;
     const part: Part = { role, ingr, name, q, u: 'g', cooked: y ? r5(q * y) : undefined };
     return roasted(b, role, p.vegMode) ? [part, { role: 'olja', ingr: 'olja', name: 'Olja', q: q * OIL_G_PER_RAW_G, u: 'g' }] : [part];
   };

@@ -34,6 +34,9 @@ const frys: Plan = { ...DEFAULT_PLAN, vegMode: 'frysta', kits: ['teriyaki', 'mou
 const frysSch = schedule(resolveBoxes(frys).map((b) => calcBox(b, frys, null)), frys);
 eq('frysta: aubergine still roasted', frysSch.steps.find((s) => s.id === 'veg')?.details, 'Aubergine på egen plåt.');
 eq('frysta: broccoli frozen', calcBox(resolveBoxes(frys)[0], frys, null).parts.find((x) => x.role === 'veg')?.name, 'Broccoli (fryst)');
+// Frozen veg goes into the box as it is: no cooked weight (2026-11-24, was the roasting yield, 140 g showed as ca 100 g).
+const frozenVeg = calcBox(resolveBoxes(frys)[0], frys, null).parts.find((x) => x.role === 'veg')!;
+eq('frysta: frozen weight, not cooked', [frozenVeg.q, frozenVeg.cooked, calcBox(resolveBoxes(DEFAULT_PLAN)[0], DEFAULT_PLAN, null).parts.find((x) => x.role === 'veg')?.cooked], [140, undefined, 100]);
 eq('kit veg', resolveBoxes({ ...DEFAULT_PLAN, kitVeg: { teriyaki: 'haricots' } })[0].veg?.id, 'haricots');
 const cleared: Plan = { ...DEFAULT_PLAN, overrides: { 'teriyaki:2': { protein: null } } };
 eq('override clears slot', resolveBoxes(cleared)[2].protein, undefined);
