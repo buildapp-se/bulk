@@ -15,6 +15,8 @@ Användarflöden genomgångna i Playwright (egen headless Chromium) på 390 och 
 2. `c9f7e2a` Tillagning utan någon komplett låda (efter Rensa allt) visade ett låtsasschema: "0 plåtar", Förbered allt, Ta ut allt. Nu en rad om att inget finns att laga och länk till Välj. Med några ofullständiga lådor visar Tillagning samma "N lådor saknar något"-länk som Ingredienser. Plural: "1 låda", "1 smak", "1 plåt" (headern visade "1 lådor · 1 smaker"); kontroll i check.
 3. `d8dbd11` Offline: efter första besöket fungerade bara redan besökta sidor, en djuplänk till Tillagning offline visade Välj, och en länk i appen offline skickade tillbaka till Välj (RSC-anropet fick Välj-HTML som svar). `sw.js` cachar nu de fyra sidorna och deras assets vid install och faller bara tillbaka på Välj för navigering. Playwright offline: 4 av 4 sidor plus länken till Tillagning.
 
+Live efter deploy (körning 45490929717, första försöket föll på GitHubs artefakt-API, omkörning grön): tangentbord, tom plan och plural PASS på buildapp.se/bulk i 390 och 1440 px. Cloudflare cachar `sw.js` 4 h (`max-age=14400`), så den nya service workern når besökare först när kantcachen gått ut; offline-testet live med origins färska `sw.js` (cache-brytande query) gav 4 av 4 sidor plus länken.
+
 check, typecheck och build gröna. Inga UI-tester i check (den täcker `src/lib` och texterna); UI-verifieringen är Playwright-skript utanför repot. Inte testat: riktig telefon, skärmläsare.
 
 ## 2026-11-24, funktionspass (gren `feat/2026-11-24`, worktree `C:/dev/_wt/bulk-1124f`)
