@@ -132,7 +132,7 @@ function ClearAll() {
   return (
     <motion.button layout transition={spring} onClick={() => { if (armed) { clearAll(); setArmed(false); } else { haptic(); setArmed(true); } }}
       aria-label={t.box.clearAll} title={t.box.clearAll}
-      className={`flex h-8 items-center justify-center rounded-full text-[13px] transition-colors ${armed ? 'bg-warn px-3 font-semibold text-white' : 'w-8 text-muted hover:bg-sunken hover:text-ink'}`}>
+      className={`hit flex h-8 items-center justify-center rounded-full text-[13px] transition-colors ${armed ? 'bg-warn px-3 font-semibold text-white' : 'w-8 text-muted hover:bg-sunken hover:text-ink'}`}>
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span key={String(armed)} initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.6 }}>
           {armed ? t.box.clearAsk : '↺'}

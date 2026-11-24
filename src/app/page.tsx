@@ -21,7 +21,7 @@ export default function Home() {
           <Section n={3} title={t.sec.boxes}><BoxCount /></Section>
           <Section n={4} title={t.sec.kits} aside={<KitHint />}>
             <KitPicker />
-            <Link href="/prepp" transitionTypes={['nav-forward']} className="self-start py-1 text-sm text-muted hover:text-ink">{t.prep.toExplore}</Link>
+            <Link href="/prepp" transitionTypes={['nav-forward']} className="hit self-start py-1 text-sm text-muted hover:text-ink">{t.prep.toExplore}</Link>
           </Section>
           <Section n={5} title={t.sec.veg}><VegMode /></Section>
         </div>

@@ -116,7 +116,7 @@ function Target({ label, unit, value, min, max, step, band, onChange, manual }: 
         <input
           type="range" min={min} max={max} step={step} value={value}
           onChange={(e) => onChange(Number(e.target.value))}
-          className="absolute inset-0 w-full accent-[var(--ink)]"
+          className="absolute inset-x-0 top-1/2 h-11 w-full -translate-y-1/2 accent-[var(--ink)]"
           aria-label={label}
         />
       </span>
