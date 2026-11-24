@@ -172,6 +172,8 @@ function BoxTile({ c, warn, sheet, onOpen }: { c: BoxCalc; warn: boolean; sheet:
       onPointerUp={() => { if (timer.current) clearTimeout(timer.current); if (!lifted && !moved.current) onOpen(); setLifted(false); }}
       onPointerLeave={() => { if (timer.current && !lifted) clearTimeout(timer.current); }}
       onPointerMove={() => { if (!lifted) moved.current = true; }}
+      // Enter and Space fire click with detail 0 and no pointer events: without this the keyboard cannot open a box.
+      onClick={(e) => { if (e.detail === 0) onOpen(); }}
       onDragEnd={(e) => {
         setLifted(false);
         const pt = 'changedTouches' in e ? (e as TouchEvent).changedTouches[0] : (e as PointerEvent);
@@ -203,11 +205,18 @@ function BoxTile({ c, warn, sheet, onOpen }: { c: BoxCalc; warn: boolean; sheet:
 function BoxSheet({ c, onClose }: { c: BoxCalc; onClose: () => void }) {
   const i = c.box.i;
   const hue = c.box.kit?.hue ?? 60;
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const k = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', k);
     return () => window.removeEventListener('keydown', k);
   }, [onClose]);
+  // Focus into the sheet on open and back to the tile on close, so a keyboard user lands where they were.
+  useEffect(() => {
+    const back = document.activeElement as HTMLElement | null;
+    ref.current?.focus();
+    return () => back?.focus();
+  }, []);
   const rows: { slot: Slot; opts: { id: string; name: string; hue?: number }[]; cur?: string }[] = [
     { slot: 'kit', opts: KITS.map((k) => ({ id: k.id, name: k.name, hue: k.hue })), cur: c.box.kit?.id },
     { slot: 'protein', opts: PROTEINS.map((p) => ({ id: p.id, name: p.name })), cur: c.box.protein?.id },
@@ -218,8 +227,8 @@ function BoxSheet({ c, onClose }: { c: BoxCalc; onClose: () => void }) {
     <>
       <motion.div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
       <motion.div
-        role="dialog" aria-modal="true" aria-label={t.box.title(i + 1)}
-        className="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[85dvh] max-w-lg overflow-y-auto rounded-t-3xl bg-surface pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-2xl sm:bottom-6 sm:rounded-3xl"
+        ref={ref} tabIndex={-1} role="dialog" aria-modal="true" aria-label={t.box.title(i + 1)}
+        className="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[85dvh] max-w-lg overflow-y-auto rounded-t-3xl outline-none bg-surface pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-2xl sm:bottom-6 sm:rounded-3xl"
         initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', stiffness: 380, damping: 36 }}
         drag="y" dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.6 }}
         onDragEnd={(_, info) => { if (info.offset.y > 100 || info.velocity.y > 600) onClose(); }}

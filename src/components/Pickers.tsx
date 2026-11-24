@@ -24,6 +24,8 @@ export function ProteinPicker() {
           // stops the click so it doesn't also toggle the card.
           <motion.div key={p.id} variants={stagger.child} layout transition={spring}
             onClick={() => toggleProtein(p.id)}
+            // Motion makes a whileTap element focusable; the checkbox button inside is the keyboard stop, so one Tab per protein.
+            tabIndex={-1}
             whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}
             className={`flex cursor-pointer select-none flex-col gap-1 rounded-xl border p-3 transition-colors has-[[role=checkbox]:focus-visible]:ring-2 has-[[role=checkbox]:focus-visible]:ring-ink ${sel ? 'border-ink bg-surface shadow-[0_6px_20px_-12px_rgba(35,33,29,.45)]' : 'border-line hover:border-muted'}`}>
             <button role="checkbox" aria-checked={!!sel} className="flex flex-col gap-1 text-left outline-none">
