@@ -1,9 +1,11 @@
 // All UI text. Food names live in lib/data.ts. English later: add en.ts with the same shape + next-intl.
+/** "1 låda", "2 lådor": Swedish singular only for exactly one. */
+export const pl = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 export const sv = {
   tabs: ['Välj', 'Ingredienser', 'Tillagning'],
   explore: 'Utforska',
   notFound: { title: 'Sidan finns inte', sub: 'Adressen leder ingenstans. Din plan finns kvar.', home: 'Till 01 Välj' },
-  summary: (boxes: number, kits: number, kcal: string) => `${boxes} lådor · ${kits} smaker · ø ${kcal} kcal`,
+  summary: (boxes: number, kits: number) => `${pl(boxes, 'låda', 'lådor')} · ${pl(kits, 'smak', 'smaker')} · ø`,
   hero: { title: 'Laga en bas. Byt smak per låda.', sub: 'Välj protein, antal lådor och smakkit. Mängder, macros, inköp och ugnsschema räknas ut direkt.' },
   sec: { goal: 'Mål', protein: 'Protein', boxes: 'Antal lådor', kits: 'Smakkit', veg: 'Grönsaker' },
   spare: (name: string, bought: string, need: string, extra: number) => `${name}: du köper ${bought}, lådorna tar ${need}. Räcker till ca ${extra} ${extra === 1 ? 'låda' : 'lådor'} till.`,
@@ -24,7 +26,7 @@ export const sv = {
   veg: { rostade: ['Rostade', 'Egen plåt, 20 min'], frysta: ['Frysta', 'Direkt i lådan. Aubergine, svamp och kål rostas ändå'] },
   kitHint: (n: number) => (n === 0 ? 'Välj minst 1' : n > 3 ? `${n} valda, fler kastruller` : `${n} valda, 2–3 är lagom`),
   batch: 'Din batch',
-  trays: (n: number, min: string) => `${n} plåtar · ca ${min}`,
+  trays: (n: number, min: string) => `${pl(n, 'plåt', 'plåtar')} · ca ${min}`,
   missing: (n: number) => `${n} ${n === 1 ? 'låda saknar' : 'lådor saknar'} något. Tryck för att fixa.`,
   offGoal: (n: number) => `${n} ${n === 1 ? 'låda når' : 'lådor når'} inte målet.`,
   avg: ['kcal', 'protein', 'kolhydr.', 'fett'],
@@ -39,7 +41,7 @@ export const sv = {
   },
   slots: { protein: 'Protein', kit: 'Smakkit', carb: 'Kolhydrat', veg: 'Grönt' },
   ing: {
-    title: (n: number) => `Ingredienser för ${n} lådor`,
+    title: (n: number) => `Ingredienser för ${pl(n, 'låda', 'lådor')}`,
     sub: 'Rå vikt att köpa, avrundat till vanliga förpackningar. Ris, pasta och bulgur räknas okokt.',
     perBox: 'Per låda', kcalBox: 'kcal / låda', need: (g: string) => `behöver ${g}`,
     cooked: (g: string) => `blir ca ${g} tillagat`,
@@ -52,7 +54,8 @@ export const sv = {
   },
   cook: {
     title: 'Tillagning',
-    summary: (trays: number, min: string) => `${trays} plåtar, ca ${min} från start till kylskåp.`,
+    nothing: 'Ingen låda är komplett än, så det finns inget att laga. Välj smakkit och protein först.',
+    summary: (trays: number, min: string) => `${pl(trays, 'plåt', 'plåtar')}, ca ${min} från start till kylskåp.`,
     progress: (d: number, n: number) => `${d} av ${n} klart`,
     reset: 'Nollställ', start: 'Starta', stop: 'Stoppa', done: 'Klar', pause: 'Paus', resume: 'Fortsätt', paused: 'pausad', ack: 'Kvittera', plus: 'En minut till', minus: 'En minut mindre',
     live: 'Live-läge', notify: 'Aviseringar', notifyOn: 'Aviseringar på', notifyHint: 'På iPhone: lägg till på hemskärmen först.',
@@ -91,7 +94,7 @@ export const sv = {
     stores: (n: number) => `${n} ${n === 1 ? 'butik' : 'butiker'}`, onlyOrd: 'Rea, men vanliga billigaste är billigare',
     cheapest: 'Billigast just nu', cheapestSub: 'Varje kit med varje protein det passar, per låda efter ditt mål, allt handlat i en och samma butik med den butikens erbjudanden. Kryddor och färskt garnityr ingår inte.',
     perBox: 'Pris per låda', excl: 'exkl. kryddor och garnityr', dealsUsed: 'Erbjudanden i lådan',
-    shop: (n: number, kr: string, store: string) => `${n} lådor: ${kr} kr förbrukat, allt på ${store}`,
+    shop: (n: number, kr: string, store: string) => `${pl(n, 'låda', 'lådor')}: ${kr} kr förbrukat, allt på ${store}`,
     legendGreen: 'Grönt = ett erbjudande som är billigare än det billigaste vanliga priset vi hittat för varan, på Willys eller Coop. Ett riktigt fynd.',
     legendGrey: 'Grått = varan är nedsatt mot sitt eget ordinarie pris, men en annan vara av samma sort är ändå billigare till vanligt pris.',
     usual: (chain: string) => `vanligt pris ${chain}`, ordinary: (chain: string) => `${chain} vanligt pris`,

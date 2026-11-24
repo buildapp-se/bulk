@@ -1,5 +1,6 @@
 'use client';
 import { AnimatePresence, motion } from 'motion/react';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { t } from '@/i18n/sv';
 import { fmtMin, isLong, recipes, type Step, type StepLine } from '@/lib/calc';
@@ -30,7 +31,19 @@ function useWakeLock(on: boolean) {
 }
 
 export function Cook() {
-  const { sched } = useBatch();
+  const { sched, calcs, incomplete } = useBatch();
+  // No complete box: the schedule would be only the generic steps (heat the oven, take it all out) for nothing.
+  if (!calcs.some((c) => !c.missing.length)) return (
+    <div className="mx-auto flex max-w-[760px] flex-col gap-3">
+      <h1 className="text-[clamp(26px,5vw,38px)] font-semibold tracking-[-0.03em]">{t.cook.title}</h1>
+      <p className="text-muted">{t.cook.nothing}</p>
+      <Link href="/" transitionTypes={['nav-back']} className="hit self-start text-[13px] text-warn underline">{incomplete.length ? t.missing(incomplete.length) : t.notFound.home}</Link>
+    </div>
+  );
+  return <CookPlan sched={sched} incomplete={incomplete.length} />;
+}
+
+function CookPlan({ sched, incomplete }: { sched: ReturnType<typeof useBatch>['sched']; incomplete: number }) {
   const cook = useCook();
   const now = useNow(true); // the clock at the top ticks whether or not a timer runs
   const awake = useWakeLock(true); // whole cooking view: phones must not lock mid-recipe, timer or not
@@ -88,6 +101,7 @@ export function Cook() {
         <h1 className="text-[clamp(26px,5vw,38px)] font-semibold tracking-[-0.03em]">{t.cook.title}</h1>
         <p className="text-muted">{t.cook.summary(sched.trays, fmtMin(sched.total))}</p>
         {sched.warnings.map((w) => <p key={w} className="text-[13px] text-warn">{w}</p>)}
+        {incomplete > 0 && <Link href="/" transitionTypes={['nav-back']} className="text-[13px] text-warn underline">{t.missing(incomplete)}</Link>}
       </div>
       <div className="flex flex-col gap-2"><div className="label">{t.sec.boxes}</div><BoxCount /></div>
 

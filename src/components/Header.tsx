@@ -23,7 +23,7 @@ export function Header() {
             Bulk<span className="text-[color:var(--c)]">.</span>
           </Link>
           <span className="font-mono text-xs text-muted">
-            {calcs.length} lådor · {plan.kits.length} smaker · ø <Num v={avg[0]} /> kcal
+            {t.summary(calcs.length, plan.kits.length)} <Num v={avg[0]} /> kcal
           </span>
         </div>
         {/* Prepp is a side tool, not a step: its own button, first row on a phone, after the steps on a wide screen. */}

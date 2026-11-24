@@ -7,6 +7,7 @@ import { baseBatches, boxShare, calcBox, DEFAULT_PLAN, fmtMin, fmtPacks, fmtQty,
 import { cost, kitJobs, nearZero, noun, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
 import { atStore, basket, boxCost, CHAINS, deals, forRegion, krPerProtein, live, matches, pieceKrKg, needs, norm, pantryCost, PRICES, regular, unit, type Prices, type Region } from '../src/lib/price.ts';
 import type { ShopRow } from '../src/lib/calc.ts';
+import { t as txt } from '../src/i18n/sv.ts';
 
 const fails: string[] = [];
 const eq = (name: string, got: unknown, want: unknown) => {
@@ -15,6 +16,9 @@ const eq = (name: string, got: unknown, want: unknown) => {
 const near = (name: string, got: number, want: number, tol = 0.5) => {
   if (!(Math.abs(got - want) <= tol)) fails.push(`${name}: got ${got.toFixed(2)}, want ${want} ±${tol}`);
 };
+
+// Counts read as Swedish: singular only for exactly one (was "1 lådor", "1 smaker" in the header).
+eq('plural', [txt.summary(1, 1), txt.summary(0, 2), txt.ing.title(1), txt.cook.summary(1, '1 h')], ['1 låda · 1 smak · ø', '0 lådor · 2 smaker · ø', 'Ingredienser för 1 låda', '1 plåt, ca 1 h från start till kylskåp.']);
 
 // Distribution
 eq('split 8/3', split(8, 3), [3, 3, 2]);
