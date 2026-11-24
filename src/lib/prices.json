@@ -1,5 +1,5 @@
 {
- "at": "2026-11-23",
+ "at": "2026-11-24",
  "stores": [
   {
    "chain": "Willys",
@@ -125,6 +125,10 @@
    "chain": "Coop",
    "name": "Stora Coop Stadion",
    "region": "Malmö"
+  },
+  {
+   "chain": "Lidl",
+   "name": "Lidl"
   }
  ],
  "shelf": {
@@ -162,12 +166,12 @@
     "code": "101203624_KG"
    },
    "flaskkarre": {
-    "krKg": 89.9,
-    "kr": 89.9,
-    "pack": "ca: 2.7kg",
-    "name": "Fläskkarré Benfri",
-    "brand": "Westfleisch",
-    "code": "101300146_KG"
+    "krKg": 97.9,
+    "kr": 97.9,
+    "pack": "ca: 1.1kg",
+    "name": "Fläskkarré Benfri i Bit Sverige",
+    "brand": "Garant",
+    "code": "100945355_KG"
    },
    "lax": {
     "krKg": 199.8,
@@ -410,8 +414,8 @@
     "code": "101719432_ST"
    },
    "bbq": {
-    "krKg": 85.22,
-    "kr": 29.4,
+    "krKg": 86.67,
+    "kr": 29.9,
     "pack": "345g",
     "name": "Smoky Hickory Bbq Sauce",
     "brand": "Santa Maria",
@@ -482,12 +486,12 @@
     "code": "101893900_KG"
    },
    "feta": {
-    "krKg": 146,
-    "kr": 21.9,
-    "pack": "150g",
+    "krKg": 149,
+    "kr": 14.9,
+    "pack": "100g",
     "name": "Fetaost",
     "brand": "Kassos",
-    "code": "101676983_ST"
+    "code": "101676984_ST"
    },
    "tzatziki": {
     "krKg": 59.8,
@@ -925,8 +929,8 @@
     "code": "7340191174573"
    },
    "paprika": {
-    "krKg": 64.9,
-    "kr": 64.9,
+    "krKg": 59.9,
+    "kr": 59.9,
     "pack": "200 gram ungefärlig vikt",
     "name": "Paprika Röd",
     "brand": "",
@@ -1197,8 +1201,8 @@
     "code": "7340191150843"
    },
    "gurka": {
-    "krKg": 49.64,
-    "kr": 13.9,
+    "krKg": 53.21,
+    "kr": 14.9,
     "pack": "280 g",
     "name": "Gurka",
     "brand": "",
@@ -1215,10 +1219,10 @@
    "gullok": {
     "krKg": 10.9,
     "kr": 10.9,
-    "pack": "1000 g",
-    "name": "Lök Gul",
-    "brand": "COOP",
-    "code": "7300156596734"
+    "pack": "200 gram ungefärlig vikt",
+    "name": "Gul Lök",
+    "brand": "",
+    "code": "2317466600001"
    },
    "kvarg": {
     "krKg": 27.8,
@@ -2862,18 +2866,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "sotpotatis",
-   "chain": "Coop",
-   "store": "Stora Coop Avion",
-   "name": "Sötpotatis",
-   "brand": "Egypten",
-   "pack": "",
-   "krKg": 20,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
    "ingr": "kesella",
    "chain": "Coop",
    "store": "Stora Coop Avion",
@@ -2906,6 +2898,18 @@
    "pack": "Ca 700 g.",
    "krKg": 179,
    "label": "179 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "sotpotatis",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Sötpotatis",
+   "brand": "Egypten",
+   "pack": "",
+   "krKg": 20,
+   "label": "20 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -2946,18 +2950,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "sotpotatis",
-   "chain": "Coop",
-   "store": "Stora Coop Ersboda",
-   "name": "Sötpotatis",
-   "brand": "Egypten",
-   "pack": "",
-   "krKg": 20,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
    "ingr": "kesella",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
@@ -2978,6 +2970,18 @@
    "pack": "2000 g.",
    "krKg": 89.5,
    "label": "179 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "sotpotatis",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Sötpotatis",
+   "brand": "Egypten",
+   "pack": "",
+   "krKg": 20,
+   "label": "20 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -3030,18 +3034,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "olivolja",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Olivolja",
-   "brand": "Fontana",
-   "pack": "500 ml.",
-   "krKg": 144,
-   "label": "72 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
    "ingr": "sotpotatis",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
@@ -3050,6 +3042,18 @@
    "pack": "",
    "krKg": 20,
    "label": "20 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "olivolja",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Olivolja",
+   "brand": "Fontana",
+   "pack": "500 ml.",
+   "krKg": 144,
+   "label": "72 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -3102,18 +3106,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "broccoli",
-   "chain": "Coop",
-   "store": "Coop City Umeå",
-   "name": "Broccoli",
-   "brand": "Spanien",
-   "pack": "Ca 250 g.",
-   "krKg": 40,
-   "label": "10 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
    "ingr": "rivenost",
    "chain": "Coop",
    "store": "Coop City Umeå",
@@ -3122,6 +3114,18 @@
    "pack": "500 g.",
    "krKg": 99.8,
    "label": "49.9 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "broccoli",
+   "chain": "Coop",
+   "store": "Coop City Umeå",
+   "name": "Broccoli",
+   "brand": "Spanien",
+   "pack": "Ca 250 g.",
+   "krKg": 40,
+   "label": "10 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -3162,42 +3166,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Färsk majskycklingbröstfilé",
-   "brand": "Guldfågeln",
-   "pack": "Ca 700 g.",
-   "krKg": 179,
-   "label": "179 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
-   "ingr": "sotpotatis",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Sötpotatis",
-   "brand": "Egypten",
-   "pack": "",
-   "krKg": 20,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
-   "ingr": "kesella",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Kesella/kvarg",
-   "brand": "Arla Köket",
-   "pack": "250 g.",
-   "krKg": 51.6,
-   "label": "12.9 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
    "ingr": "olivolja",
    "chain": "Coop",
    "store": "Stora Coop Bromma",
@@ -3213,6 +3181,30 @@
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Bromma",
+   "name": "Färsk majskycklingbröstfilé",
+   "brand": "Guldfågeln",
+   "pack": "Ca 700 g.",
+   "krKg": 179,
+   "label": "179 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "kesella",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Kesella/kvarg",
+   "brand": "Arla Köket",
+   "pack": "250 g.",
+   "krKg": 51.6,
+   "label": "12.9 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
    "name": "Kycklingfilé",
    "brand": "Kronfågel",
    "pack": "2000 g.",
@@ -3222,15 +3214,15 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "lax",
+   "ingr": "sotpotatis",
    "chain": "Coop",
-   "store": "Stora Coop Backaplan",
-   "name": "Färsk laxfilé",
-   "brand": "Harbour",
-   "pack": "Ca 1 kg.",
-   "krKg": 129,
-   "label": "129 kr",
-   "member": true,
+   "store": "Stora Coop Bromma",
+   "name": "Sötpotatis",
+   "brand": "Egypten",
+   "pack": "",
+   "krKg": 20,
+   "label": "20 kr",
+   "member": false,
    "until": "2026-11-29"
   },
   {
@@ -3243,30 +3235,6 @@
    "krKg": 325,
    "label": "3 för 39 kr",
    "member": true,
-   "until": "2026-11-29"
-  },
-  {
-   "ingr": "sotpotatis",
-   "chain": "Coop",
-   "store": "Stora Coop Backaplan",
-   "name": "Sötpotatis",
-   "brand": "Egypten",
-   "pack": "",
-   "krKg": 20,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
-   "ingr": "kycklingfile",
-   "chain": "Coop",
-   "store": "Stora Coop Backaplan",
-   "name": "Kycklingfilé",
-   "brand": "Kronfågel",
-   "pack": "2000 g.",
-   "krKg": 89.5,
-   "label": "179 kr",
-   "member": false,
    "until": "2026-11-29"
   },
   {
@@ -3282,6 +3250,30 @@
    "until": "2026-11-29"
   },
   {
+   "ingr": "sotpotatis",
+   "chain": "Coop",
+   "store": "Stora Coop Backaplan",
+   "name": "Sötpotatis",
+   "brand": "Egypten",
+   "pack": "",
+   "krKg": 20,
+   "label": "20 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Coop",
+   "store": "Stora Coop Backaplan",
+   "name": "Kycklingfilé",
+   "brand": "Kronfågel",
+   "pack": "2000 g.",
+   "krKg": 89.5,
+   "label": "179 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
    "ingr": "lax",
    "chain": "Coop",
    "store": "Stora Coop Stadion",
@@ -3303,30 +3295,6 @@
    "krKg": 325,
    "label": "3 för 39 kr",
    "member": true,
-   "until": "2026-11-29"
-  },
-  {
-   "ingr": "sotpotatis",
-   "chain": "Coop",
-   "store": "Stora Coop Stadion",
-   "name": "Sötpotatis",
-   "brand": "Egypten",
-   "pack": "",
-   "krKg": 20,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
-   "ingr": "kesella",
-   "chain": "Coop",
-   "store": "Stora Coop Stadion",
-   "name": "Kesella/kvarg",
-   "brand": "Arla Köket",
-   "pack": "250 g.",
-   "krKg": 51.6,
-   "label": "12.9 kr",
-   "member": false,
    "until": "2026-11-29"
   },
   {
@@ -3362,6 +3330,104 @@
    "pack": "Ca 700 g.",
    "krKg": 179,
    "label": "179 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "sotpotatis",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Sötpotatis",
+   "brand": "Egypten",
+   "pack": "",
+   "krKg": 20,
+   "label": "20 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "kesella",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Kesella/kvarg",
+   "brand": "Arla Köket",
+   "pack": "250 g.",
+   "krKg": 51.6,
+   "label": "12.9 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "gurka",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Gurka",
+   "brand": "RYNECZEK LIDLA",
+   "pack": "",
+   "krKg": 35.36,
+   "label": "9,9 kr/st",
+   "member": true,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "paprika",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Röd paprika",
+   "brand": "",
+   "pack": "",
+   "krKg": 34.9,
+   "label": "34,9 kr/kg",
+   "member": true,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "gullok",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Gul lök",
+   "brand": "Matriket",
+   "pack": "",
+   "krKg": 6.9,
+   "ordKrKg": 10.9,
+   "label": "6,9 kr/kg",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "kycklingfile",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Tvådelad kycklingbröstfilé",
+   "brand": "Matriket",
+   "pack": "800 g",
+   "krKg": 136.25,
+   "label": "109 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "kesella",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Kesella kvarg 7%",
+   "brand": "",
+   "pack": "250 g",
+   "krKg": 47.6,
+   "ordKrKg": 54,
+   "label": "11,9 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "apelsin",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Apelsinjuice",
+   "brand": "",
+   "pack": "1,75 l",
+   "krKg": 28.51,
+   "label": "49,9 kr",
    "member": false,
    "until": "2026-11-29"
   }
