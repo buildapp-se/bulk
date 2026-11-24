@@ -17,6 +17,7 @@ export interface Ingr {
   cat: Cat;
   packs?: readonly number[]; // typical Swedish package sizes in g (ml ≈ g)
   y?: number; // cooked/raw yield, only for "blir ca X g tillagat"
+  st?: number; // g per piece, for offers priced per piece (Lidl "/st"); from Willys' and Coop's shelf rows 2026-11-24
 }
 
 const INGR_ = {
@@ -43,7 +44,7 @@ const INGR_ = {
   paprika: { name: 'Paprika', n: [22, 0.5, 4.1, 0.2], src: 'lv', gm: 'röd paprika', cat: 'grönt', packs: [500], y: 0.7 },
   haricots: { name: 'Haricots verts', n: [29, 2.2, 3.1, 0], src: 'lv', lv: 332, cat: 'fryst', packs: [250, 750], y: 0.85 },
   vitkal: { name: 'Vitkål', n: [32, 1.2, 5.7, 0], src: 'lv', lv: 370, cat: 'grönt', packs: [1000], y: 0.7 },
-  aubergine: { name: 'Aubergine', n: [19, 1.1, 2.2, 0.1], src: 'lv', lv: 372, cat: 'grönt', packs: [350], y: 0.6 },
+  aubergine: { name: 'Aubergine', n: [19, 1.1, 2.2, 0.1], src: 'lv', lv: 372, cat: 'grönt', packs: [350], y: 0.6, st: 300 },
   wokmix: { name: 'Wokgrönsaker', n: [47, 1.8, 4.9, 1.6], src: 'lv', lv: 425, cat: 'fryst', packs: [500, 1000] },
   artmorot: { name: 'Ärtor och morötter', n: [60, 3.7, 9, 0.5], src: 'lv', lv: 388, cat: 'fryst', packs: [750] },
   spenat: { name: 'Spenat', n: [20, 2.2, 0.5, 0.6], src: 'lv', lv: 361, cat: 'fryst', packs: [450, 750] },
@@ -81,7 +82,7 @@ const INGR_ = {
   lingon: { name: 'Lingonsylt', n: [148, 0.2, 35.3, 0.2], src: 'lv', lv: 1798, cat: 'skafferi', packs: [400] },
   worcester: { name: 'Worcestershiresås', n: [78, 0.9, 19.5, 0], src: 'lv', gm: 'worcestersås', cat: 'skafferi', packs: [150] },
   apelsin: { name: 'Apelsinjuice', n: [43, 0.6, 9.8, 0.1], src: 'lv', lv: 661, cat: 'mejeri', packs: [1000] },
-  gurka: { name: 'Gurka', n: [13, 0.8, 2.3, 0], src: 'lv', gm: 'gurka', cat: 'grönt', packs: [350] },
+  gurka: { name: 'Gurka', n: [13, 0.8, 2.3, 0], src: 'lv', gm: 'gurka', cat: 'grönt', packs: [350], st: 280 },
   champinjoner: { name: 'Champinjoner', n: [27, 2.4, 2.7, 0.2], src: 'lv', gm: 'champinjoner', cat: 'grönt', packs: [250, 500], y: 0.6 },
   gullok: { name: 'Gul lök', n: [39, 1.2, 7.3, 0.1], src: 'lv', gm: 'gul lök', cat: 'grönt', packs: [1000] },
   // Light creamy bases and new kit ingredients (LV API 2026-09-24, else label values = 'est').

@@ -1,7 +1,7 @@
 # Backlog
 
 ## P1
-- Priser, nästa steg: ICA:s vanliga priser om det finns en öppen väg utan bot-spärr. Jordnötspulver saknar pris (finns inte hos Willys eller Coop, kanske hälsokost eller nätbutik). Lidl-varor som bara har styckpris (gurka, avokado) räknas inte, de saknar kg-pris.
+- Priser, nästa steg: ICA:s vanliga priser om det finns en öppen väg utan bot-spärr. Jordnötspulver saknar pris (finns inte hos Willys eller Coop, kanske hälsokost eller nätbutik). Lidl-varor med styckpris räknas om med styckvikten `Ingr.st` sedan 2026-11-24 (gurka 280 g, aubergine 300 g); en vara utan styckvikt räknas fortfarande inte.
 - Testa på riktig telefon (iPhone + Android): installera som PWA, aviseringar, larmljud och vibration när en timer är klar (även med skärmen låst), haptik (iOS switch-tricket), Wake Lock.
 
 ## P2

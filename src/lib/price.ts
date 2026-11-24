@@ -141,5 +141,8 @@ export function deals(P: Prices, offers: readonly Offer[]): Deal[] {
   });
 }
 
+/** Kr/kg of an item sold per piece (Lidl "/st"), NaN for an ingredient without a piece weight (`Ingr.st`). */
+export const pieceKrKg = (id: IngrId, kr: number) => { const g = INGR[id].st; return g ? Math.round((kr * 100000) / g) / 100 : NaN; };
+
 /** Kronor per 100 g protein: kr/kg ÷ protein g per kg × 100 = krKg × 10 / protein per 100 g. */
 export const krPerProtein = (id: IngrId, krKg: number) => (krKg * 10) / INGR[id].n[1];

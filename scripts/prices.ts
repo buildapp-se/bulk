@@ -4,7 +4,7 @@
 // Fetched pages are data only: ICA's embedded object is parsed as JSON after stripping two JS constructs, never evaluated.
 import { writeFileSync } from 'node:fs';
 import { BUY, type IngrId } from '../src/lib/data.ts';
-import { CHAINS, matches, type Chain, type Offer, type Prices, type Shelf, type Store } from '../src/lib/price.ts';
+import { CHAINS, matches, pieceKrKg, type Chain, type Offer, type Prices, type Shelf, type Store } from '../src/lib/price.ts';
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/128 Safari/537.36';
 // [id, name, region]. The metro regions get one store per chain, the biggest format (Patrik 2026-10-03: not the corner shop):
@@ -89,11 +89,16 @@ for (const id of ids) {
 const offers: Offer[] = [];
 // Coop lists one offer under several sorting groups: one row per store, name and price.
 const seen = new Set<string>();
-const push = (o: Omit<Offer, 'ingr'>) => {
+// `piece`: no kr/kg in the source, only a price per piece (Lidl "/st"); priced by the ingredient's piece weight, or dropped.
+const push = (o: Omit<Offer, 'ingr'>, piece?: { kr: number; old?: number }) => {
   const k = `${o.store}|${o.name}|${o.krKg}|${o.label}`;
-  if (!ok(o.krKg) || seen.has(k)) return;
+  if ((!ok(o.krKg) && !piece) || seen.has(k)) return;
   seen.add(k);
-  for (const ingr of match(o.name)) offers.push({ ingr, ...o });
+  for (const ingr of match(o.name)) {
+    if (ok(o.krKg)) { offers.push({ ingr, ...o }); continue; }
+    const krKg = pieceKrKg(ingr, piece!.kr);
+    if (ok(krKg)) offers.push({ ingr, ...o, krKg, ordKrKg: piece!.old && piece!.old > piece!.kr ? r2(krKg * piece!.old / piece!.kr) : undefined });
+  }
 };
 
 for (const [store, storeName] of WILLYS) {
@@ -148,12 +153,14 @@ for (const [store, storeName] of coopKey ? COOP : []) {
   }
 }
 
-// Lidl: national offers, no ordinary prices (so Lidl is like ICA: in the overview, never a whole basket). The week's pages
-// (/c/<slug>/a<id>) change id every week, so they are read off lidl.se's front page. Each product sits in a `data-grid-data`
-// attribute as JSON. Only offers that have started count; Thursday's run picks up the Thursday offers.
+// Lidl: national offers, no ordinary prices (so Lidl is like ICA: in the overview, never a whole basket). Since November 2026
+// (the last offers came 2026-10-26) the offers sit on the food category pages (/h/<slug>/h<id>), linked from the "Mat & dryck"
+// section of lidl.se's menu; the weekly /c/<slug>/a<id> pages are gone. Each product sits in a `data-grid-data` attribute as
+// JSON, the same item can sit on two pages (`seen` drops the copy). Only offers that have started count.
 const LIDL = 'Lidl';
 const lidlHome: string = await get('https://www.lidl.se/', false).catch((e) => { console.log(`Lidl: ${e.message}`); return ''; });
-const lidlPages = [...new Set([...lidlHome.matchAll(/href="(\/c\/[a-z0-9-]+\/a\d+)"/g)].map((m) => m[1]))];
+const food = lidlHome.slice(lidlHome.indexOf('head-link">Mat &amp; dryck'), lidlHome.indexOf('head-link"', lidlHome.indexOf('head-link">Mat &amp; dryck') + 10));
+const lidlPages = [...new Set([...food.matchAll(/href="(\/h\/[a-z0-9-]+\/h\d+)"/g)].map((m) => m[1]))];
 const unesc = (s: string) => s.replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 const now = Date.now() / 1000;
 for (const path of lidlPages) {
@@ -166,15 +173,17 @@ for (const path of lidlPages) {
     const p = plus || x.price;
     if (!p?.price) continue;
     const base = String(p.basePrice?.text ?? '');
-    // "/kg (Ca 1,2 kg)" is a kg price with a weight hint, "109,83 kr/kg" a comparison price, else price over the pack weight.
+    // "/kg (Ca 1,2 kg)" is a kg price with a weight hint, "109,83 kr/kg" a comparison price, "/st" a piece price (priced in
+    // push by the ingredient's piece weight), else price over the pack weight.
     const krKg = /^\/(kg|l)\b/.test(base) ? p.price : ok(perKg(base)) ? perKg(base) : p.price / (grams(p.packaging?.text ?? '') / 1000);
     const old = p.oldPrice ?? p.discount?.deletedPrice;
+    const piece = /^\/st\b/.test(base) ? { kr: p.price, old: ok(old) ? old : undefined } : undefined;
     push({ chain: 'Lidl', store: LIDL, name: String(x.title ?? '').trim(), brand: String(x.brand?.name ?? ''), pack: p.packaging?.text ?? '', krKg: r2(krKg),
       ordKrKg: ok(old) && old > p.price ? r2(krKg * old / p.price) : undefined, label: `${String(p.price).replace('.', ',')} kr${base.startsWith('/') ? base.split(' ')[0] : ''}`,
-      member: !!plus, until: new Date(x.storeEndDate * 1000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' }) });
+      member: !!plus, until: new Date(x.storeEndDate * 1000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' }) }, piece);
   }
 }
-if (lidlHome && !lidlPages.length) console.log('Lidl: inga veckosidor länkade från lidl.se');
+if (lidlHome && !lidlPages.length) console.log('Lidl: inga matsidor under Mat & dryck på lidl.se');
 
 const stores: Store[] = [...WILLYS.map(([, name, region]) => ({ chain: 'Willys' as const, name, region })), ...ICA.map(([, name, region]) => ({ chain: 'ICA' as const, name, region })),
   ...(coopKey ? COOP : []).map(([, name, region]) => ({ chain: 'Coop' as const, name, region })), ...(lidlPages.length ? [{ chain: 'Lidl' as const, name: LIDL }] : [])];

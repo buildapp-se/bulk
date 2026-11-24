@@ -5,7 +5,7 @@ import { DEFAULT_METHOD, INGR, KITS, PROTEINS, CARBS, VEGS, byId, type Protein }
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, running, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, boxShare, calcBox, DEFAULT_PLAN, fmtMin, fmtPacks, fmtQty, isLong, migratePlan, missing, partMacro, pickPacks, pruneOverrides, recipes, resolveBoxes, schedule, shopping, spare, split, targets, vegRoasted, type Box, type BoxCalc, type Plan, type Step } from '../src/lib/calc.ts';
 import { cost, kitJobs, nearZero, noun, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
-import { atStore, basket, boxCost, CHAINS, deals, forRegion, krPerProtein, live, matches, needs, norm, pantryCost, PRICES, regular, unit, type Prices, type Region } from '../src/lib/price.ts';
+import { atStore, basket, boxCost, CHAINS, deals, forRegion, krPerProtein, live, matches, pieceKrKg, needs, norm, pantryCost, PRICES, regular, unit, type Prices, type Region } from '../src/lib/price.ts';
 import type { ShopRow } from '../src/lib/calc.ts';
 
 const fails: string[] = [];
@@ -377,6 +377,8 @@ eq('i kväll from 17', [fmtAtStr(day24(17), day24(12), day24(-1)), fmtAtStr(day2
 
 // Prices.
 eq('chains', CHAINS, ['Willys', 'ICA', 'Coop', 'Lidl']);
+// Lidl sells gurka per piece (9,90 kr/st 2026-11-24): 280 g each = 35,36 kr/kg; no piece weight, no price.
+eq('piece price', [pieceKrKg('gurka', 9.9), pieceKrKg('ris', 9.9)], [35.36, NaN]);
 eq('norm', [norm('Färska Svenska Kycklingfilé '), norm('Fryst lax'), norm('Kyckling färsk lårfilé')], ['kycklingfile', 'lax', 'kyckling farsk larfile']);
 eq('offer valid on its last day', live(FIX, '2026-09-27').map((o) => o.ingr), ['broccoli', 'kycklingfile']);
 eq('region filters offers, Lidl is national', [forRegion(reg, 'Stockholm').offers.map((o) => o.store), forRegion(reg, 'Stockholm').stores.map((s) => s.name)], [['S'], ['S', 'L']]);
