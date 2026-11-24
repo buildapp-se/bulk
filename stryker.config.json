@@ -4,12 +4,12 @@
   "testRunner": "command",
   "commandRunner": { "command": "node scripts/check.ts" },
   "coverageAnalysis": "off",
-  "mutate": ["src/lib/calc.ts", "src/lib/prep.ts", "src/lib/price.ts", "src/lib/clock.ts"],
+  "mutate": ["src/lib/calc.ts", "src/lib/prep.ts", "src/lib/price.ts", "src/lib/clock.ts", "src/lib/actions.ts", "src/lib/store.ts"],
   "tsconfigFile": "tsconfig.stryker-none.json",
   "ignorePatterns": ["out", ".next", "reports", "design"],
   "reporters": ["clear-text", "progress", "html", "json"],
   "htmlReporter": { "fileName": "reports/mutation/mutation.html" },
   "jsonReporter": { "fileName": "reports/mutation/mutation.json" },
-  "concurrency": 4,
+  "concurrency": 2,
   "timeoutMS": 10000
 }

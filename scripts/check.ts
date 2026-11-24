@@ -1,6 +1,6 @@
 // Self-check: `node scripts/check.ts`. Prints one line per failure, exits non-zero on any.
 // Expected numbers are hand-computed from the per-100 g values in data.ts (see comments).
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { DEFAULT_METHOD, INGR, KITS, PROTEINS, CARBS, VEGS, byId, type Protein } from '../src/lib/data.ts';
 import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, running, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, boxShare, calcBox, DEFAULT_PLAN, fmtMin, fmtPacks, fmtQty, isLong, migratePlan, missing, partMacro, pickPacks, pruneOverrides, recipes, resolveBoxes, schedule, shopping, spare, split, targets, vegRoasted, type Box, type BoxCalc, type Plan, type Step } from '../src/lib/calc.ts';
@@ -497,6 +497,175 @@ const busyW = schedule(resolveBoxes(busy).map((b) => calcBox(b, busy, null)), bu
 eq('4 proteins and 4 kits warn', ['Fler än 3 proteiner gör schemat rörigt.', 'Fler än 3 smakkit: fler kastruller samtidigt.'].map((w) => busyW.includes(w)), [true, true]);
 const three: Plan = { ...DEFAULT_PLAN, proteins: [...DEFAULT_PLAN.proteins, { id: 'lax', method: 'ugn' }] };
 eq('3 proteins and 3 kits do not warn', schedule(resolveBoxes(three).map((b) => calcBox(b, three, null)), three).warnings.filter((w) => w.startsWith('Fler än')), []);
+
+// ---------- Mutation test 2026-11-24: calc.ts paths Stryker showed unchecked ----------
+eq('default plan', [DEFAULT_PLAN.proteins, DEFAULT_PLAN.region], [[{ id: 'kyckling', method: 'ugn' }, { id: 'notfars', method: 'ugn' }], 'Umeå']);
+const ids = (p: Plan) => resolveBoxes(p).map((b) => `${b.id}:${b.protein?.id ?? '-'}:${b.method ?? '-'}`);
+// No kits yet: the boxes still exist (id "-:n") and get proteins 2/1.
+eq('boxes without kits', ids({ ...DEFAULT_PLAN, kits: [], boxes: 3 }), ['-:0:kyckling:ugn', '-:1:kyckling:ugn', '-:2:notfars:ugn']);
+eq('pin to an unknown protein is ignored', ids({ ...DEFAULT_PLAN, kitProtein: { teriyaki: 'bogus' } }), ids(DEFAULT_PLAN));
+// Every ticked protein pinned: dill (lax, kyckling) takes kyckling's last share, then the pinned protein with most left fills in.
+eq('all proteins pinned', ids({ ...DEFAULT_PLAN, boxes: 6, kits: ['teriyaki', 'grekisk', 'dill'], kitProtein: { teriyaki: 'kyckling', grekisk: 'notfars' } }),
+  ['teriyaki:0:kyckling:ugn', 'teriyaki:1:kyckling:ugn', 'grekisk:0:notfars:ugn', 'grekisk:1:notfars:ugn', 'dill:0:kyckling:ugn', 'dill:1:notfars:ugn']);
+eq('a method the protein lacks falls back to its default', ids({ ...DEFAULT_PLAN, boxes: 2, proteins: [{ id: 'notfars', method: 'sousvide' }] }), ['teriyaki:0:notfars:ugn', 'grekisk:0:notfars:ugn']);
+eq('veg override', resolveBoxes({ ...DEFAULT_PLAN, overrides: { 'teriyaki:0': { veg: 'spenat' } } })[0].veg?.id, 'spenat');
+// Parts of one box in order, oil after each roasted part (rice is on the stove, so none after it).
+eq('box parts', c.parts.map((x) => `${x.role}:${x.name}`), ['protein:Kyckling', 'olja:Olja', 'carb:Ris', 'veg:Broccoli', 'olja:Olja', 'bas:Japansk soja', 'bas:Riven ingefära',
+  'bas:Vitlöksklyfta', 'kit:Teriyakisås', 'kit:Edamame', 'topp:Sesamfrön', 'topp:Salladslök']);
+// Half-filled boxes with a goal: sous vide gets no tray oil, the solver runs on what is there.
+const goal700 = { kcal: 700, protein: 50, dailyKcal: 0, dailyProtein: 0 };
+eq('only a sous vide protein', calcBox({ i: 0, id: '', protein: kyc, method: 'sousvide' }, DEFAULT_PLAN, goal700).parts.map((x) => [x.role, x.q]), [['protein', 215]]);
+eq('only a carb', calcBox({ i: 0, id: '', carb: byId(CARBS, 'ris') }, DEFAULT_PLAN, goal700).parts.map((x) => [x.role, x.q]), [['carb', 180]]);
+// Only grams and ml count: 10 ml soja counts, 100 "tsk" of rice does not.
+const synth = { ...byId(KITS, 'teriyaki'), base: undefined, mix: [{ name: 'S', ingr: 'soja', q: 10, u: 'ml' }, { name: 'R', ingr: 'ris', q: 100, u: 'tsk' }], top: [] } as unknown as Box['kit'];
+const sm = calcBox({ i: 0, id: '', kit: synth }, DEFAULT_PLAN, null);
+eq('kit-only box', [sm.parts.map((x) => x.role), sm.m[0]], [['kit', 'kit'], INGR.soja.n[0] / 10]);
+eq('veg without an oven time is never roasted', vegRoasted({ ...vg('broccoli'), oven: undefined }, 'rostade'), false);
+// Packs: two of one size; a tie on total and count keeps the first found (bigger size first).
+eq('packs', [pickPacks(1000, [500]), pickPacks(1000, [600, 400, 500])], [[{ size: 500, n: 2 }], [{ size: 600, n: 1 }, { size: 400, n: 1 }]]);
+// Shopping: ml counts by ingredient, pieces by name and unit; cooked weight only sums where it exists (roasted + frozen broccoli).
+const shopFake = shopping([{ parts: [{ role: 'kit', ingr: 'soja', name: 'Soja', q: 10, u: 'ml' }, { role: 'kit', ingr: 'ris', name: 'Ris x', q: 2, u: 'st' },
+  { role: 'topp', name: 'Lime', q: 1, u: 'st' }, { role: 'veg', ingr: 'broccoli', name: 'Broccoli', q: 140, u: 'g', cooked: 100 },
+  { role: 'veg', ingr: 'broccoli', name: 'Broccoli (fryst)', q: 140, u: 'g' }] } as unknown as BoxCalc]);
+eq('shopping keys', shopFake.map((r) => [r.key, r.cat, r.need, r.cooked]), [['soja', 'skafferi', 10, undefined], ['Ris x|st', 'skafferi', 2, undefined], ['Lime|st', 'skafferi', 1, undefined], ['broccoli', 'grönt', 280, 100]]);
+eq('shopping: no cooked key without a cooked part', 'cooked' in shopFake[0] && shopFake[0].cooked !== undefined, false);
+// Recipes skip unfinished boxes (a kit with nothing else).
+const emptyBox = calcBox({ i: 2, id: '' }, DEFAULT_PLAN, null);
+eq('recipes skip incomplete', recipes([c, calcBox({ i: 1, id: '', kit: byId(KITS, 'teriyaki') }, DEFAULT_PLAN, null), emptyBox]).map((r) => [r.name, r.n]), [['Teriyaki med kyckling', 1]]);
+eq('recipe rows without a note have no sub', recipes([c]).find(() => true)?.rows.find((x) => x.name === 'Teriyakisås')?.sub, undefined);
+eq('no base for an empty box', baseBatches([emptyBox]), []);
+// Schedule branches the golden plans do not reach. Two kits chop the same onion two ways; a krämig base split between a sauce kit
+// and one without takes the longer 10 min; kryddbönor (rub, no twist) has no sub line; 20 potato boxes need 4 trays for the carbs
+// alone; karré in the form is not sous vide; a batch with no frozen veg says nothing about frozen veg.
+const sch2 = (p: Plan) => schedule(resolveBoxes(p).map((b) => calcBox(b, p, null)), p);
+eq('one job, two ways', sch2({ ...DEFAULT_PLAN, kits: ['chili', 'filips-burger'] }).steps.find((s) => s.id === 'prep')?.rows?.find((r) => r.name === 'Gul lök')?.note, 'Finhacka, hacka');
+eq('split with one sauce kit', sch2({ ...DEFAULT_PLAN, kits: ['toscansk', 'filips-marryme'] }).steps.find((s) => s.id === 'split-kram')?.dur, 10);
+eq('kit without twist', sch2({ ...DEFAULT_PLAN, kits: ['kryddbonor'] }).steps.find((s) => s.id === 'split-rub')?.rows?.[0].sub, undefined);
+eq('carb trays', sch2({ ...DEFAULT_PLAN, boxes: 20, kits: ['grekisk'], kitVeg: { grekisk: 'wokmix' }, proteins: [{ id: 'kyckling', method: 'sousvide' }] }).trays, 4); // 20 × 225 g potatis = 4,5 kg
+eq('form is not sous vide', sch2(k6).warnings.some((w) => w.startsWith('Flera')), false);
+eq('no frozen veg line', sch.steps.find((s) => s.id === 'portion')?.details, 'Låt allt svalna först. Toppings i separata burkar.');
+
+
+// Golden schedule (2026-11-24): two plans that between them use every method, every base, a sauce kit, stove, oven and
+// frozen veg, rendered as text and compared with scripts/check-schedule.txt. Read through by hand when written: the steps,
+// times, amounts and wording are what the app shows. After a deliberate change: `node scripts/check.ts --golden`, then read the diff.
+const richA: Plan = { ...DEFAULT_PLAN, boxes: 10, vegMode: 'frysta', kits: ['chili', 'toscansk', 'filips-kebab', 'dill', 'teriyaki'],
+  proteins: [{ id: 'flaskkarre', method: 'form' }, { id: 'lax', method: 'sousvide' }, { id: 'linser', method: 'gryta' }, { id: 'notfars', method: 'panna' }, { id: 'kyckling', method: 'sousvide' }],
+  kitProtein: { chili: 'linser', toscansk: 'flaskkarre', 'filips-kebab': 'notfars', dill: 'lax', teriyaki: 'kyckling' },
+  kitCarb: { chili: 'pasta', dill: 'potatis', toscansk: 'mos', teriyaki: 'ris' }, kitVeg: { chili: 'spenat', toscansk: 'champinjoner', teriyaki: 'broccoli', dill: 'haricots' } };
+const richB: Plan = { ...DEFAULT_PLAN, boxes: 6, kits: ['keema', 'chili', 'shawarma'],
+  proteins: [{ id: 'kyckling', method: 'hel' }, { id: 'flaskkarre', method: 'sousvide' }, { id: 'halloumi', method: 'ugn' }],
+  kitProtein: { keema: 'kyckling', chili: 'flaskkarre', shawarma: 'halloumi' },
+  kitCarb: { keema: 'couscous', chili: 'sotpotatis', shawarma: 'potatis' }, kitVeg: { keema: 'vitkal', chili: 'broccoli', shawarma: 'wokmix' } };
+const render = (p: Plan) => {
+  const cs = resolveBoxes(p).map((b) => calcBox(b, p, null));
+  const s = schedule(cs, p);
+  const rows = (rs?: { name: string; right: string; sub?: string; note?: string }[]) => (rs ?? []).map((r) => `   ${r.name}=${r.right}${r.sub ? ` [${r.sub}]` : ''}${r.note ? ` {${r.note}}` : ''}`);
+  return [JSON.stringify({ trays: s.trays, total: s.total, warnings: s.warnings }),
+    ...s.steps.flatMap((x) => [`${x.id} ${x.track} ${x.t}+${x.dur} ${x.temp ?? ''} | ${x.title} | ${x.what ?? '-'} | ${x.details}`, ...rows(x.rows)]),
+    ...recipes(cs).flatMap((r) => [`recept ${r.name} ×${r.n} hue ${r.hue}`, ...rows(r.rows)])];
+};
+const golden = ['# A', ...render(richA), '# B', ...render(richB)];
+const gfile = new URL('./check-schedule.txt', import.meta.url);
+if (process.argv.includes('--golden')) writeFileSync(gfile, golden.join('\n') + '\n');
+const want = readFileSync(gfile, 'utf8').replace(/\r/g, '').trimEnd().split('\n');
+const gi = golden.findIndex((l, i) => l !== want[i]);
+if (gi >= 0 || want.length !== golden.length) fails.push(`golden schedule, line ${gi + 1}: got ${JSON.stringify(golden[gi])}, want ${JSON.stringify(want[gi])}`);
+
+// ---------- Actions and store (2026-11-24): the buttons' plan changes, run against an in-memory localStorage ----------
+// The store reads window/localStorage and haptic() reads navigator.vibrate, so stub them before the first import.
+const mem = new Map<string, string>();
+const buzz: number[] = [];
+Object.assign(globalThis, {
+  window: globalThis,
+  localStorage: { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => { mem.set(k, v); } },
+});
+Object.defineProperty(navigator, 'vibrate', { value: (ms: number) => buzz.push(ms) > 0, configurable: true });
+const PKEY = 'bulk:plan:v2', CKEY = 'bulk:cook:v1';
+// A v1 plan saved before stable ids migrates on first load; a broken cook entry keeps the defaults.
+mem.set(PKEY, JSON.stringify({ ...DEFAULT_PLAN, v: 1, overrides: { 3: { carb: 'pasta' } } }));
+mem.set(CKEY, '{');
+const S = await import('../src/lib/store.ts');
+const A = await import('../src/lib/actions.ts');
+const P = () => S.planStore.get();
+eq('store: v1 migrates on load', [P().v, P().overrides], [2, { 'grekisk:0': { carb: 'pasta' } }]);
+eq('store: bad JSON keeps defaults', S.cookStore.get() === S.cookStore.initial, true);
+// Storage is read once: a later change in another tab does not leak in until reload.
+mem.set(PKEY, JSON.stringify({ ...DEFAULT_PLAN, boxes: 12 }));
+eq('store: read once', P().boxes, 8);
+let pings = 0;
+const unsub = S.planStore.subscribe(() => pings++);
+A.setBoxes(0); const lo = P().boxes;
+A.setBoxes(99); const hi = [P().boxes, JSON.parse(mem.get(PKEY)!).boxes];
+unsub(); A.setBoxes(8);
+eq('setBoxes clamps 1..40, persists, notifies until unsubscribed', [lo, hi, pings], [1, [40, 40], 2]);
+// Structural changes prune overrides of boxes that are gone: 6 boxes = 2/2/2, grekisk:2 goes, grekisk:0 stays.
+S.setPlan((p) => ({ ...p, overrides: { 'grekisk:0': { carb: 'pasta' }, 'grekisk:2': { carb: 'ris' } } }));
+A.setBoxes(6);
+eq('structural prunes gone boxes', Object.keys(P().overrides), ['grekisk:0']);
+A.toggleKit('chili'); const withChili = P().kits;
+A.toggleKit('teriyaki');
+eq('toggleKit adds at the end, removes', [withChili, P().kits], [['teriyaki', 'grekisk', 'texmex', 'chili'], ['grekisk', 'texmex', 'chili']]);
+// Pinning a protein not in step 2 ticks it with its default method; pinning one already there keeps its method.
+A.setMethod('kyckling', 'sousvide');
+A.setKitProtein('chili', 'flaskkarre');
+A.setKitProtein('grekisk', 'kyckling');
+eq('setKitProtein ticks the protein once', [P().proteins, P().kitProtein],
+  [[{ id: 'kyckling', method: 'sousvide' }, { id: 'notfars', method: 'ugn' }, { id: 'flaskkarre', method: 'form' }], { chili: 'flaskkarre', grekisk: 'kyckling' }]);
+// Unticking a protein drops it and its pins; ticking it again adds it with its default method, pins stay gone.
+A.toggleProtein('flaskkarre'); const offP = [P().proteins.map((x) => x.id), P().kitProtein];
+A.toggleProtein('lax');
+eq('toggleProtein', [offP, P().proteins.at(-1), P().kitProtein], [[['kyckling', 'notfars'], { grekisk: 'kyckling' }], { id: 'lax', method: 'ugn' }, { grekisk: 'kyckling' }]);
+// sendPrep adds, never replaces: chili is already there and gets its pin, lax is already ticked and keeps ugn.
+A.sendPrep({ chili: 'notfars', pesto: 'lax' }, [{ id: 'lax', method: 'sousvide' }, { id: 'linser', method: 'gryta' }]);
+eq('sendPrep adds', [P().kits, P().proteins.map((x) => `${x.id}:${x.method}`), P().kitProtein],
+  [['grekisk', 'texmex', 'chili', 'pesto'], ['kyckling:sousvide', 'notfars:ugn', 'lax:ugn', 'linser:gryta'], { grekisk: 'kyckling', chili: 'notfars', pesto: 'lax' }]);
+A.setKitCarb('pesto', 'pasta'); A.setKitVeg('pesto', 'spenat'); A.setRegion('Malmö'); A.setVegMode('frysta'); A.setGoal({ weight: 90 });
+eq('simple setters', [P().kitCarb, P().kitVeg, P().region, P().vegMode, P().goal.weight, P().goal.kind], [{ pesto: 'pasta' }, { pesto: 'spenat' }, 'Malmö', 'frysta', 90, 'behall']);
+// Per-box slots: set, clear on purpose (null), reset one box and leave the others.
+A.setSlot('pesto:0', 'kit', 'dill');
+A.setSlot('chili:0', 'carb', 'ris'); A.setSlot('chili:0', 'veg', null);
+const slotted = P().overrides['chili:0'];
+A.resetBox('chili:0');
+eq('setSlot and resetBox', [slotted, Object.keys(P().overrides)], [{ carb: 'ris', veg: null }, ['grekisk:0', 'pesto:0']]);
+// Swap: each box gets the other's resolved contents, keyed by its own id, empty slots included; same index is a no-op.
+A.setSlot('grekisk:0', 'protein', null); A.setSlot('grekisk:0', 'kit', null); A.setSlot('grekisk:0', 'carb', null);
+const before = resolveBoxes(P());
+const keep = P();
+A.swapBoxes(1, 1);
+const same = P() === keep;
+A.swapBoxes(0, 4);
+const after = resolveBoxes(P());
+const look = (b: Box) => [b.kit?.id, b.protein?.id, b.carb?.id, b.veg?.id];
+eq('swapBoxes', [same, look(before[0]), look(after[0]), look(after[4]), after[0].id, after[4].id],
+  [true, [undefined, undefined, undefined, undefined], look(before[4]), look(before[0]), before[0].id, before[4].id]);
+// Rensa allt: batch and cooking progress go, goal, box count, veg mode and region stay.
+S.setCook({ done: { a: true }, bought: { b: true }, sub: { c: true }, ready: '18:00', at: 1, last: 2, clocks: { x: { end: 5 } } });
+const cookSaved = JSON.parse(mem.get(CKEY)!).ready;
+A.clearAll();
+eq('clearAll', [cookSaved, P().kits, P().proteins, P().kitProtein, P().kitCarb, P().kitVeg, P().overrides, P().boxes, P().goal.weight, P().vegMode, P().region, S.cookStore.get()],
+  ['18:00', [], [], {}, {}, {}, {}, 6, 90, 'frysta', 'Malmö', { done: {}, bought: {}, sub: {}, ready: null, at: null, last: null, clocks: {} }]);
+// Every button gives a tick: 23 light ones (8 ms), the two big changes (swap, Rensa allt) a longer one; setGoal and a no-op swap none.
+eq('haptics', [buzz.filter((ms) => ms === 8).length, buzz.filter((ms) => ms === 14).length, buzz.length], [23, 2, 25]);
+// Fresh store instances (a query string gives a new module): nothing saved keeps the defaults object; a saved cook merges
+// over the defaults; a set before any read builds on the saved plan; no window (server render) never reads storage.
+const fresh = async (tag: string): Promise<typeof S> => import(`../src/lib/store.ts?${tag}`);
+mem.delete(PKEY); mem.set(CKEY, JSON.stringify({ ready: '17:30' }));
+const F1 = await fresh('empty');
+eq('store: nothing saved', [F1.planStore.get() === F1.planStore.initial, F1.cookStore.get().ready, F1.cookStore.get().done], [true, '17:30', {}]);
+mem.set(PKEY, JSON.stringify({ ...DEFAULT_PLAN, boxes: 12 }));
+const F2 = await fresh('set');
+F2.setPlan((p) => ({ ...p, kits: [] }));
+eq('store: set reads first', F2.planStore.get().boxes, 12);
+const win = (globalThis as { window?: unknown }).window;
+delete (globalThis as { window?: unknown }).window;
+const F3 = await fresh('ssr');
+eq('store: no window, no storage', F3.planStore.get().boxes, 8);
+(globalThis as { window?: unknown }).window = win;
+// The hooks render the defaults on the server (static export), so hydration matches.
+const { createElement } = await import('react');
+const { renderToString } = await import('react-dom/server');
+eq('hooks: server snapshot', renderToString(createElement(() => `${S.usePlan().boxes} ${S.useCook().ready}`)), '8 null');
 
 // Drift vs grammat (only where the sibling repo exists, i.e. locally).
 const gpath = new URL('../../recept/nutrients.json', import.meta.url);

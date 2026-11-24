@@ -1,0 +1,229 @@
+# A
+{"trays":2,"total":290,"warnings":["Fler än 3 proteiner gör schemat rörigt.","Fler än 3 smakkit: fler kastruller samtidigt.","Flera proteiner i sous vide: ett bad per temperatur, eller kör dem efter varandra."]}
+form-flaskkarre form -225+210 150 | Pulled fläskkarré i form | Pulled fläskkarré i formen | Sätt ugnen på 150 °C. Gnid in kryddorna och vitlöken, lägg karrén i en form och häll juicen runt. Folie 3 h, sedan 30 min utan. Dra isär med gafflar.
+   Fläskkarré=1 kg
+   Spiskummin=1 tsk
+   Oregano=1,5 tsk
+   Vitlöksklyftor, pressade=2 st
+   Salt=1,5 tsk
+   Apelsinjuice=90 ml
+sv-kyckling sousvide -120+120 64 | Kyckling i sous vide | Kyckling i sous vide | Sätt badet på 64 °C. Hela filéer i påse med salt, 64 °C i 1,5–4 h (+1 h direkt ur kylen).
+   Kycklingfilé=350 g {Salta hela filéerna och lägg i påse}
+prep prep -45+30  | Förbered allt | - | Sätt sous vide-badet på 52 °C. Det som ska in i ugnen: blanda med olja, salt, peppar och vitlökspulver. Ingen smaksättning ännu.
+   Röda linser=100 g {Skölj i sil}
+   Potatismos=450 g {Skala och dela i jämna bitar}
+   Potatisklyftor=450 g {Dela i klyftor}
+   Champinjoner=240 g {Halvera}
+   Gul lök=60 g [tomatbas] {Finhacka}
+   Vitlök=3 st [tomatbas, asiatisk bas, krämig bas] {Hacka}
+   Ingefära=1 tsk [asiatisk bas] {Riv}
+   Koriander=efter smak [Chili con carne] {Hacka}
+   Basilika=efter smak [Toscansk kvarg] {Plocka}
+   Citron=1 st [Dill och citron] {Riv skalet och pressa}
+   Dill=2 msk [Dill och citron] {Hacka}
+   Rödlök=efter smak [Dill och citron] {Hacka}
+   Salladslök=2 st [Teriyaki] {Strimla}
+form-up ugn -15+15 200 | Ta ut formen, höj ugnen till 200 °C | - | Låt köttet vila under folien medan ugnen blir varm.
+sv-lax sousvide -10+45 52 | Lax i sous vide | Lax i sous vide | Portionsbitar i påse med lite olja, 52 °C i 45 min. Saftig och ljusrosa. 52 °C pastöriserar inte: ät inom 2 dagar eller frys.
+   Laxfilé=300 g {Skär i portionsbitar, salta och lägg i påse}
+carb-potatis ugn 0+35 200 | Potatisklyftor in | Potatisklyftor i ugnen | Ett lager på bakplåtspapper. Vänd halvvägs.
+veg ugn 15+20 200 | Grönsaker in | Grönsaker i ugnen | Champinjoner på egen plåt.
+stove spis 15+20  | Koka pasta, potatismos och ris | Pasta, potatismos och ris på spisen | Pasta ca 10 min, spola kallt. Potatis till mos ca 20 min. Ris ca 15 min.
+gryta-linser spis 20+15  | Koka röda linser | Röda linser kokar | Skölj, koka i kitets sås 15 min tills de faller sönder.
+base-tomat spis 20+15  | Koka tomatbasen för 2 lådor | Tomatbas puttrar | Fräs löken mjuk, sedan vitlök och tomatpuré 1 min tills purén mörknar. Häll i tomaterna och puttra 15 min.
+   Krossade tomater=200 g
+   Tomatpuré=16 g
+   Gul lök=60 g
+   Vitlöksklyfta=1 st
+panna-notfars spis 25+10  | Stek nötfärs | Nötfärs i stekpannan | Het panna med lite olja, högst 500 g åt gången så att färsen steks och inte kokar. Bryt isär och stek ca 5 min per omgång tills den fått färg. Minst 70 °C.
+base-asia spis 32+3  | Fräs den asiatiska basen för 2 lådor | - | Fräs riven ingefära och vitlök 30 s, slå i sojan och ta av värmen.
+   Japansk soja=16 g
+   Riven ingefära=1 tsk
+   Vitlöksklyfta=1 st
+base-kram spis 32+3  | Smält den krämiga basen för 2 lådor | - | Smält färskosten med vitlöken och en skvätt vatten på låg värme, slät och blank.
+   Philadelphia light=50 g
+   Vitlöksklyfta=1 st
+sear-kyckling spis 35+5  | Bryn kyckling | - | Bryn 1 min per sida i het panna.
+out ugn 35+5  | Ta ut allt | - | Låt ånga av.
+split-tomat spis 40+10  | Smaksätt tomatbasen | - | 
+   Chili con carne=×2 [+ kidneybönor 100 g, paprikapulver 1,5 tsk, spiskummin 1 tsk, oregano 0,5 tsk, cayennepeppar 2 krm, buljongtärning 1 st] {Rosta kryddorna 30 s i lite olja innan din del av basen går i.}
+split-asia spis 40+10  | Smaksätt den asiatiska basen | - | 
+   Teriyaki=×2 [+ teriyakisås 50 g, edamame 80 g] {Värm teriyakisåsen i basen 1 min så tjocknar den och fastnar.}
+split-kram spis 40+10  | Smaksätt den krämiga basen | - | 
+   Toscansk kvarg=×2 [+ kvarg 80 g, soltorkade tomater 30 g, tomatpuré 20 g, parmesan 16 g, majsstärkelse 2 g, italienska örter 1 tsk, vitlökspulver 2 krm, chiliflakes 2 krm] {Rör ut kvargen med majsstärkelsen först, då skär den sig inte i mikron. Rör om halvvägs.}
+sauce spis 40+10  | Koka ihop såserna | - | 
+   Filips Kebabgryta=×2 [+ mini fraiche 80 g, grekisk yoghurt 40 g, röd kebabsås 20 g, kebabkrydda 4 krm, spiskummin 2 krm] {Rör ner mejeriet på låg värme, sist.}
+portion klar 50+15  | Kyl ner och portionera | - | Låt allt svalna först. Spenat, haricots verts och broccoli läggs frysta direkt i lådan. Toppings i separata burkar.
+   Chili con carne=×2 [Röda linser ca 125 g · Pasta ca 160 g · Spenat (fryst) 50 g · Såsen delad på 2] {Egen burk: gräddfil 30 g, koriander}
+   Toscansk kvarg=×2 [Pulled fläskkarré ca 135 g · Potatismos ca 180 g · Champinjoner ca 70 g · Såsen delad på 2] {Egen burk: färsk basilika}
+   Filips Kebabgryta=×2 [Nötfärs ca 130 g · Ris ca 170 g · Spenat (fryst) 50 g · Såsen delad på 2] {Egen burk: färsk spenat}
+   Dill och citron=×2 [Lax ca 130 g · Potatisklyftor ca 180 g · Haricots verts (fryst) 110 g] {Egen burk: lättkesella 50 g, lätt crème fraiche 20 g, senap 5 g, citron, saft och zest 0,5 st, färsk dill 1 msk, riven pepparrot 1 tsk, rödlök}
+   Teriyaki=×2 [Kyckling ca 130 g · Ris ca 170 g · Broccoli (fryst) 140 g · Smaksättningen delad på 2] {Egen burk: sesamfrön 3 g, salladslök 1 st}
+store klar 65+0  | Märk och kyl | - | Håller 3–4 dagar i kylen, lax 2 dagar. Ät de känsligaste först och frys resten.
+recept Chili con carne med röda linser ×2 hue 215
+   Röda linser=100 g [ca 250 g tillagat]
+   Pasta=140 g [ca 320 g tillagat]
+   Spenat (fryst)=100 g
+   Krossade tomater=200 g [bas]
+   Tomatpuré=16 g [bas]
+   Gul lök=60 g [bas]
+   Vitlöksklyfta=1 st [bas]
+   Kidneybönor=100 g
+   Paprikapulver=1,5 tsk
+   Spiskummin=1 tsk
+   Oregano=0,5 tsk
+   Cayennepeppar=2 krm
+   Buljongtärning=1 st
+   Gräddfil=60 g [egen burk]
+   Koriander=efter smak [egen burk]
+recept Toscansk kvarg med pulled fläskkarré ×2 hue 65
+   Pulled fläskkarré=380 g [ca 270 g tillagat]
+   Potatismos=450 g [ca 360 g tillagat]
+   Champinjoner=240 g [ca 140 g tillagat]
+   Olja=6 g
+   Philadelphia light=50 g [bas]
+   Vitlöksklyfta=1 st [bas]
+   Kvarg=80 g
+   Soltorkade tomater=30 g
+   Tomatpuré=20 g
+   Parmesan=16 g
+   Majsstärkelse=2 g
+   Italienska örter=1 tsk
+   Vitlökspulver=2 krm
+   Chiliflakes=2 krm
+   Färsk basilika=efter smak [egen burk]
+recept Filips Kebabgryta med nötfärs ×2 hue 138
+   Nötfärs=350 g [ca 260 g tillagat]
+   Olja=9 g
+   Ris=120 g [ca 340 g tillagat]
+   Spenat (fryst)=100 g
+   Mini fraiche=80 g
+   Grekisk yoghurt=40 g
+   Röd kebabsås=20 g
+   Kebabkrydda=4 krm
+   Spiskummin=2 krm
+   Färsk spenat=efter smak [egen burk]
+recept Dill och citron med lax ×2 hue 33
+   Lax=300 g [ca 260 g tillagat]
+   Potatisklyftor=450 g [ca 360 g tillagat]
+   Olja=12 g
+   Haricots verts (fryst)=220 g
+   Lättkesella=100 g [egen burk]
+   Lätt crème fraiche=40 g [egen burk]
+   Senap=10 g [egen burk]
+   Citron, saft och zest=1 st [egen burk]
+   Färsk dill=2 msk [egen burk]
+   Riven pepparrot=2 tsk [egen burk]
+   Rödlök=efter smak [egen burk]
+recept Teriyaki med kyckling ×2 hue 163
+   Kyckling=350 g [ca 260 g tillagat]
+   Ris=120 g [ca 340 g tillagat]
+   Broccoli (fryst)=280 g
+   Japansk soja=16 g [bas]
+   Riven ingefära=1 tsk [bas]
+   Vitlöksklyfta=1 st [bas]
+   Teriyakisås=50 g
+   Edamame=80 g
+   Sesamfrön=6 g [egen burk]
+   Salladslök=2 st [egen burk]
+# B
+{"trays":3,"total":1145,"warnings":[]}
+sv-flaskkarre sousvide -1080+1080 74 | Pulled fläskkarré i sous vide | Pulled fläskkarré i sous vide | Sätt badet på 74 °C. Gnid in kryddorna och vitlöken, lägg karrén i påse med juicen. 74 °C i 12–24 h.
+   Fläskkarré=1 kg
+   Spiskummin=1 tsk
+   Oregano=1,5 tsk
+   Vitlöksklyftor, pressade=2 st
+   Salt=1,5 tsk
+   Apelsinjuice=90 ml
+prep prep -30+30  | Förbered allt | - | Sätt ugnen på 200 °C varmluft. Det som ska in i ugnen: blanda med olja, salt, peppar och vitlökspulver. Ingen smaksättning ännu.
+   Halloumi=240 g {Skär i 2 cm tärningar}
+   Sötpotatis=440 g {Skala och skär i 2 cm tärningar}
+   Potatisklyftor=450 g {Dela i klyftor}
+   Vitkål=250 g {Skär i klyftor}
+   Broccoli=280 g {Dela i buketter}
+   Gul lök=120 g [tomatbas] {Finhacka}
+   Vitlök=2 st [tomatbas] {Hacka}
+   Ingefära=1 tsk [Keema matar] {Riv}
+   Koriander=efter smak [Keema matar, Chili con carne] {Hacka}
+   Gurka=30 g [Shawarma] {Tärna}
+   Persilja=efter smak [Shawarma] {Hacka}
+carb-potatis ugn 0+35 200 | Potatisklyftor in | Potatisklyftor i ugnen | Ett lager på bakplåtspapper. Vänd halvvägs.
+carb-sotpotatis ugn 5+30 200 | Sötpotatis in | Sötpotatis i ugnen | Ett lager på bakplåtspapper. Vänd halvvägs.
+prot-kyckling-hel ugn 10+25 200 | Kyckling, hela filéer in | Kyckling, hela filéer i ugnen | Hela filéer på plåt, ca 22–25 min till 72 °C i mitten. Låt vila 5 min och skiva när du portionerar.
+veg ugn 10+25 200 | Grönsaker in | Grönsaker i ugnen | Vitkål och broccoli på egen plåt.
+prot-halloumi ugn 20+15 200 | Halloumi in | Halloumi i ugnen | Tärningar på bakplåtspapper, ca 15 min tills kanterna är gyllene. Värm kort i lådan, den blir seg av mycket värme.
+base-tomat spis 20+15  | Koka tomatbasen för 4 lådor | Tomatbas puttrar | Fräs löken mjuk, sedan vitlök och tomatpuré 1 min tills purén mörknar. Häll i tomaterna och puttra 15 min.
+   Krossade tomater=400 g
+   Tomatpuré=30 g
+   Gul lök=120 g
+   Vitlöksklyfta=2 st
+stove spis 30+5  | Koka couscous | Couscous på spisen | Couscous: häll över kokande vatten, 5 min.
+base-rub spis 34+1  | Rosta rubben för 2 lådor | - | Rosta kryddorna torrt i en panna 30 s tills de doftar.
+   Spiskummin=1 tsk
+   Rökt paprikapulver=1 tsk
+   Vitlökspulver=2 krm
+sear-flaskkarre spis 35+5  | Bryn pulled fläskkarré | - | Dra isär och stek i het panna.
+out ugn 35+5  | Ta ut allt | - | Låt ånga av.
+split-tomat spis 40+10  | Dela tomatbasen i 2 | - | 
+   Keema matar=×2 [2 av 4 lådors bas · + matlagningsgrädde 80 ml, garam masala 1 tsk, spiskummin 0,5 tsk, gurkmeja 2 krm, riven ingefära 1 tsk] {Fräs ingefära och kryddorna 30 s, sedan basen och sist grädden.}
+   Chili con carne=×2 [2 av 4 lådors bas · + kidneybönor 100 g, paprikapulver 1,5 tsk, spiskummin 1 tsk, oregano 0,5 tsk, cayennepeppar 2 krm, buljongtärning 1 st] {Rosta kryddorna 30 s i lite olja innan din del av basen går i.}
+split-rub spis 40+10  | Smaksätt rubben | - | 
+   Shawarma=×2 [+ citronsaft 1,5 msk, olivolja 6 g, mald koriander 1 tsk, kardemumma 2 krm, cayennepeppar 1 krm] {Tahini och citron stelnar först, rör i en tesked vatten tills det blir slätt och vänd sist ner yoghurten.}
+portion klar 50+15  | Kyl ner och portionera | - | Låt allt svalna först. Wokgrönsaker läggs frysta direkt i lådan. Toppings i separata burkar.
+   Keema matar=×2 [Kyckling ca 130 g · Couscous ca 150 g · Vitkål ca 90 g · Såsen delad på 2] {Egen burk: turkisk yoghurt 30 g, koriander}
+   Chili con carne=×2 [Pulled fläskkarré ca 135 g · Sötpotatis ca 175 g · Broccoli ca 100 g · Såsen delad på 2] {Egen burk: gräddfil 30 g, koriander}
+   Shawarma=×2 [Halloumi ca 110 g · Potatisklyftor ca 180 g · Wokgrönsaker (fryst) 90 g · Smaksättningen delad på 2] {Egen burk: grekisk yoghurt 40 g, tahini 8 g, gurka 15 g, persilja}
+store klar 65+0  | Märk och kyl | - | Håller 3–4 dagar i kylen, lax 2 dagar. Ät de känsligaste först och frys resten.
+recept Keema matar med kyckling ×2 hue 183
+   Kyckling=350 g [ca 260 g tillagat]
+   Olja=9 g
+   Couscous=120 g [ca 300 g tillagat]
+   Vitkål=250 g [ca 180 g tillagat]
+   Olja=7 g
+   Krossade tomater=200 g [bas]
+   Tomatpuré=16 g [bas]
+   Gul lök=60 g [bas]
+   Vitlöksklyfta=1 st [bas]
+   Matlagningsgrädde=80 ml
+   Garam masala=1 tsk
+   Spiskummin=0,5 tsk
+   Gurkmeja=2 krm
+   Riven ingefära=1 tsk
+   Turkisk yoghurt=60 g [egen burk]
+   Koriander=efter smak [egen burk]
+recept Chili con carne med pulled fläskkarré ×2 hue 215
+   Pulled fläskkarré=380 g [ca 270 g tillagat]
+   Sötpotatis=440 g [ca 350 g tillagat]
+   Olja=11 g
+   Broccoli=280 g [ca 200 g tillagat]
+   Olja=7 g
+   Krossade tomater=200 g [bas]
+   Tomatpuré=16 g [bas]
+   Gul lök=60 g [bas]
+   Vitlöksklyfta=1 st [bas]
+   Kidneybönor=100 g
+   Paprikapulver=1,5 tsk
+   Spiskummin=1 tsk
+   Oregano=0,5 tsk
+   Cayennepeppar=2 krm
+   Buljongtärning=1 st
+   Gräddfil=60 g [egen burk]
+   Koriander=efter smak [egen burk]
+recept Shawarma med halloumi ×2 hue 170
+   Halloumi=240 g [ca 220 g tillagat]
+   Olja=6 g
+   Potatisklyftor=450 g [ca 360 g tillagat]
+   Olja=12 g
+   Wokgrönsaker (fryst)=180 g
+   Spiskummin=1 tsk [bas]
+   Rökt paprikapulver=1 tsk [bas]
+   Vitlökspulver=2 krm [bas]
+   Citronsaft=1,5 msk
+   Olivolja=6 g
+   Mald koriander=1 tsk
+   Kardemumma=2 krm
+   Cayennepeppar=1 krm
+   Grekisk yoghurt=80 g [egen burk]
+   Tahini=16 g [egen burk]
+   Gurka=30 g [egen burk]
+   Persilja=efter smak [egen burk]
