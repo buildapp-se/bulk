@@ -48,4 +48,9 @@ PR #1 (`claude/forbattringar-2026-11-04`), väntar på Patriks genomklickning.
 - [x] (2026-11-24) `[P2]` Tangentbord: lådrutorna gick inte att öppna, arket tog inte fokus, proteinkorten hade dubbla tabbstopp (`6a8b229`, Playwright 390 och 1440 px).
 - [x] (2026-11-24) `[P2]` Tillagning med tom plan visade ett schema för ingenting; ofullständiga lådor syntes inte där. Plural för 1 låda, smak och plåt (`c9f7e2a`, check + Playwright).
 - [x] (2026-11-24) `[P2]` Offline: bara besökta sidor öppnades, djuplänk och appens länkar till Tillagning visade Välj (`d8dbd11`, Playwright offline lokalt).
-- `[P3]` Planen synkas inte mellan två flikar (eller PWA och flik) samtidigt: `store.ts` lyssnar inte på `storage`-händelsen, så den flik som skriver sist skriver över den andras ändringar. Sett i koden, inte återskapat.
+- [x] (2026-11-24) `[P3]` Planen synkades inte mellan två flikar (eller PWA och flik): den flik som skrev sist skrev över den andras ändringar. `store.ts` lyssnar nu på `storage`-händelsen (`3f9342b`, check + Playwright två flikar).
+
+## Buggjakt 2, 2026-11-24
+
+- [x] (2026-11-24) `[P1]` En sparad plan som nämner ett kit, protein, metod, kolhydrat, grönsak eller region som en senare deploy tagit bort kraschade alla fyra sidor tills webbplatsdata rensades (återskapat live med sju seedade planer). `migratePlan` rensar okända id, en borttagen metod blir standardmetoden (`3f9342b`, check fäller den gamla koden).
+- [x] (2026-11-24) `[P2]` Tillagning gav React-fel #418 (hydrering) vid varje besök en annan dag än bygget: etiketternas datum räknades vid exporten (`0314a26`, Playwright i Stockholms och New Yorks tidszon).

@@ -8,6 +8,14 @@ blockers: []
 ---
 # Handoff
 
+## 2026-11-24, buggjakt 2 (gren `hunt2/2026-11-24`, worktree `C:/dev/_wt/bulk-1124k`)
+
+Det buggjakt 1 inte gick: andra besöket med sparad plan efter att datat ändrats, två flikar samtidigt, 404, sällsynta flöden (målläge Av/Avancerad, Frysta, alla fyra regioner, Kopiera lista, Klart kl, Förra tillagningen, Rensa allt och sidorna efteråt), länkar, bilder, titlar, decimalpunkt och engelska i texten. Playwright-skript utanför repot (`aifabriken-lanes/hunt2-bulk/`), 390 och 1440 px.
+1. `3f9342b` En sparad plan som nämner ett kit, protein, metod, val per kit eller låda eller region som datat inte längre har kraschade alla fyra sidor (`byId` kastar) tills webbplatsdata rensades. Återskapat live med sju seedade planer (21 av 28 sidvisningar föll). `migratePlan` rensar okända id, en borttagen metod blir proteinets standard. Samma commit: planen och tillagningen följer andra flikar via `storage`-händelsen (P3 från buggjakt 1; live visade flik två fel kcal efter en ändring i flik ett). Lokalt bygge: 28 av 28 sidvisningar utan fel, två flikar visar samma header. Check fäller den gamla koden.
+2. `0314a26` Tillagning gav React-fel #418 (hydrering) vid varje besök en annan dag än bygget: etiketternas "Lagad … · ät senast …" räknades med `new Date()` vid exporten. Nu från `useNow` (0 på servern). Lokalt bygge i New Yorks tidszon (där det redan var 24 nov): inget fel, etiketten visar besökarens datum.
+
+Inga fynd: titlar på alla sidor och 404 rätt, 0 trasiga bilder, 0 sidledsscroll, interna länkar och manifestets ikoner svarar 200, enda externa länken är mailto. Decimalpunkten i "CC BY 4.0" är licensnamnet. Inte testat: riktig telefon, service worker-uppdatering mellan två deployer, långsamt nät (sidorna är network-first utan tidsgräns, så ett nät som hänger väntar innan cachen används).
+
 ## 2026-11-24, buggjakt (gren `hunt/2026-11-24`, worktree `C:/dev/_wt/bulk-1124h`)
 
 Användarflöden genomgångna i Playwright (egen headless Chromium) på 390 och 1440 px: alla fyra sidor, tangentbord, tom och halvfylld plan, timer + omladdning, bakåtknapp, offline. Tre fixar, alla buggar återskapade live före fixen och verifierade på ett lokalt bygge efter:
@@ -27,7 +35,7 @@ Klart:
 
 check, typecheck och build gröna. prices.yml körd med workflow_dispatch (körning 45487637905, grön, commit `b17b108` Priser 2026-11-24): runnern får 6 Lidl-erbjudanden (gurka 35,36 kr/kg, röd paprika, gul lök, kycklingfilé, Kesella, apelsinjuice), ICA fortfarande 403. Deployad; live på https://buildapp.se/bulk/prepp/ visar Lidls gurka, lök och paprika i Veckans priser (Playwright, 1280 px).
 
-## 2026-11-24, djuppass (gren `deep/2026-11-24`, worktree `C:devulk-deep-1124`)
+## 2026-11-24, djuppass (gren `deep/2026-11-24`, worktree `C:/dev/bulk-deep-1124`)
 
 Klart, pushat till main:
 1. `4ca382f` Bugg: frysta grönsaker fick rostningens utbyte i portionering och recept (broccoli 140 g som "ca 100 g"). Frysta läggs i lådan som de är, så de saknar nu tillagad vikt. Check fäller den gamla koden.

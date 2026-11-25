@@ -53,7 +53,7 @@ graph LR
 
 - `src/lib/data.ts`: all matdata. Näring per 100 g **rå** vikt, förpackningsstorlekar, metoder, smakkit.
 - `src/lib/calc.ts`: ren motor. Plan in, lådor/näring/inköp/schema ut.
-- `src/lib/store.ts`: localStorage + `useSyncExternalStore`. Nyckeln är `bulk:plan:v2` (lagringsversion: byts bara vid ett brott ingen migrering klarar, eftersom det tappar alla sparade planer). `Plan.v` är schemat i den och migreras vid inläsning (`migratePlan` i calc.ts).
+- `src/lib/store.ts`: localStorage + `useSyncExternalStore`. Nyckeln är `bulk:plan:v2` (lagringsversion: byts bara vid ett brott ingen migrering klarar, eftersom det tappar alla sparade planer). `Plan.v` är schemat i den och migreras vid inläsning (`migratePlan` i calc.ts), som också tar bort id som datat inte längre har (2026-11-24). Planen och tillagningen följer andra flikar via `storage`-händelsen.
 - `src/i18n/sv.ts`: all UI-text. Matnamn ligger i data.ts.
 - `scripts/check.ts`: handräknade förväntade värden + drift mot grammats `nutrients.json` (bara lokalt, där `../recept` finns).
 
