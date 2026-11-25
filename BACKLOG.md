@@ -50,6 +50,15 @@ PR #1 (`claude/forbattringar-2026-11-04`), väntar på Patriks genomklickning.
 - [x] (2026-11-24) `[P2]` Offline: bara besökta sidor öppnades, djuplänk och appens länkar till Tillagning visade Välj (`d8dbd11`, Playwright offline lokalt).
 - [x] (2026-11-24) `[P3]` Planen synkades inte mellan två flikar (eller PWA och flik): den flik som skrev sist skrev över den andras ändringar. `store.ts` lyssnar nu på `storage`-händelsen (`3f9342b`, check + Playwright två flikar).
 
+## Fart, tillgänglighet och metadata 2026-11-25
+
+Mätt live i headless Chromium, 390 px med 4x CPU och Slow 4G samt 1440 px, före och efter deploy. axe 4.14.0: 0 fel på alla fyra sidor i båda bredderna, före och efter.
+
+- [x] (2026-11-25) `[P2]` Kitbilderna var 640 px (ca 140 KB) överallt men visas mest i 34–72 px. 256 px-varianter i `public/kits/256/` via `srcset` (`3e59a1e`): överfört Välj 1 760 -> 574 KB på mobil, 4 024 -> 982 KB på dator; Prepp 2 844 -> 757 och 3 457 -> 895 KB.
+- [x] (2026-11-25) `[P2]` Layoutskifte i Tillagning: klockpanelen monterades efter hydreringen och flyttade sidan 121 px (`9f461a9`): CLS 0,055 -> 0,0006 på 390 px, 0,025 -> 0,0001 på 1440 px.
+- [x] (2026-11-25) `[P3]` Metadata: alla sidor delade beskrivning och og:url, ingen hade canonical (`ab7133e`): nu egna per sida, kontrollerat live.
+- `[P3]` Hashade filer (`_next/static`) får `max-age=14400` från GitHub Pages och Cloudflare, inte `immutable`. Kräver en cacheregel i Cloudflare-zonen (inställningsändring, Patriks beslut). Återbesök går ändå via service workerns cache.
+
 ## Buggjakt 2, 2026-11-24
 
 - [x] (2026-11-24) `[P1]` En sparad plan som nämner ett kit, protein, metod, kolhydrat, grönsak eller region som en senare deploy tagit bort kraschade alla fyra sidor tills webbplatsdata rensades (återskapat live med sju seedade planer). `migratePlan` rensar okända id, en borttagen metod blir standardmetoden (`3f9342b`, check fäller den gamla koden).

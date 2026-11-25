@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-11-24
+reviewedAt: 2026-11-25
 schemaVersion: 1
 status: active
 currentGoal: "Bulk är live på buildapp.se/bulk: matlådeplanering med smakkit, inköp, tillagning och veckans priser i Umeå."
@@ -7,6 +7,15 @@ nextAction: "BACKLOG P1, test på riktig telefon. Filips-kiten ska provlagas och
 blockers: []
 ---
 # Handoff
+
+## 2026-11-25, fart, tillgänglighet och metadata (gren `speed/2026-11-25`, worktree `C:/dev/_wt/bulk-1125s`), klar
+
+Playwright-skript utanför repot (`aifabriken-lanes/speed-bulk/`), live före och efter, 390 px med 4x CPU och Slow 4G samt 1440 px, axe-core 4.14.0 från aifabriken.
+1. `3e59a1e` Kitbilder i 256 px via `srcset` (640 px behålls för de stora i Ingredienser och lådans ark på telefon). Överfört live: Välj 1 760 -> 574 KB mobil, 4 024 -> 982 KB dator; Prepp 2 844 -> 757 och 3 457 -> 895 KB; Ingredienser dator 786 -> 436 KB. `scripts/kit-art.ts` skriver båda storlekarna.
+2. `9f461a9` Tillagnings klockpanel renderas osynlig före hydreringen i stället för att saknas: CLS 0,055 -> 0,0006 (390 px), 0,025 -> 0,0001 (1440 px).
+3. `ab7133e` Egen beskrivning, canonical och og:url per sida (`src/app/meta.ts`).
+
+LCP mobil 2,2–2,4 -> 2,1–2,3 s (texten, nätet är golvet), dator under 0,3 s. axe 0 fel på alla fyra sidor i båda bredderna, före och efter. Deploy körning 45522546331, försök 4 grönt (1–3 föll på GitHubs artefakt-API som förut). Kvar: hashade filer har `max-age=14400`, inte `immutable` (Cloudflare-regel, Patriks beslut, BACKLOG P3).
 
 ## 2026-11-24, buggjakt 2 (gren `hunt2/2026-11-24`, worktree `C:/dev/_wt/bulk-1124k`)
 
