@@ -64,6 +64,13 @@ const v2 = migratePlan(v1);
 eq('migrate v1', [v2.v, v2.overrides], [2, { 'grekisk:0': { carb: 'pasta' } }]);
 eq('migrate keeps the box', resolveBoxes(v2)[3].carb?.id, 'pasta');
 eq('migrate leaves v2 alone', migratePlan(pasta), pasta);
+// A plan saved before a deploy removed a kit, protein, method, carb, veg or region crashed every page (byId throws).
+const stale = { ...DEFAULT_PLAN, kits: ['teriyaki', 'borta'], proteins: [{ id: 'kyckling', method: 'airfryer' as 'ugn' }, { id: 'struts', method: 'ugn' as const }],
+  kitProtein: { teriyaki: 'struts', borta: 'kyckling', grekisk: 'lax' }, kitCarb: { teriyaki: 'x' }, kitVeg: {}, region: 'Luleå' as 'Umeå',
+  overrides: { 'teriyaki:0': { carb: 'x', veg: null, kit: 'grekisk' } } };
+const fixed = migratePlan(stale);
+eq('migrate drops unknown ids', [fixed.kits, fixed.proteins, fixed.kitProtein, fixed.kitCarb, fixed.region, fixed.overrides, resolveBoxes(fixed).length],
+  [['teriyaki'], [{ id: 'kyckling', method: 'ugn' }], { grekisk: 'lax' }, {}, 'Umeå', { 'teriyaki:0': { veg: null, kit: 'grekisk' } }, 8]);
 
 // One box: kyckling 175 g (ugn) + ris 60 g + broccoli 140 g rostad + teriyaki kit.
 // Teriyaki sits on the asia base: teriyakisås 25 g + base soja 8 g.
@@ -614,9 +621,17 @@ const A = await import('../src/lib/actions.ts');
 const P = () => S.planStore.get();
 eq('store: v1 migrates on load', [P().v, P().overrides], [2, { 'grekisk:0': { carb: 'pasta' } }]);
 eq('store: bad JSON keeps defaults', S.cookStore.get() === S.cookStore.initial, true);
-// Storage is read once: a later change in another tab does not leak in until reload.
+// Storage is read once: a later change does not leak in by itself...
 mem.set(PKEY, JSON.stringify({ ...DEFAULT_PLAN, boxes: 12 }));
 eq('store: read once', P().boxes, 8);
+// ...until the storage event (another tab or the PWA saved): then it reloads and re-renders; other keys are ignored.
+let heard = 0;
+const off = S.planStore.subscribe(() => heard++);
+S.planStore.onStorage({ key: 'other' } as StorageEvent);
+S.planStore.onStorage({ key: PKEY } as StorageEvent);
+off();
+eq('store: other tab saved', [P().boxes, heard], [12, 1]);
+mem.set(PKEY, JSON.stringify({ ...DEFAULT_PLAN, boxes: 8 })); S.planStore.onStorage({ key: PKEY } as StorageEvent);
 let pings = 0;
 const unsub = S.planStore.subscribe(() => pings++);
 A.setBoxes(0); const lo = P().boxes;

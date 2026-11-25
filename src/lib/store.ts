@@ -29,6 +29,14 @@ function createStore<T extends object>(key: string, initial: T, migrate: (s: T) 
       if (raw) state = migrate({ ...initial, ...(JSON.parse(raw) as Partial<T>) });
     } catch { /* private mode, bad JSON or a plan that no longer resolves: keep defaults */ }
   };
+  // Another tab (or the installed PWA) saved: take its state, or the tab that writes last drops the other's changes.
+  const onStorage = (e: StorageEvent) => {
+    if (e.key !== key && e.key !== null) return; // null = storage cleared
+    loaded = false;
+    state = initial;
+    load();
+    subs.forEach((f) => f());
+  };
   return {
     get: () => (load(), state),
     set(next: T | ((s: T) => T)) {
@@ -37,7 +45,12 @@ function createStore<T extends object>(key: string, initial: T, migrate: (s: T) 
       try { localStorage.setItem(key, JSON.stringify(state)); } catch { /* quota/private mode */ }
       subs.forEach((f) => f());
     },
-    subscribe(f: () => void) { subs.add(f); return () => { subs.delete(f); }; },
+    subscribe(f: () => void) {
+      if (!subs.size) window.addEventListener?.('storage', onStorage);
+      subs.add(f);
+      return () => { subs.delete(f); if (!subs.size) window.removeEventListener?.('storage', onStorage); };
+    },
+    onStorage,
     initial,
   };
 }

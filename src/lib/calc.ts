@@ -4,7 +4,7 @@ import {
   type Base, type Carb, type IngrId, type Kit, type KitItem, type Macro, type MethodId, type Protein, type Unit, type Veg,
 } from './data.ts';
 import { noun } from './prep.ts';
-import type { Region } from './price.ts';
+import { REGIONS, type Region } from './price.ts';
 
 // ---------- Plan (persisted state) ----------
 
@@ -118,9 +118,32 @@ export function resolveBoxes(p: Plan): Box[] {
  * so the index still points at the box it was made on: map it to that box's id.
  */
 export function migratePlan(p: Plan | (Omit<Plan, 'v'> & { v: 1 })): Plan {
-  if (p.v === 2) return p;
-  const boxes = resolveBoxes({ ...p, v: 2, overrides: {} });
-  return { ...p, v: 2, overrides: Object.fromEntries(Object.entries(p.overrides).filter(([i]) => boxes[+i]).map(([i, o]) => [boxes[+i].id, o])) };
+  if (p.v === 2) return dropUnknown(p);
+  const q = dropUnknown({ ...p, v: 2 });
+  const boxes = resolveBoxes({ ...q, overrides: {} });
+  return { ...q, overrides: Object.fromEntries(Object.entries(q.overrides).filter(([i]) => boxes[+i]).map(([i, o]) => [boxes[+i].id, o])) };
+}
+
+/** A saved plan can name a kit, protein, method, carb, veg or region a later deploy removed; byId throws on those and
+ *  every page crashed on load until site data was cleared. Unknown ids go, a removed method falls back to the default. */
+function dropUnknown(p: Plan): Plan {
+  const LIST = { protein: PROTEINS, kit: KITS, carb: CARBS, veg: VEGS } as const;
+  const has = (s: Slot, id: string) => LIST[s].some((x) => x.id === id);
+  const pins = (r: Record<string, string>, s: Slot) => Object.fromEntries(Object.entries(r).filter(([k, v]) => has('kit', k) && has(s, v)));
+  return {
+    ...p,
+    kits: p.kits.filter((id) => has('kit', id)),
+    proteins: p.proteins.filter((x) => has('protein', x.id)).map((x) => {
+      const pr = byId(PROTEINS, x.id);
+      return pr.methods[x.method] ? x : { id: x.id, method: DEFAULT_METHOD(pr) };
+    }),
+    kitProtein: pins(p.kitProtein, 'protein'),
+    kitCarb: pins(p.kitCarb, 'carb'),
+    kitVeg: pins(p.kitVeg, 'veg'),
+    region: REGIONS.includes(p.region) ? p.region : DEFAULT_PLAN.region,
+    overrides: Object.fromEntries(Object.entries(p.overrides).map(([id, o]) =>
+      [id, Object.fromEntries(Object.entries(o).filter(([s, v]) => v == null || has(s as Slot, v)))])),
+  };
 }
 
 /** Drop overrides whose box no longer exists (fewer boxes, kit removed), so a box that comes back starts clean. */
