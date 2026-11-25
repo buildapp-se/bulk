@@ -192,7 +192,7 @@ function Row({ r, on, onToggle }: { r: ShopRow; on: boolean; onToggle: () => voi
   const main = r.packs.length ? fmtPacks(r.packs) : fmtQty(r.need, r.u);
   const sub = [r.packs.length ? t.ing.need(fmtQty(r.need, r.u)) : '', r.cooked ? t.ing.cooked(fmtG(r.cooked)) : ''].filter(Boolean).join(' · ');
   return (
-    <button onClick={onToggle} className="flex items-center gap-3 border-b border-line py-2.5 text-left">
+    <button role="checkbox" aria-checked={on} onClick={onToggle} className="flex items-center gap-3 border-b border-line py-2.5 text-left">
       <Check on={on} />
       <span className={`flex flex-1 flex-col transition-opacity ${on ? 'opacity-40' : ''}`}>
         <span className="relative w-fit">
