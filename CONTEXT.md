@@ -42,7 +42,7 @@ graph LR
 - Animation: React 19 `<ViewTransition>` för riktade sidbyten, Motion 14 (`motion/react`) för springs, layout-animationer, drag.
 - Stil: Tailwind 4, tokens i `src/app/globals.css` (ljust + mörkt läge).
 - Kod: TypeScript strict. `src/lib/*.ts` importerar med `.ts`-ändelse så att `node scripts/check.ts` kör samma kod som appen.
-- PWA: `src/app/manifest.ts`, `public/sw.js` (network-first för sidor, cache-first för hashade assets, alla fyra sidor och deras assets cachas vid install så att appen öppnas offline efter första besöket, 2026-11-24), ikoner från `scripts/icons.mjs`.
+- PWA: `src/app/manifest.ts`, `public/sw.js` (network-first för sidor, cache-first för hashade assets, alla fyra sidor och deras assets cachas vid install så att appen öppnas offline efter första besöket, 2026-11-24; en cache per deploy: sw.js ändras inte mellan deployer, så en sida vars HTML nämner en fil som cachen saknar bygger om cachen som vid install och raderar den gamla, 2026-11-25), ikoner från `scripts/icons.mjs`.
 - Data: planen i localStorage (`src/lib/store.ts`), matdata och priser byggs in från `src/lib/`
 - Priser: `scripts/prices.ts` körs av `.github/workflows/prices.yml` måndag och torsdag 04:00 UTC och skriver `src/lib/prices.json`
 - Tester: `npm run check` (`scripts/check.ts`) och `npm run typecheck`

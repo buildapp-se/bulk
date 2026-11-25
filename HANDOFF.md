@@ -8,6 +8,10 @@ blockers: []
 ---
 # Handoff
 
+## 2026-11-25, P3-pass (gren `p3/2026-11-25`, worktree `C:/dev/_wt/bulk-1125p`), klar
+
+Öppna P3: bara service workerns cache gick att bygga utan Patrik. Kalla lådor och airfryer kräver recept- och schemabeslut, fler städer väntar på att någon hör av sig (Patriks beslut), Next-buggen upstream är publicering utanför egna projekt, @types/node 26 väntar på Node 26 i CI, tryckytor, CSP-meta och `immutable`-cache står som Patriks beslut.
+1. `1289aa4` `sw.js` hade en cache (`bulk-v1`) som behöll varje deploys hashade filer. Nu en cache per deploy (`bulk-<tid>`): en sidladdning vars HTML nämner en fil som cachen saknar bygger om cachen som vid install (filer som redan finns kopieras) och raderar den gamla. Första besöket efter denna deploy raderar `bulk-v1` eftersom `sw.js` ändrats. Playwright-skript `aifabriken-lanes/p3-bulk/sw-prune.mjs` mot lokala byggen, gammalt bygge -> A -> B (samma sw.js, nya hashar) -> A: en cache, 0 skript från andra byggen, alla fyra sidor och länken till Tillagning offline efteråt, planen kvar. Samma byggen med gamla `sw.js`: `bulk-v1` kvar med 4 skript från andra byggen (FAIL 7).
 ## 2026-11-25, scenariojakt (gren `scen/2026-11-25`, worktree `C:/dev/_wt/bulk-1125c`), klar
 
 Sex flerstegsscenarier i Playwright (skript utanför repot, `aifabriken-lanes/scen-bulk/`, `s1-week` till `s6-overnight`) mot lokala byggen före och efter: en vecka hopträngd (planera, ändra, ångra kit, bocka, timer, en vecka senare, Rensa allt, bygg om), två flikar, 40 lådor med alla 32 kit och alla proteiner, gårdagens bygge med service worker till dagens, bredd 320 till 1920 px med arket, receptet och en timer öppna, flik öppen över natten. Inloggning, import och export finns inte i Bulk. Varje fix fälls av sitt skript på det gamla bygget och klarar det nya.
