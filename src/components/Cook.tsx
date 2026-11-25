@@ -105,8 +105,9 @@ function CookPlan({ sched, incomplete }: { sched: ReturnType<typeof useBatch>['s
       </div>
       <div className="flex flex-col gap-2"><div className="label">{t.sec.boxes}</div><BoxCount /></div>
 
-      {now > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-surface p-4">
+      {/* Hidden, not absent, until the clock is known (server and hydration render now = 0): mounting it after
+          hydration pushed the page down 121 px (CLS 0,055 at 390 px). */}
+      <div aria-hidden={now === 0 || undefined} className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-surface p-4 ${now === 0 ? 'invisible' : ''}`}>
           <div className="flex flex-col gap-1.5">
             <span className="font-mono text-[34px] font-semibold leading-none tabular-nums"><span className="sr-only">{t.cook.nowLabel} </span>{fmtAt(now, now).time}</span>
             <span className={`text-[13px] ${late ? 'text-warn' : 'text-muted'}`}>
@@ -124,8 +125,7 @@ function CookPlan({ sched, incomplete }: { sched: ReturnType<typeof useBatch>['s
               )}
             </div>
           )}
-        </div>
-      )}
+      </div>
 
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between text-[13px] text-muted">
