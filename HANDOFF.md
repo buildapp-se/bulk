@@ -8,6 +8,16 @@ blockers: []
 ---
 # Handoff
 
+## 2026-11-25, scenariojakt (gren `scen/2026-11-25`, worktree `C:/dev/_wt/bulk-1125c`), klar
+
+Sex flerstegsscenarier i Playwright (skript utanför repot, `aifabriken-lanes/scen-bulk/`, `s1-week` till `s6-overnight`) mot lokala byggen före och efter: en vecka hopträngd (planera, ändra, ångra kit, bocka, timer, en vecka senare, Rensa allt, bygg om), två flikar, 40 lådor med alla 32 kit och alla proteiner, gårdagens bygge med service worker till dagens, bredd 320 till 1920 px med arket, receptet och en timer öppna, flik öppen över natten. Inloggning, import och export finns inte i Bulk. Varje fix fälls av sitt skript på det gamla bygget och klarar det nya.
+1. `6ab61d3` En timer som ringt ut och aldrig kvitterats ringde i dockan på alla sidor för alltid. Dockan släpper klockor som ringt ut för över 12 h sedan (`forgotten` i clock.ts, samma gräns som "Förra tillagningen"), även i en öppen flik utan omladdning. Kontroll i check.
+2. `2f1e1d3` Inköpslistans rader har `role=checkbox` och `aria-checked`.
+3. `039c89c` Stegflikarna fick 8 px sidledsscroll på 320 px på alla sidor; smalare utfyllnad under 360 px.
+4. `f3154f5` Avbockade inköpsrader föll på kontrast (axe 3 noder när en rad är bockad, även före). `text-muted` i stället för `opacity-40`; axe 0 på alla fyra sidor i 320, 390 och 1440 px, ljust och mörkt.
+
+Batch 8:s kodposter: typsnitten är redan självhostade via `next/font/google`, övriga parkerade poster (CSP-meta, `immutable`-cache, tryckytor) kräver Patriks beslut och är orörda. Ny P3: service workerns cache rensas aldrig.
+
 ## 2026-11-25, fart, tillgänglighet och metadata (gren `speed/2026-11-25`, worktree `C:/dev/_wt/bulk-1125s`), klar
 
 Playwright-skript utanför repot (`aifabriken-lanes/speed-bulk/`), live före och efter, 390 px med 4x CPU och Slow 4G samt 1440 px, axe-core 4.14.0 från aifabriken.

@@ -63,3 +63,14 @@ Mätt live i headless Chromium, 390 px med 4x CPU och Slow 4G samt 1440 px, för
 
 - [x] (2026-11-24) `[P1]` En sparad plan som nämner ett kit, protein, metod, kolhydrat, grönsak eller region som en senare deploy tagit bort kraschade alla fyra sidor tills webbplatsdata rensades (återskapat live med sju seedade planer). `migratePlan` rensar okända id, en borttagen metod blir standardmetoden (`3f9342b`, check fäller den gamla koden).
 - [x] (2026-11-24) `[P2]` Tillagning gav React-fel #418 (hydrering) vid varje besök en annan dag än bygget: etiketternas datum räknades vid exporten (`0314a26`, Playwright i Stockholms och New Yorks tidszon).
+
+## Scenariojakt 2026-11-25
+
+Flerstegsscenarier i Playwright mot lokalt bygge (skript utanför repot, `aifabriken-lanes/scen-bulk/`): vecka hopträngd, två flikar, 40 lådor med alla 32 kit, gårdagens bygge och service worker till dagens, bredd 320 till 1920 px mitt i flödet, flik öppen över natten. Varje fix fälls av sitt skript på det gamla bygget.
+
+- [x] (2026-11-25) `[P2]` En timer som ringt ut och aldrig kvitterats ringde i dockan på alla sidor i all evighet (även en vecka senare). Dockan släpper klockor som ringt ut för mer än 12 h sedan, samma gräns som "Förra tillagningen", även i en flik som står öppen (`6ab61d3`).
+- [x] (2026-11-25) `[P2]` Inköpslistans rader var vanliga knappar: avbockat syntes bara visuellt, inte för skärmläsare. Nu `role=checkbox` med `aria-checked` (`2f1e1d3`).
+- [x] (2026-11-25) `[P2]` På 320 px gick sidan att skrolla 8 px i sidled på alla sidor: stegflikarna var för breda (`039c89c`).
+- [x] (2026-11-25) `[P2]` Avbockade inköpsrader (`opacity-40`) föll på kontrast, axe 3 noder så fort en rad bockats (tidigare axe-körningar bockade aldrig någon). Nu `text-muted`, axe 0 på alla fyra sidor i 320, 390 och 1440 px, ljust och mörkt (`f3154f5`).
+- `[P3]` Service workerns cache (`bulk-v1`) rensas aldrig: gamla hashade filer ligger kvar efter varje deploy (49 -> 52 poster över en deploy i scenariot). Växer med varje prisdeploy; ingen gräns uppmätt.
+- Inga fynd: två flikar (ändring, timer, kvittering och Rensa allt följer med), 40 lådor och 32 kit (Välj laddar på 0,7 s med 0,6 s långa uppgifter på 390 px utan CPU-strypning, 139 inköpsrader bockade och kvar efter omladdning), uppgradering med gammal service worker (plan och timer kvar, nya skript, alla fyra sidor offline efteråt). Typsnitten är redan självhostade (`next/font/google` lägger dem i `_next/static/media`), så batch 8:s förslag om Google Fonts gäller inte Bulk.
