@@ -150,9 +150,19 @@ function BoxTile({ c, warn, sheet, onOpen }: { c: BoxCalc; warn: boolean; sheet:
   const hue = c.box.kit?.hue;
   const empty = c.missing.length > 0;
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+  // Touch: touch-action is fixed when the finger lands, so switching it to none on lift came too late and the page
+  // scrolled instead (pointercancel, no swap). A cancelled touchmove keeps the drag; React's own touchmove is passive.
+  const ref = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    const h = (e: TouchEvent) => { if (moved.current && e.cancelable) e.preventDefault(); };
+    el?.addEventListener('touchmove', h, { passive: false });
+    return () => el?.removeEventListener('touchmove', h);
+  }, []);
 
   return (
     <motion.button
+      ref={ref}
       layout
       layoutId={`box-${c.box.i}`}
       data-box={c.box.i}
@@ -167,13 +177,16 @@ function BoxTile({ c, warn, sheet, onOpen }: { c: BoxCalc; warn: boolean; sheet:
       onPointerDown={(e) => {
         moved.current = false;
         const ev = e.nativeEvent;
-        timer.current = setTimeout(() => { setLifted(true); haptic(12); drag.start(ev); }, 320);
+        timer.current = setTimeout(() => { moved.current = true; setLifted(true); haptic(12); drag.start(ev); }, 320);
       }}
-      onPointerUp={() => { if (timer.current) clearTimeout(timer.current); if (!lifted && !moved.current) onOpen(); setLifted(false); }}
+      onPointerUp={() => { if (timer.current) clearTimeout(timer.current); setLifted(false); }}
       onPointerLeave={() => { if (timer.current && !lifted) clearTimeout(timer.current); }}
-      onPointerMove={() => { if (!lifted) moved.current = true; }}
-      // Enter and Space fire click with detail 0 and no pointer events: without this the keyboard cannot open a box.
-      onClick={(e) => { if (e.detail === 0) onOpen(); }}
+      // Touch: the browser only fires click for a tap, and a finger jitters, so only a mouse move cancels the open.
+      onPointerMove={(e) => { if (!lifted && e.pointerType === 'mouse') moved.current = true; }}
+      // Open on click, not pointerup: a touch tap fires its click after touchend, and opening on pointerup put the
+      // backdrop under that click, which closed the sheet again (every tap on a phone, WebKit and Chromium 2026-11-25).
+      // Click also covers Enter and Space (detail 0, no pointer events). A long press that lifted the tile does not open.
+      onClick={() => { if (!moved.current) onOpen(); moved.current = false; }}
       onDragEnd={(e) => {
         setLifted(false);
         const pt = 'changedTouches' in e ? (e as TouchEvent).changedTouches[0] : (e as PointerEvent);
