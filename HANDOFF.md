@@ -12,6 +12,8 @@ blockers: []
 
 Svensk text i all UI, mörkt läge, reducerad rörelse, 200 % textzoom på 1280 och 390 px och forced colors, headless Chromium mot lokalt bygge. Skript i `aifabriken-lanes/prefs-bulk/` (`prefs.mjs` alla lägen, `canvas.mjs` dukens färg i mörkt läge utan CSS, `mut.mjs` vilka stilar som ändras efter ett klick). Fynd och fixar i BACKLOG, Preferens- och språkpass 2026-11-25.
 
+Pushat till main (`d27c4d9`, `ceb985f`), men ingen deploy startade: GitHub hade en pågående incident (githubstatus: Actions, Webhooks och Pages "degraded_performance"), push-händelsen gav ingen körning på 15 minuter och `gh workflow run deploy.yml` svarade HTTP 500 två gånger. **Nästa steg:** kör `gh workflow run deploy.yml --ref main` (som Elwyndaz) om ingen körning har startat av sig själv, och verifiera live med `node aifabriken-lanes/prefs-bulk/canvas.mjs https://buildapp.se/bulk/` (före: FAIL rgb(255, 255, 255), lokalt efter: PASS rgb(18, 18, 18)) och `prefs.mjs https://buildapp.se/bulk/ <ut>`.
+
 ## 2026-11-25, webbläsarpass (gren `xb/2026-11-25`, worktree `C:/dev/_wt/bulk-1125x`), klar
 
 WebKit (Playwright 1.64.1, iPhone 13-profil) och Firefox 1440 px mot Chromium på samma flöden, skript i `aifabriken-lanes/xb-bulk/` (`flow.mjs` hela flödet, `tile.mjs` lådrutan, `drag.mjs`, `shots.mjs`, `fade.mjs`). Inte en riktig iPhone.
