@@ -194,14 +194,14 @@ function Row({ r, on, onToggle }: { r: ShopRow; on: boolean; onToggle: () => voi
   return (
     <button role="checkbox" aria-checked={on} onClick={onToggle} className="flex items-center gap-3 border-b border-line py-2.5 text-left">
       <Check on={on} />
-      <span className={`flex flex-1 flex-col transition-opacity ${on ? 'opacity-40' : ''}`}>
+      <span className={`flex flex-1 flex-col transition-colors ${on ? 'text-muted' : ''}`}>
         <span className="relative w-fit">
           {r.name}
           <motion.span className="absolute inset-x-0 top-1/2 h-px origin-left bg-ink" initial={false} animate={{ scaleX: on ? 1 : 0 }} transition={spring} />
         </span>
         {sub && <span className="text-[12px] text-muted">{sub}</span>}
       </span>
-      <span className={`whitespace-nowrap font-mono text-sm ${on ? 'opacity-40' : ''}`}>{main}</span>
+      <span className={`whitespace-nowrap font-mono text-sm ${on ? 'text-muted' : ''}`}>{main}</span>
     </button>
   );
 }
