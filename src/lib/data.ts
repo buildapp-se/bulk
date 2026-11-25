@@ -429,7 +429,7 @@ const KIT_LIST: readonly Omit<Kit, 'hue'>[] = [
   { id: 'filips-ajvar', name: 'Filips ajvar', tagline: 'Ajvar, vitlök, parmesan', protein: ['kyckling', 'notfars'], carb: 'pasta', veg: 'spenat', sauce: true, base: 'kram',
     mix: [g('Philadelphia light', 'philadelphia', 10), g('Ajvar', 'ajvar', 12), s('Grillkrydda', 1, 'krm')],
     top: [g('Parmesan', 'parmesan', 6), cut(s('Persilja'), 'Hacka')], tip: 'Spara lite pastavatten och späd såsen med det.', heat: MICRO },
-  { id: 'filips-kebab', name: 'Filips Kebabgryta', tagline: 'Kebabkrydda, yoghurt, spenat', protein: ['kyckling'], carb: 'ris', veg: 'spenat', sauce: true,
+  { id: 'filips-kebab', name: 'Filips kebabgryta', tagline: 'Kebabkrydda, yoghurt, spenat', protein: ['kyckling'], carb: 'ris', veg: 'spenat', sauce: true,
     mix: [g('Mini fraiche', 'minifraiche', 40), g('Grekisk yoghurt', 'grekisk', 20), g('Röd kebabsås', 'kebabsas', 10), s('Kebabkrydda', 2, 'krm'), s('Spiskummin', 1, 'krm')],
     top: [s('Färsk spenat')], tip: 'Rör ner mejeriet på låg värme, sist.', heat: MICRO },
   { id: 'filips-philly', name: 'Filips Philly cheese', tagline: 'Färs, paprika, krämig ost', protein: ['notfars'], carb: 'pasta', veg: 'paprika', sauce: true, base: 'kram',
@@ -441,9 +441,9 @@ const KIT_LIST: readonly Omit<Kit, 'hue'>[] = [
   { id: 'filips-svampsas', name: 'Filips svampsås', tagline: 'Kalvfond, dijon, champinjoner', protein: ['flaskkarre', 'notfars', 'kyckling'], carb: 'mos', veg: 'champinjoner', sauce: true, base: 'kram',
     mix: [g('Flora Matlagning 4 %', 'mildamat', 50, 'ml'), g('Lättmjölk', 'lattmjolk', 75, 'ml'), s('Kalvfond', 0.5, 'msk'), s('Japansk soja', 0.5, 'msk'), s('Dijonsenap', 0.25, 'tsk')],
     top: [g('Parmesan', 'parmesan', 15), cut(s('Persilja'), 'Hacka')], tip: 'Stek svampen hårt tills den fått färg innan vätskan går i.', heat: MICRO },
-  { id: 'filips-burger', name: 'Filips Cheeseburger', tagline: 'Ost, pickles, burgersås', protein: ['notfars'], carb: 'potatis', veg: 'broccoli',
+  { id: 'filips-burger', name: 'Filips cheeseburger', tagline: 'Ost, pickles, burgersås', protein: ['notfars'], carb: 'potatis', veg: 'broccoli',
     mix: [s('Hamburgerost', 1, 'st'), s('Vitlökspulver', 1, 'krm')],
-    top: [g('Grekisk yoghurt', 'grekisk', 25), s('Senap', 0.5, 'tsk'), cut(s('Pickles, hackad', 1, 'msk'), 'Hacka'), cut(s('Rå gullök'), 'Hacka')], tip: 'Smält osten i den varma färsen. Såsen i egen burk.', heat: MICRO },
+    top: [g('Grekisk yoghurt', 'grekisk', 25), s('Senap', 0.5, 'tsk'), cut(s('Pickles, hackade', 1, 'msk'), 'Hacka'), cut(s('Rå gullök'), 'Hacka')], tip: 'Smält osten i den varma färsen. Såsen i egen burk.', heat: MICRO },
 ];
 
 // Golden-angle hues: neighbouring kits always get clearly different colours.

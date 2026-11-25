@@ -1,5 +1,5 @@
 'use client';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { t } from '@/i18n/sv';
@@ -245,7 +245,7 @@ function Lines({ rows, keyOf, ticked, onTick }: { rows: StepLine[]; keyOf: (i: n
             style={r.hue !== undefined ? ({ '--hue': r.hue } as React.CSSProperties) : undefined}>
             <span className="pt-0.5"><Check on={on} /></span>
             <span className={`flex flex-col gap-0.5 transition-opacity ${on ? 'opacity-45' : ''}`}>
-              <span className="flex items-baseline gap-2 text-sm">
+              <span className="flex flex-wrap items-baseline gap-x-2 text-sm">
                 {r.hue !== undefined && <span className="kit-bg h-2 w-2 shrink-0 translate-y-[-1px] rounded-sm" />}
                 <span className={`${kits ? 'font-semibold' : ''} ${on ? 'line-through' : ''}`}>{r.name}</span>
                 <span className="ml-auto whitespace-nowrap font-mono text-[12px] text-muted">{r.right}</span>
@@ -288,12 +288,13 @@ function Timeline({ steps: all, clocks: cl, done, now, nowT, at, ref }: {
   const tickStep = [15, 30, 60, 120, 180].find((m) => span / m <= 4) ?? 240;
   const ticks: number[] = [];
   if (now > 0) for (let v = Math.ceil(at(t0) / (tickStep * MIN)) * tickStep * MIN; v <= at(t1); v += tickStep * MIN) ticks.push(v);
+  const reduce = useReducedMotion();
   const cols = 'grid-cols-[minmax(0,7rem)_1fr_3.25rem_1.75rem] sm:grid-cols-[minmax(0,12rem)_1fr_3.5rem_1.75rem]';
-  const jump = (s: Step) => document.getElementById(`step-${s.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const jump = (s: Step) => document.getElementById(`step-${s.id}`)?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   const right = (s: Step) => {
     const c = cl[s.id];
     if (c && !done[s.id]) return ringing(c, now)
-      ? <motion.span className="font-mono" animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
+      ? <motion.span className="font-mono" animate={reduce ? undefined : { opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
       : <Digits ms={leftMs(c, now)} className={running(c) ? '' : 'text-muted'} />;
     return now > 0 ? <When w={fmtAt(at(s.t), now, ref)} /> : null;
   };

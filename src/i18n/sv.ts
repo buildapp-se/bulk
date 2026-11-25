@@ -6,7 +6,7 @@ export const sv = {
   explore: 'Utforska',
   notFound: { title: 'Sidan finns inte', sub: 'Adressen leder ingenstans. Din plan finns kvar.', home: 'Till 01 Välj' },
   summary: (boxes: number, kits: number) => `${pl(boxes, 'låda', 'lådor')} · ${pl(kits, 'smak', 'smaker')} · ø`,
-  hero: { title: 'Laga en bas. Byt smak per låda.', sub: 'Välj protein, antal lådor och smakkit. Mängder, macros, inköp och ugnsschema räknas ut direkt.' },
+  hero: { title: 'Laga en bas. Byt smak per låda.', sub: 'Välj protein, antal lådor och smakkit. Mängder, makros, inköp och ugnsschema räknas ut direkt.' },
   sec: { goal: 'Mål', protein: 'Protein', boxes: 'Antal lådor', kits: 'Smakkit', veg: 'Grönsaker' },
   spare: (name: string, bought: string, need: string, extra: number) => `${name}: du köper ${bought}, lådorna tar ${need}. Räcker till ca ${extra} ${extra === 1 ? 'låda' : 'lådor'} till.`,
   spareUse: (n: number) => `Gör ${n} lådor`,

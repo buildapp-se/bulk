@@ -209,7 +209,7 @@ function BoxTile({ c, warn, sheet, onOpen }: { c: BoxCalc; warn: boolean; sheet:
           {c.box.kit && <span className="kit-bg h-1.5 w-1.5 shrink-0 rounded-full" />}
           <span className="truncate">{c.box.kit?.name ?? t.box.empty}</span>
         </span>
-        <span className="truncate text-[10px] opacity-70">{c.box.protein?.name ?? '—'}</span>
+        <span className="truncate text-[10px] opacity-70">{c.box.protein?.name ?? t.box.empty}</span>
       </span>
     </motion.button>
   );

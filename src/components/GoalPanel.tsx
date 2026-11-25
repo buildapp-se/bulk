@@ -34,6 +34,7 @@ export function GoalPanel() {
               {(Object.keys(GOAL_KINDS) as GoalKind[]).map((k) => (
                 <button
                   key={k}
+                  aria-pressed={g.kind === k}
                   onClick={() => { haptic(); setGoal({ kind: k, proteinBox: null, kcalBox: null }); }}
                   className={`rounded-xl border px-3 py-2.5 text-left transition-colors ${g.kind === k ? 'border-ink bg-ink text-on-ink' : 'border-line hover:border-muted'}`}
                 >

@@ -2,7 +2,7 @@
 // Cooking timers: rolling digital clocks, the dock in the header and the alarm.
 // The dock lives in the (persistent) header, so alarms ring on every page, not only on Tillagning.
 import Link from 'next/link';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { t } from '@/i18n/sv';
 import type { Step } from '@/lib/calc';
@@ -83,13 +83,14 @@ export const caption = (s: Step) => `${s.what ?? s.title}${s.temp ? ` · ${s.tem
 export function Digits({ ms, className = '' }: { ms: number; className?: string }) {
   const txt = fmtClock(ms);
   const n = txt.length;
+  const reduce = useReducedMotion(); // a ticking clock: no per-digit fade either
   return (
     <span className={`inline-flex font-mono tabular-nums ${className}`} role="timer" aria-label={txt}>
       {[...txt].map((ch, i) =>
         ch === ':' ? <span key={`c${n - i}`} className="opacity-50">:</span> : (
           <span key={n - i} className="relative inline-block w-[0.62em] overflow-hidden text-center">
             <AnimatePresence initial={false} mode="popLayout">
-              <motion.span key={ch} className="inline-block" initial={{ y: '-90%', opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: '90%', opacity: 0 }}
+              <motion.span key={ch} className="inline-block" initial={reduce ? false : { y: '-90%', opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={reduce ? undefined : { y: '90%', opacity: 0 }}
                 transition={{ type: 'spring', stiffness: 420, damping: 30 }}>{ch}</motion.span>
             </AnimatePresence>
           </span>
@@ -101,7 +102,7 @@ export function Digits({ ms, className = '' }: { ms: number; className?: string 
 function Btn({ onClick, children, label, primary }: { onClick: () => void; children: React.ReactNode; label?: string; primary?: boolean }) {
   return (
     <motion.button whileTap={{ scale: 0.9 }} onClick={onClick} aria-label={label}
-      className={`h-11 min-w-11 rounded-full px-4 font-mono text-sm font-semibold ${primary ? 'bg-[color:var(--p)] text-white' : 'border border-current/20'}`}>
+      className={`h-11 min-w-11 rounded-full px-4 font-mono text-sm font-semibold ${primary ? 'bg-[color:color-mix(in_oklab,var(--p),black_20%)] text-white' : 'border border-current/20'}`}>
       {children}
     </motion.button>
   );
@@ -148,6 +149,7 @@ export function TimerDock() {
     .map((s) => ({ s, c: cook.clocks[s.id], left: leftMs(cook.clocks[s.id], now) }))
     .sort((a, b) => a.left - b.left);
   const ringingNow = items.filter((x) => ringing(x.c, now));
+  const reduce = useReducedMotion(); // MotionConfig stops transforms only; the endless blink is opacity
   const loud = ringingNow.length > 0;
 
   // Sound + vibration repeat until every finished clock is acknowledged.
@@ -189,12 +191,12 @@ export function TimerDock() {
                     className={`flex shrink-0 items-center gap-2 rounded-full py-1 pl-3 pr-1 ${ring ? 'bg-ink text-on-ink' : 'bg-surface ring-1 ring-line'}`}>
                     <Link href={`/tillagning#step-${s.id}`} className="flex items-center gap-2">
                       {ring
-                        ? <motion.span className="font-mono text-[15px] font-semibold" animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
+                        ? <motion.span className="font-mono text-[15px] font-semibold" animate={reduce ? undefined : { opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 1 }}>{t.cook.done}</motion.span>
                         : <Digits ms={left} className={`text-[15px] font-semibold ${running(c) ? '' : 'text-muted'}`} />}
                       <span className="max-w-[16ch] truncate text-[12px] opacity-70">{s.what ?? s.title}</span>
                     </Link>
                     {ring
-                      ? <button onClick={() => clocks.ack(s.id)} className="h-8 rounded-full bg-[color:var(--p)] px-3 text-[12px] font-semibold text-white">{t.cook.ack}</button>
+                      ? <button onClick={() => clocks.ack(s.id)} className="h-8 rounded-full bg-[color:color-mix(in_oklab,var(--p),black_20%)] px-3 text-[12px] font-semibold text-white" /* white on --p was 3,47:1 */>{t.cook.ack}</button>
                       : <button onClick={() => clocks.toggle(s.id)} aria-label={running(c) ? t.cook.pause : t.cook.resume} className="flex h-8 w-8 items-center justify-center rounded-full text-[11px] opacity-70">{running(c) ? '❚❚' : '▶'}</button>}
                   </motion.div>
                 );

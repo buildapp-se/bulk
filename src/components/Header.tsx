@@ -31,7 +31,7 @@ export function Header() {
           className={`hit order-2 ml-auto flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm font-medium transition-colors sm:order-3 sm:ml-0 ${explore ? 'border-ink bg-surface text-ink' : 'border-line text-muted hover:border-muted hover:text-ink'}`}>
           <span aria-hidden className="font-mono text-[12px]">✂</span><span className="hidden sm:inline">{t.explore}</span>
         </Link>
-        <nav className="relative order-3 flex gap-0.5 rounded-xl bg-sunken p-[3px] sm:order-2 sm:ml-auto" aria-label="Steg">
+        <nav className="relative order-3 flex flex-wrap gap-0.5 rounded-xl bg-sunken p-[3px] sm:order-2 sm:ml-auto" aria-label="Steg">
           {ROUTES.map((r, i) => {
             const active = i === cur;
             return (

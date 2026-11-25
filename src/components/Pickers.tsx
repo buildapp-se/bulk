@@ -62,7 +62,7 @@ export function BoxCount() {
     <div className="flex flex-col gap-2">
     <div className="flex items-stretch gap-2">
       {[4, 8, 12].map((v) => (
-        <motion.button key={v} whileTap={{ scale: 0.95 }} onClick={() => setBoxes(v)}
+        <motion.button key={v} whileTap={{ scale: 0.95 }} onClick={() => setBoxes(v)} aria-pressed={v === n}
           className={`relative h-14 flex-1 rounded-xl border text-[22px] font-semibold tracking-tight ${v === n ? 'border-ink text-on-ink' : 'border-line'}`}>
           {v === n && <motion.span layoutId="count-pill" className="absolute inset-0 rounded-xl bg-ink" transition={spring} />}
           <span className="relative">{v}</span>

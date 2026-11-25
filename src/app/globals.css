@@ -57,7 +57,7 @@
 }
 
 html, body { background: var(--bg); color: var(--ink); }
-body { -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+body { -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; overflow-wrap: break-word; /* a long word at 200 % text breaks instead of running over its neighbour */ }
 button { cursor: pointer; }
 /* Small text links and buttons: a 44 px hit area around them without moving anything (WCAG 2.5.8, Fitts). Only on
    elements with room around them, or the neighbours' areas overlap. */
@@ -92,4 +92,14 @@ button { cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  /* CSS animations (animate-pulse) and transitions; Motion's own springs are stopped by MotionConfig in Providers.tsx. */
+  *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* Forced colors (Windows contrast themes) drop backgrounds and box-shadows: the selected pill, the ink-filled choice and
+   the focus ring (Tailwind ring = box-shadow) vanished. Outlines and system colours survive. */
+@media (forced-colors: active) {
+  [role=radio][aria-checked=true], [aria-pressed=true], [aria-current=page] { outline: 2px solid Highlight; outline-offset: -2px; }
+  :focus-visible { outline: 2px solid Highlight !important; outline-offset: 2px !important; }
+  svg path { stroke: CanvasText; }
 }

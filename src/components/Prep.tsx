@@ -73,7 +73,7 @@ export function Prep() {
           <motion.div initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }} transition={spring}
             className="fixed inset-x-0 bottom-0 z-20 px-4 pb-[calc(12px+env(safe-area-inset-bottom))] sm:px-5">
             <div className="mx-auto flex max-w-[1120px] flex-col gap-2 rounded-2xl bg-ink px-4 py-3 text-on-ink shadow-[0_8px_30px_rgba(35,33,29,.25)] sm:flex-row sm:items-center">
-              <div className="flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-[12px] sm:flex-1 [&>span]:whitespace-nowrap">
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-[12px] sm:flex-1">
                 <span className="font-semibold">{t.prep.marked(picks.length)}</span>
                 <span>✂ {t.prep.knife(now.knife)}</span>
                 <span className="opacity-75">{t.prep.ingr(now.ingr)}</span>

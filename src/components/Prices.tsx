@@ -89,7 +89,7 @@ export function WeekPrices({ offers }: { offers: Offer[] }) {
   return (
     <section className="flex flex-col gap-3">
       <div className="flex flex-col gap-1.5">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold tracking-tight">{t.price.week}</h2>
           {/* Native select: one tap, the phone's own picker. */}
           <label className="flex items-center gap-2 text-sm text-muted">

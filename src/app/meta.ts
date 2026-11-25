@@ -14,7 +14,7 @@ export function meta(path: string, title: string, description: string): Metadata
       description,
       url,
       locale: 'sv_SE',
-      images: [{ url: 'https://buildapp.se/bulk/og.png', width: 1200, height: 630, alt: 'Bulk: välj protein, lådor och smakkit, med batchen och dess macros till höger' }],
+      images: [{ url: 'https://buildapp.se/bulk/og.png', width: 1200, height: 630, alt: 'Bulk: välj protein, lådor och smakkit, med batchen och dess makros till höger' }],
     },
   };
 }

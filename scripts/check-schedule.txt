@@ -52,11 +52,11 @@ split-asia spis 40+10  | Smaksätt den asiatiska basen | - |
 split-kram spis 40+10  | Smaksätt den krämiga basen | - | 
    Toscansk kvarg=×2 [+ kvarg 80 g, soltorkade tomater 30 g, tomatpuré 20 g, parmesan 16 g, majsstärkelse 2 g, italienska örter 1 tsk, vitlökspulver 2 krm, chiliflakes 2 krm] {Rör ut kvargen med majsstärkelsen först, då skär den sig inte i mikron. Rör om halvvägs.}
 sauce spis 40+10  | Koka ihop såserna | - | 
-   Filips Kebabgryta=×2 [+ mini fraiche 80 g, grekisk yoghurt 40 g, röd kebabsås 20 g, kebabkrydda 4 krm, spiskummin 2 krm] {Rör ner mejeriet på låg värme, sist.}
+   Filips kebabgryta=×2 [+ mini fraiche 80 g, grekisk yoghurt 40 g, röd kebabsås 20 g, kebabkrydda 4 krm, spiskummin 2 krm] {Rör ner mejeriet på låg värme, sist.}
 portion klar 50+15  | Kyl ner och portionera | - | Låt allt svalna först. Spenat, haricots verts och broccoli läggs frysta direkt i lådan. Toppings i separata burkar.
    Chili con carne=×2 [Röda linser ca 125 g · Pasta ca 160 g · Spenat (fryst) 50 g · Såsen delad på 2] {Egen burk: gräddfil 30 g, koriander}
    Toscansk kvarg=×2 [Pulled fläskkarré ca 135 g · Potatismos ca 180 g · Champinjoner ca 70 g · Såsen delad på 2] {Egen burk: färsk basilika}
-   Filips Kebabgryta=×2 [Nötfärs ca 130 g · Ris ca 170 g · Spenat (fryst) 50 g · Såsen delad på 2] {Egen burk: färsk spenat}
+   Filips kebabgryta=×2 [Nötfärs ca 130 g · Ris ca 170 g · Spenat (fryst) 50 g · Såsen delad på 2] {Egen burk: färsk spenat}
    Dill och citron=×2 [Lax ca 130 g · Potatisklyftor ca 180 g · Haricots verts (fryst) 110 g] {Egen burk: lättkesella 50 g, lätt crème fraiche 20 g, senap 5 g, citron, saft och zest 0,5 st, färsk dill 1 msk, riven pepparrot 1 tsk, rödlök}
    Teriyaki=×2 [Kyckling ca 130 g · Ris ca 170 g · Broccoli (fryst) 140 g · Smaksättningen delad på 2] {Egen burk: sesamfrön 3 g, salladslök 1 st}
 store klar 65+0  | Märk och kyl | - | Håller 3–4 dagar i kylen, lax 2 dagar. Ät de känsligaste först och frys resten.
@@ -92,7 +92,7 @@ recept Toscansk kvarg med pulled fläskkarré ×2 hue 65
    Vitlökspulver=2 krm
    Chiliflakes=2 krm
    Färsk basilika=efter smak [egen burk]
-recept Filips Kebabgryta med nötfärs ×2 hue 138
+recept Filips kebabgryta med nötfärs ×2 hue 138
    Nötfärs=350 g [ca 260 g tillagat]
    Olja=9 g
    Ris=120 g [ca 340 g tillagat]
