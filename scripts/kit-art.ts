@@ -1,5 +1,5 @@
 // Kit illustrations via Codex imagegen: `node scripts/kit-art.ts [kitId ...]`.
-// Raw PNGs (transparent) land in design/art/, app-ready 640 px WebP in public/kits/. Existing files are skipped.
+// Raw PNGs (transparent) land in design/art/, app-ready 640 px WebP in public/kits/ and 256 px in public/kits/256/ (KitArt srcset). Existing files are skipped.
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync } from 'node:fs';
 import sharp from 'sharp';
@@ -11,7 +11,7 @@ const OUT = 'C:/dev/bulk/public/kits';
 const STYLE = 'hand-painted gouache illustration with risograph texture, limited palette of ochre, sage green, terracotta and ink black, slightly naive shapes, top-down view of the bowl, editorial cookbook illustration';
 const PARALLEL = 4;
 mkdirSync(RAW, { recursive: true });
-mkdirSync(OUT, { recursive: true });
+mkdirSync(`${OUT}/256`, { recursive: true });
 
 const only = process.argv.slice(2);
 const todo = KITS.filter((k) => (only.length ? only.includes(k.id) : true) && !existsSync(`${OUT}/${k.id}.webp`));
@@ -32,6 +32,7 @@ function gen(k: (typeof KITS)[number]) {
     p.on('close', async () => {
       try {
         await sharp(`${dir}/${file}`).resize(640, 640).webp({ quality: 82, alphaQuality: 90 }).toFile(`${OUT}/${k.id}.webp`);
+        await sharp(`${OUT}/${k.id}.webp`).resize(256, 256).webp({ quality: 82, alphaQuality: 90 }).toFile(`${OUT}/256/${k.id}.webp`);
         console.log('ok', k.id);
       } catch { console.log('FAIL', k.id); }
       done();
