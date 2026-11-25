@@ -385,11 +385,13 @@ function Recipes() {
 
 function Labels() {
   const { calcs } = useBatch();
-  const today = new Date();
+  // useNow: 0 on the server, so the export's build date never meets the visitor's date in hydration (React #418).
+  const ms = useNow(false);
+  const today = new Date(ms);
   const last = new Date(today.getTime() + 3 * 86400000);
   const fmt = (d: Date) => d.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
   const kinds = [...new Map(calcs.filter((c) => !c.missing.length).map((c) => [c.box.kit!.id + c.box.protein!.id, c])).values()];
-  if (!kinds.length) return null;
+  if (!kinds.length || !ms) return null;
   return (
     <div className="flex flex-col gap-2">
       <div className="label">{t.cook.labels}</div>
