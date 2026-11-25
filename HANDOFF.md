@@ -13,6 +13,8 @@ blockers: []
 WebKit (Playwright 1.64.1, iPhone 13-profil) och Firefox 1440 px mot Chromium på samma flöden, skript i `aifabriken-lanes/xb-bulk/` (`flow.mjs` hela flödet, `tile.mjs` lådrutan, `drag.mjs`, `shots.mjs`, `fade.mjs`). Inte en riktig iPhone.
 1. `b1ce4c0` Lådrutan med finger: trycket öppnade arket på `pointerup` och tryckets `click` landade sedan på bakgrunden och stängde det, varje gång (live i WebKit och Chromium med touch). Långtryck och drag skrollade sidan i stället för att byta lådor. Nu öppnas arket på `click` och ett lyft drag avbryter `touchmove`. `tile.mjs` fäller live-koden och klarar den nya i WebKit mobil, Chromium mobil (även 2 px darr och drag med CDP-touch) samt mus och Enter i Chromium, Firefox och WebKit 1440.
 
+Live efter deploy (körning 45602161694, försök 1 och 2 föll på GitHubs artefakt-API som förut, försök 3 grönt): `tile.mjs` PASS mot buildapp.se/bulk i WebKit mobil, Chromium mobil, Firefox 1440 och WebKit 1440.
+
 Inga andra skillnader, se BACKLOG "Webbläsarpass 2026-11-25". Overifierat: drag med finger i WebKit (Playwright kan inte), tidsväljaren på riktig iOS.
 
 ## 2026-11-25, P3-pass (gren `p3/2026-11-25`, worktree `C:/dev/_wt/bulk-1125p`), klar
