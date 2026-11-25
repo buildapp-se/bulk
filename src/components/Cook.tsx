@@ -105,12 +105,13 @@ function CookPlan({ sched, incomplete }: { sched: ReturnType<typeof useBatch>['s
       <div className="flex flex-col gap-2"><div className="label">{t.sec.boxes}</div><BoxCount /></div>
 
       {/* Hidden, not absent, until the clock is known (server and hydration render now = 0): mounting it after
-          hydration pushed the page down 121 px (CLS 0,055 at 390 px). */}
+          hydration pushed the page down 121 px (CLS 0,055 at 390 px). No times in it before then: the export formats
+          now = 0 in the builder's time zone (UTC on Actions), the browser in its own, and React threw #418. */}
       <div aria-hidden={now === 0 || undefined} className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-surface p-4 ${now === 0 ? 'invisible' : ''}`}>
           <div className="flex flex-col gap-1.5">
-            <span className="font-mono text-[34px] font-semibold leading-none tabular-nums"><span className="sr-only">{t.cook.nowLabel} </span>{fmtAt(now, now).time}</span>
+            <span className="font-mono text-[34px] font-semibold leading-none tabular-nums"><span className="sr-only">{t.cook.nowLabel} </span>{now ? fmtAt(now, now).time : '--:--'}</span>
             <span className={`text-[13px] ${late ? 'text-warn' : 'text-muted'}`}>
-              {late ? t.cook.late(fmtAtStr(now + (last - first) * MIN, now)) : t.cook.plan(fmtAtStr(at(first), now), fmtAtStr(end, now))}
+              {!now ? t.cook.plan('--:--', '--:--') : late ? t.cook.late(fmtAtStr(now + (last - first) * MIN, now)) : t.cook.plan(fmtAtStr(at(first), now), fmtAtStr(end, now))}
               {pinned !== null && ` · ${t.cook.follows}`}
             </span>
           </div>
