@@ -15,6 +15,7 @@ Sex flerstegsscenarier i Playwright (skript utanför repot, `aifabriken-lanes/sc
 2. `2f1e1d3` Inköpslistans rader har `role=checkbox` och `aria-checked`.
 3. `039c89c` Stegflikarna fick 8 px sidledsscroll på 320 px på alla sidor; smalare utfyllnad under 360 px.
 4. `f3154f5` Avbockade inköpsrader föll på kontrast (axe 3 noder när en rad är bockad, även före). `text-muted` i stället för `opacity-40`; axe 0 på alla fyra sidor i 320, 390 och 1440 px, ljust och mörkt.
+5. `05e9f20` Live-kontrollen efter första deployen hittade React #418 på Tillagning vid varje besök, infört av `9f461a9` (fartpasset): den dolda klockpanelen formaterade now = 0 i byggarens tidszon (UTC på Actions) och webbläsarens. Syns bara när bygget görs i en annan tidszon än besökarens, så bygg med `TZ=UTC npm run build` när en ändring rör tider i exporten. Platshållartider tills klockan är känd.
 
 Batch 8:s kodposter: typsnitten är redan självhostade via `next/font/google`, övriga parkerade poster (CSP-meta, `immutable`-cache, tryckytor) kräver Patriks beslut och är orörda. Ny P3: service workerns cache rensas aldrig.
 
