@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { t } from '@/i18n/sv';
 import { fmtMin, isLong, recipes, type Step, type StepLine } from '@/lib/calc';
-import { fmtAt, fmtAtStr, leftMs, MIN, ringing, running, zeroAt, type Clock } from '@/lib/clock';
+import { fmtAt, fmtAtStr, leftMs, MIN, ringing, running, STALE_MS, zeroAt, type Clock } from '@/lib/clock';
 import { useBatch } from '@/lib/useBatch';
 import { FRESH_COOK, setCook, useCook } from '@/lib/store';
 import { haptic } from '@/lib/haptics';
@@ -69,7 +69,6 @@ function CookPlan({ sched, incomplete }: { sched: ReturnType<typeof useBatch>['s
   // only marks the steps after midnight, and an overnight sous vide marks only itself.
   const ref = at(Math.min(...steps.filter((s) => !isLong(s)).map((s) => s.t)));
   const late = pinned === null && !!cook.ready && at(first) < now;
-  const STALE_MS = 12 * 3600000;
   const stale = now > 0 && cook.last !== null && now - cook.last > STALE_MS && (doneN > 0 || Object.keys(cook.clocks).length > 0 || Object.values(cook.sub).some(Boolean));
   // Default "klart kl": the next half hour after the schedule would end if started now.
   const suggest = () => fmtAt(Math.ceil((now + (last - first) * MIN) / (30 * MIN)) * 30 * MIN, now).time;

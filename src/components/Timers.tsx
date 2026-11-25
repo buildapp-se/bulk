@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { t } from '@/i18n/sv';
 import type { Step } from '@/lib/calc';
-import { fmtClock, leftMs, nudge, pause, resume, ringing, running, start, type Clock } from '@/lib/clock';
+import { fmtClock, forgotten, leftMs, nudge, pause, resume, ringing, running, start, type Clock } from '@/lib/clock';
 import { setCook, useCook } from '@/lib/store';
 import { useBatch } from '@/lib/useBatch';
 import { haptic } from '@/lib/haptics';
@@ -143,8 +143,8 @@ export function TimerDock() {
   const { sched } = useBatch();
   const cook = useCook();
   const now = useNow(Object.keys(cook.clocks).length > 0);
-  // Clocks whose step left the schedule (plan changed) are ignored.
-  const items = sched.steps.filter((s) => cook.clocks[s.id])
+  // Clocks whose step left the schedule (plan changed) or that rang out over 12 h ago are ignored.
+  const items = sched.steps.filter((s) => cook.clocks[s.id] && !forgotten(cook.clocks[s.id], now))
     .map((s) => ({ s, c: cook.clocks[s.id], left: leftMs(cook.clocks[s.id], now) }))
     .sort((a, b) => a.left - b.left);
   const ringingNow = items.filter((x) => ringing(x.c, now));

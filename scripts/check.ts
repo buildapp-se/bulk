@@ -2,7 +2,7 @@
 // Expected numbers are hand-computed from the per-100 g values in data.ts (see comments).
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { DEFAULT_METHOD, INGR, KITS, PROTEINS, CARBS, VEGS, byId, type Protein } from '../src/lib/data.ts';
-import { fmtAtStr, fmtClock, leftMs, MIN, nudge, pause, readyAt, resume, ringing, running, start, zeroAt } from '../src/lib/clock.ts';
+import { fmtAtStr, fmtClock, forgotten, leftMs, MIN, nudge, pause, readyAt, resume, ringing, running, start, zeroAt } from '../src/lib/clock.ts';
 import { baseBatches, boxShare, calcBox, DEFAULT_PLAN, fmtMin, fmtPacks, fmtQty, isLong, migratePlan, missing, partMacro, pickPacks, pruneOverrides, recipes, resolveBoxes, schedule, shopping, spare, split, targets, vegRoasted, type Box, type BoxCalc, type Plan, type Step } from '../src/lib/calc.ts';
 import { cost, kitJobs, nearZero, noun, prepTree, protPrep, type PNode } from '../src/lib/prep.ts';
 import { atStore, basket, boxCost, CHAINS, deals, forRegion, krPerProtein, live, matches, pieceKrKg, needs, norm, pantryCost, PRICES, regular, unit, type Prices, type Region } from '../src/lib/price.ts';
@@ -196,6 +196,7 @@ ck = resume(ck, 8 * M);
 ck = nudge(ck, M, 10 * M);
 eq('pause + nudge end', 'end' in ck && ck.end, 24 * M);
 eq('rings at end', [ringing(ck, 24 * M - 1), ringing(ck, 24 * M)], [false, true]);
+eq('forgotten only 12 h after it rang, never paused', [forgotten(ck, 24 * M + 12 * 60 * M), forgotten(ck, 24 * M + 12 * 60 * M + 1), forgotten({ left: 0 }, 1e12)], [false, true, false]);
 eq('+1 on a rung clock counts from now', nudge(ck, M, 30 * M), { end: 31 * M });
 eq('−1 never below zero', nudge(start(0.5, 0), -M, 0), { end: 0 });
 eq('clock format', [fmtClock(65_000), fmtClock(3_723_000), fmtClock(400)], ['1:05', '1:02:03', '0:01']);

@@ -7,6 +7,10 @@ export const leftMs = (c: Clock, now: number) => ('end' in c ? c.end - now : c.l
 export const running = (c: Clock) => 'end' in c;
 /** Finished and still running: this is what rings. */
 export const ringing = (c: Clock, now: number) => 'end' in c && c.end <= now;
+/** A session untouched this long is the last cooking, not this one (Tillagning offers Börja om). */
+export const STALE_MS = 12 * 3600000;
+/** Rang out long ago and never acknowledged: the dock drops it, or a week-old timer rang on every page. */
+export const forgotten = (c: Clock, now: number) => 'end' in c && now - c.end > STALE_MS;
 export const pause = (c: Clock, now: number): Clock => ('end' in c ? { left: Math.max(0, c.end - now) } : c);
 export const resume = (c: Clock, now: number): Clock => ('left' in c ? { end: now + c.left } : c);
 /** Add or remove time. Never below zero; +1 on a finished clock counts from now, not from when it rang. */
