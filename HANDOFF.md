@@ -17,6 +17,8 @@ Sex flerstegsscenarier i Playwright (skript utanför repot, `aifabriken-lanes/sc
 4. `f3154f5` Avbockade inköpsrader föll på kontrast (axe 3 noder när en rad är bockad, även före). `text-muted` i stället för `opacity-40`; axe 0 på alla fyra sidor i 320, 390 och 1440 px, ljust och mörkt.
 5. `05e9f20` Live-kontrollen efter första deployen hittade React #418 på Tillagning vid varje besök, infört av `9f461a9` (fartpasset): den dolda klockpanelen formaterade now = 0 i byggarens tidszon (UTC på Actions) och webbläsarens. Syns bara när bygget görs i en annan tidszon än besökarens, så bygg med `TZ=UTC npm run build` när en ändring rör tider i exporten. Platshållartider tills klockan är känd.
 
+Live efter deploy (körning 45554887044 grön; 45553770608 för `1631ab9` föll först på GitHubs artefakt-API, omkörning grön): s1, s2, s3, s5 och s6 PASS mot buildapp.se/bulk, ingen #418 på någon sida i Stockholms, New Yorks och Tokyos tidszon, CLS Tillagning 0,0008 / 0,0006 / 0,0001 på 320 / 390 / 1440 px, axe 0 fel på alla fyra sidor i 320, 390 och 1440 px, ljust och mörkt. s4 (uppgradering med service worker) bara lokalt, den kräver en server som byter bygge.
+
 Batch 8:s kodposter: typsnitten är redan självhostade via `next/font/google`, övriga parkerade poster (CSP-meta, `immutable`-cache, tryckytor) kräver Patriks beslut och är orörda. Ny P3: service workerns cache rensas aldrig.
 
 ## 2026-11-25, fart, tillgänglighet och metadata (gren `speed/2026-11-25`, worktree `C:/dev/_wt/bulk-1125s`), klar
