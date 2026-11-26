@@ -1,5 +1,5 @@
 {
- "at": "2026-11-24",
+ "at": "2026-11-26",
  "stores": [
   {
    "chain": "Willys",
@@ -246,12 +246,12 @@
     "code": "100627582_ST"
    },
    "couscous": {
-    "krKg": 28.29,
-    "kr": 28.29,
+    "krKg": 29.9,
+    "kr": 29.9,
     "pack": "1kg",
     "name": "Couscous",
     "brand": "Garant",
-    "code": "101547035_ST"
+    "code": "101547064_ST"
    },
    "potatis": {
     "krKg": 9.98,
@@ -294,12 +294,12 @@
     "code": "101193541_ST"
    },
    "vitkal": {
-    "krKg": 14.9,
-    "kr": 14.9,
-    "pack": "ca: 2kg",
-    "name": "Vitkål Sverige Klass 1",
-    "brand": "",
-    "code": "101281229_KG"
+    "krKg": 29.9,
+    "kr": 29.9,
+    "pack": "ca: 1.4kg",
+    "name": "Vitkål Eko Klass 1",
+    "brand": "Garant Eko",
+    "code": "100862381_KG"
    },
    "aubergine": {
     "krKg": 49.67,
@@ -374,16 +374,16 @@
     "code": "101851783_ST"
    },
    "svartabonor": {
-    "krKg": 33.63,
-    "kr": 26.9,
+    "krKg": 32.38,
+    "kr": 25.9,
     "pack": "800g",
     "name": "Svarta Bönor",
     "brand": "Eldorado",
     "code": "101277659_ST"
    },
    "kidney": {
-    "krKg": 33.63,
-    "kr": 26.9,
+    "krKg": 32.38,
+    "kr": 25.9,
     "pack": "800g",
     "name": "Kidneybönor Röda",
     "brand": "Eldorado",
@@ -702,8 +702,8 @@
     "code": "101412914_ST"
    },
    "sriracha": {
-    "krKg": 80.28,
-    "kr": 34.92,
+    "krKg": 80.23,
+    "kr": 34.9,
     "pack": "435ml",
     "name": "Sriracha Sauce",
     "brand": "Spicefield",
@@ -718,8 +718,8 @@
     "code": "101840986_ST"
    },
    "senap": {
-    "krKg": 27.11,
-    "kr": 12.2,
+    "krKg": 26.44,
+    "kr": 11.9,
     "pack": "450g",
     "name": "Senap",
     "brand": "Eldorado",
@@ -1033,12 +1033,12 @@
     "code": "7311311012549"
    },
    "teriyaki": {
-    "krKg": 119.43,
-    "kr": 43.95,
-    "pack": "368g",
-    "name": "Glutenfri Teriyakisås",
-    "brand": "Lee Kum Kee",
-    "code": "78895155884"
+    "krKg": 148.33,
+    "kr": 44.5,
+    "pack": "300 ml",
+    "name": "Teriyakisås ",
+    "brand": "Santa Maria",
+    "code": "7311310035341"
    },
    "krossade": {
     "krKg": 20.1,
@@ -1100,7 +1100,7 @@
     "krKg": 320.73,
     "kr": 320.73,
     "pack": "500 gram ungefärlig vikt",
-    "name": "Parmigiano Reggiano",
+    "name": "Parmigiano Reggiano 22 Mån",
     "brand": "Coop",
     "code": "2317236800006"
    },
@@ -1373,19 +1373,6 @@
  },
  "offers": [
   {
-   "ingr": "kycklingfile",
-   "chain": "Willys",
-   "store": "Willys Ersboda",
-   "name": "Kycklingbröstfilé",
-   "brand": "ELDORADO",
-   "pack": "2kg",
-   "krKg": 49.5,
-   "ordKrKg": 69,
-   "label": "99,00/st",
-   "member": true,
-   "until": "2026-11-25"
-  },
-  {
    "ingr": "gurka",
    "chain": "Willys",
    "store": "Willys Ersboda",
@@ -1607,19 +1594,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "kycklingfile",
-   "chain": "Willys",
-   "store": "Willys Umeå Syd",
-   "name": "Kycklingbröstfilé",
-   "brand": "ELDORADO",
-   "pack": "2kg",
-   "krKg": 49.5,
-   "ordKrKg": 69,
-   "label": "99,00/st",
-   "member": true,
-   "until": "2026-11-25"
-  },
-  {
    "ingr": "gurka",
    "chain": "Willys",
    "store": "Willys Umeå Syd",
@@ -1839,19 +1813,6 @@
    "label": "20,90/st",
    "member": false,
    "until": "2026-11-29"
-  },
-  {
-   "ingr": "kycklingfile",
-   "chain": "Willys",
-   "store": "Willys Klockarbäcken",
-   "name": "Kycklingbröstfilé",
-   "brand": "ELDORADO",
-   "pack": "2kg",
-   "krKg": 49.5,
-   "ordKrKg": 69,
-   "label": "99,00/st",
-   "member": true,
-   "until": "2026-11-25"
   },
   {
    "ingr": "gurka",
@@ -2140,19 +2101,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "kycklingfile",
-   "chain": "Willys",
-   "store": "Willys Port 73",
-   "name": "Kycklingbröstfilé",
-   "brand": "ELDORADO",
-   "pack": "2kg",
-   "krKg": 49.5,
-   "ordKrKg": 69,
-   "label": "99,00/st",
-   "member": true,
-   "until": "2026-11-25"
-  },
-  {
    "ingr": "gurka",
    "chain": "Willys",
    "store": "Willys Port 73",
@@ -2374,19 +2322,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "kycklingfile",
-   "chain": "Willys",
-   "store": "Willys Gamlestaden",
-   "name": "Kycklingbröstfilé",
-   "brand": "ELDORADO",
-   "pack": "2kg",
-   "krKg": 49.5,
-   "ordKrKg": 69,
-   "label": "99,00/st",
-   "member": true,
-   "until": "2026-11-25"
-  },
-  {
    "ingr": "gurka",
    "chain": "Willys",
    "store": "Willys Gamlestaden",
@@ -2606,19 +2541,6 @@
    "label": "20,90/st",
    "member": false,
    "until": "2026-11-29"
-  },
-  {
-   "ingr": "kycklingfile",
-   "chain": "Willys",
-   "store": "Willys Mobilia",
-   "name": "Kycklingbröstfilé",
-   "brand": "ELDORADO",
-   "pack": "2kg",
-   "krKg": 49.5,
-   "ordKrKg": 69,
-   "label": "99,00/st",
-   "member": true,
-   "until": "2026-11-25"
   },
   {
    "ingr": "gurka",
@@ -2866,18 +2788,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "kesella",
-   "chain": "Coop",
-   "store": "Stora Coop Avion",
-   "name": "Kesella/kvarg",
-   "brand": "Arla Köket",
-   "pack": "250 g.",
-   "krKg": 51.6,
-   "label": "12.9 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Avion",
@@ -2922,6 +2832,18 @@
    "pack": "500 ml.",
    "krKg": 144,
    "label": "72 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "kesella",
+   "chain": "Coop",
+   "store": "Stora Coop Avion",
+   "name": "Kesella/kvarg",
+   "brand": "Arla Köket",
+   "pack": "250 g.",
+   "krKg": 51.6,
+   "label": "12.9 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -2950,6 +2872,18 @@
    "until": "2026-11-29"
   },
   {
+   "ingr": "olivolja",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Olivolja",
+   "brand": "Fontana",
+   "pack": "500 ml.",
+   "krKg": 144,
+   "label": "72 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
    "ingr": "kesella",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
@@ -2974,30 +2908,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "sotpotatis",
-   "chain": "Coop",
-   "store": "Stora Coop Ersboda",
-   "name": "Sötpotatis",
-   "brand": "Egypten",
-   "pack": "",
-   "krKg": 20,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
-   "ingr": "olivolja",
-   "chain": "Coop",
-   "store": "Stora Coop Ersboda",
-   "name": "Olivolja",
-   "brand": "Fontana",
-   "pack": "500 ml.",
-   "krKg": 144,
-   "label": "72 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Ersboda",
@@ -3006,6 +2916,18 @@
    "pack": "Ca 700 g.",
    "krKg": 179,
    "label": "179 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "sotpotatis",
+   "chain": "Coop",
+   "store": "Stora Coop Ersboda",
+   "name": "Sötpotatis",
+   "brand": "Egypten",
+   "pack": "",
+   "krKg": 20,
+   "label": "20 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -3034,18 +2956,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "sotpotatis",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Sötpotatis",
-   "brand": "Egypten",
-   "pack": "",
-   "krKg": 20,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
    "ingr": "olivolja",
    "chain": "Coop",
    "store": "Stora Coop Tomtebo",
@@ -3054,18 +2964,6 @@
    "pack": "500 ml.",
    "krKg": 144,
    "label": "72 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
-   "ingr": "kesella",
-   "chain": "Coop",
-   "store": "Stora Coop Tomtebo",
-   "name": "Kesella/kvarg",
-   "brand": "Arla Köket",
-   "pack": "250 g.",
-   "krKg": 51.6,
-   "label": "12.9 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -3090,6 +2988,30 @@
    "pack": "Ca 700 g.",
    "krKg": 179,
    "label": "179 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "sotpotatis",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Sötpotatis",
+   "brand": "Egypten",
+   "pack": "",
+   "krKg": 20,
+   "label": "20 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "kesella",
+   "chain": "Coop",
+   "store": "Stora Coop Tomtebo",
+   "name": "Kesella/kvarg",
+   "brand": "Arla Köket",
+   "pack": "250 g.",
+   "krKg": 51.6,
+   "label": "12.9 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -3106,16 +3028,28 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "rivenost",
+   "ingr": "krossade",
    "chain": "Coop",
    "store": "Coop City Umeå",
-   "name": "Riven ost",
-   "brand": "Arla",
-   "pack": "500 g.",
-   "krKg": 99.8,
-   "label": "49.9 kr",
+   "name": "Krossade tomater",
+   "brand": "Cirio",
+   "pack": "390 g.",
+   "krKg": 25.64,
+   "label": "3 för 30 kr",
    "member": false,
    "until": "2026-11-29"
+  },
+  {
+   "ingr": "olivolja",
+   "chain": "Coop",
+   "store": "Coop City Umeå",
+   "name": "Olivolja ",
+   "brand": "Zeta",
+   "pack": "500 ml.",
+   "krKg": 99,
+   "label": "2 för 99 kr",
+   "member": true,
+   "until": "2026-11-26"
   },
   {
    "ingr": "broccoli",
@@ -3130,14 +3064,14 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "krossade",
+   "ingr": "rivenost",
    "chain": "Coop",
    "store": "Coop City Umeå",
-   "name": "Krossade tomater",
-   "brand": "Cirio",
-   "pack": "390 g.",
-   "krKg": 25.64,
-   "label": "3 för 30 kr",
+   "name": "Riven ost",
+   "brand": "Arla",
+   "pack": "500 g.",
+   "krKg": 99.8,
+   "label": "49.9 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -3166,6 +3100,18 @@
    "until": "2026-11-29"
   },
   {
+   "ingr": "kesella",
+   "chain": "Coop",
+   "store": "Stora Coop Bromma",
+   "name": "Kesella/kvarg",
+   "brand": "Arla Köket",
+   "pack": "250 g.",
+   "krKg": 51.6,
+   "label": "12.9 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
    "ingr": "olivolja",
    "chain": "Coop",
    "store": "Stora Coop Bromma",
@@ -3186,18 +3132,6 @@
    "pack": "Ca 700 g.",
    "krKg": 179,
    "label": "179 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
-   "ingr": "kesella",
-   "chain": "Coop",
-   "store": "Stora Coop Bromma",
-   "name": "Kesella/kvarg",
-   "brand": "Arla Köket",
-   "pack": "250 g.",
-   "krKg": 51.6,
-   "label": "12.9 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -3250,18 +3184,6 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "sotpotatis",
-   "chain": "Coop",
-   "store": "Stora Coop Backaplan",
-   "name": "Sötpotatis",
-   "brand": "Egypten",
-   "pack": "",
-   "krKg": 20,
-   "label": "20 kr",
-   "member": false,
-   "until": "2026-11-29"
-  },
-  {
    "ingr": "kycklingfile",
    "chain": "Coop",
    "store": "Stora Coop Backaplan",
@@ -3270,6 +3192,18 @@
    "pack": "2000 g.",
    "krKg": 89.5,
    "label": "179 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "sotpotatis",
+   "chain": "Coop",
+   "store": "Stora Coop Backaplan",
+   "name": "Sötpotatis",
+   "brand": "Egypten",
+   "pack": "",
+   "krKg": 20,
+   "label": "20 kr",
    "member": false,
    "until": "2026-11-29"
   },
@@ -3334,6 +3268,18 @@
    "until": "2026-11-29"
   },
   {
+   "ingr": "kesella",
+   "chain": "Coop",
+   "store": "Stora Coop Stadion",
+   "name": "Kesella/kvarg",
+   "brand": "Arla Köket",
+   "pack": "250 g.",
+   "krKg": 51.6,
+   "label": "12.9 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
    "ingr": "sotpotatis",
    "chain": "Coop",
    "store": "Stora Coop Stadion",
@@ -3346,14 +3292,15 @@
    "until": "2026-11-29"
   },
   {
-   "ingr": "kesella",
-   "chain": "Coop",
-   "store": "Stora Coop Stadion",
-   "name": "Kesella/kvarg",
-   "brand": "Arla Köket",
-   "pack": "250 g.",
-   "krKg": 51.6,
-   "label": "12.9 kr",
+   "ingr": "aubergine",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Aubergine",
+   "brand": "",
+   "pack": "",
+   "krKg": 29.67,
+   "ordKrKg": 49.67,
+   "label": "8,9 kr/st",
    "member": false,
    "until": "2026-11-29"
   },
@@ -3407,6 +3354,18 @@
    "until": "2026-11-29"
   },
   {
+   "ingr": "lax",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Laxfilé hel sida",
+   "brand": "",
+   "pack": "",
+   "krKg": 129,
+   "label": "129 kr/kg",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
    "ingr": "kesella",
    "chain": "Lidl",
    "store": "Lidl",
@@ -3416,6 +3375,19 @@
    "krKg": 47.6,
    "ordKrKg": 54,
    "label": "11,9 kr",
+   "member": false,
+   "until": "2026-11-29"
+  },
+  {
+   "ingr": "tacokrydda",
+   "chain": "Lidl",
+   "store": "Lidl",
+   "name": "Taco kryddblandning",
+   "brand": "Kania",
+   "pack": "28 g/förp.",
+   "krKg": 196.43,
+   "ordKrKg": 263.22,
+   "label": "11 kr",
    "member": false,
    "until": "2026-11-29"
   },
